@@ -20,7 +20,7 @@ namespace ProductionManagerApp.Models
         [StringLength(200)]
         [Display(Name = "Website")]
         [Url(ErrorMessage = "Vui lòng nhập URL hợp lệ")]
-        public string Website { get; set; }
+        public string? Website { get; set; }
 
         [Required(ErrorMessage = "Quốc gia là bắt buộc")]
         [StringLength(50)]
@@ -33,23 +33,23 @@ namespace ProductionManagerApp.Models
 
         [StringLength(50)]
         [Display(Name = "Tên viết tắt")]
-        public string Alias { get; set; }
+        public string? Alias { get; set; }
 
         [StringLength(100)]
         [Display(Name = "CEO")]
-        public string CEO { get; set; }
+        public string? CEO { get; set; }
 
         [StringLength(200)]
         [Display(Name = "Trụ sở chính")]
-        public string Headquarters { get; set; }
+        public string? Headquarters { get; set; }
 
         [StringLength(500)]
         [Display(Name = "Mô tả")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [StringLength(300)]
         [Display(Name = "Logo")]
-        public string LogoUrl { get; set; }
+        public string? LogoUrl { get; set; }
         [NotMapped]
         [Display(Name = "Logo")]
         public IFormFile? LogoFile { get; set; }
