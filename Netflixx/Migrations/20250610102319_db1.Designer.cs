@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250608153135_db1")]
+    [Migration("20250610102319_db1")]
     partial class db1
     {
         /// <inheritdoc />
@@ -820,7 +820,7 @@ namespace Netflixx.Migrations
                     b.ToTable("PackageSubscriptionUpgrades");
                 });
 
-            modelBuilder.Entity("ProductionManagerApp.Models.ProductionManage", b =>
+            modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -994,7 +994,7 @@ namespace Netflixx.Migrations
 
             modelBuilder.Entity("Netflixx.Models.FilmsModel", b =>
                 {
-                    b.HasOne("ProductionManagerApp.Models.ProductionManage", "ProductionManager")
+                    b.HasOne("ProductionManagerApp.Models.ProductionManager", "ProductionManager")
                         .WithMany("Films")
                         .HasForeignKey("ProductionManagerId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -1301,7 +1301,7 @@ namespace Netflixx.Migrations
                     b.Navigation("PromotionUsages");
                 });
 
-            modelBuilder.Entity("ProductionManagerApp.Models.ProductionManage", b =>
+            modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
                 {
                     b.Navigation("Films");
                 });

@@ -38,6 +38,6 @@ namespace Netflixx.Models
 
 
         [ForeignKey("ProductionManagerId")]
-        public virtual ProductionManage ProductionManager { get; set; }
+        public virtual ProductionManager ProductionManager { get; set; }
     }
 }

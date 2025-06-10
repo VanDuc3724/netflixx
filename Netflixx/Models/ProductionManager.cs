@@ -5,7 +5,7 @@ using Netflixx.Models;
 
 namespace ProductionManagerApp.Models
 {
-    public class ProductionManage
+    public class ProductionManager
     {
         [Key]
         public int Id { get; set; }
