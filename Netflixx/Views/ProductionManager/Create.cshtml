@@ -1,0 +1,205 @@
+﻿@model ProductionManagerApp.Models.ProductionManager
+
+@{
+    ViewData["Title"] = "Thêm Công ty Sản xuất";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm Công ty Sản xuất mới
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Create" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="Name" class="form-label required"></label>
+                                    <input asp-for="Name" class="form-control" placeholder="Nhập tên công ty sản xuất" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="Alias" class="form-label"></label>
+                                    <input asp-for="Alias" class="form-control" placeholder="Tên viết tắt" />
+                                    <span asp-validation-for="Alias" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Country" class="form-label required"></label>
+                                    <input asp-for="Country" class="form-control" placeholder="Nhập quốc gia" />
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="EstablishedYear" class="form-label"></label>
+                                    <input asp-for="EstablishedYear" class="form-control" type="number" min="1800" max="2030" />
+                                    <span asp-validation-for="EstablishedYear" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CEO" class="form-label"></label>
+                                    <input asp-for="CEO" class="form-control" placeholder="Nhập tên CEO" />
+                                    <span asp-validation-for="CEO" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Headquarters" class="form-label"></label>
+                                    <input asp-for="Headquarters" class="form-control" placeholder="Địa chỉ trụ sở chính" />
+                                    <span asp-validation-for="Headquarters" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Website" class="form-label"></label>
+                                    <input asp-for="Website" class="form-control" placeholder="https://example.com" />
+                                    <span asp-validation-for="Website" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="LogoUrl" class="form-label"></label>
+                                    <input asp-for="LogoUrl" class="form-control" placeholder="URL logo công ty" />
+                                    <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"
+                                      placeholder="Mô tả về công ty sản xuất..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Preview Logo -->
+                        <div class="form-group" id="logoPreview" style="display: none;">
+                            <label class="form-label">Xem trước Logo:</label>
+                            <div>
+                                <img id="logoImage" src="" alt="Logo Preview"
+                                     style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; padding: 10px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group text-right">
+                            <a asp-action="Index" class="btn btn-secondary mr-2">
+                                <i class="fas fa-arrow-left mr-1"></i>
+                                Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-1"></i>
+                                Lưu thông tin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .required::after {
+        content: " *";
+        color: red;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .card {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border: none;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+</style>
+
+<script>
+    // Preview logo khi người dùng nhập URL
+    document.getElementById('LogoUrl').addEventListener('input', function() {
+        const url = this.value;
+        const preview = document.getElementById('logoPreview');
+        const image = document.getElementById('logoImage');
+
+        if (url && isValidUrl(url)) {
+            image.src = url;
+            preview.style.display = 'block';
+
+            // Ẩn preview nếu hình ảnh không load được
+            image.onerror = function() {
+                preview.style.display = 'none';
+            };
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Kiểm tra các trường bắt buộc
+        const requiredFields = ['Name', 'Country'];
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
