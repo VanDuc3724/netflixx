@@ -20,6 +20,7 @@
     <form asp-action="Index" method="get" class="mb-4">
         <div class="input-group">
             <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Tìm kiếm công ty">
+            <input type="number" name="yearFilter" value="@ViewData["YearFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Năm">
             <button type="submit" class="btn btn-danger shadow-sm">Tìm</button>
             <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">Xóa</a>
         </div>
@@ -90,19 +91,19 @@
                 @if (Model.HasPreviousPage)
                 {
                     <li class="page-item">
-                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">Trước</a>
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Trước</a>
                     </li>
                 }
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a asp-action="Index" asp-route-pageNumber="@i" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">@i</a>
+                        <a asp-action="Index" asp-route-pageNumber="@i" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">@i</a>
                     </li>
                 }
                 @if (Model.HasNextPage)
                 {
                     <li class="page-item">
-                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">Sau</a>
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Sau</a>
                     </li>
                 }
             </ul>

@@ -17,12 +17,13 @@ namespace Netflixx.Controllers
         }
 
         // GET: ProductionManager
-        public async Task<IActionResult> Index(string searchString, string sortOrder, int? pageNumber)
+        public async Task<IActionResult> Index(string searchString, int? yearFilter, string sortOrder, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["YearFilter"] = yearFilter;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
-            ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";
+            ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";  
 
             var productionManagers = from pm in _context.ProductionManagers
                                      select pm;
@@ -33,6 +34,11 @@ namespace Netflixx.Controllers
                 productionManagers = productionManagers.Where(pm => pm.Name.Contains(searchString)
                                                        || pm.Country.Contains(searchString)
                                                        || pm.CEO.Contains(searchString));
+            }
+            if (yearFilter.HasValue)
+            {
+                productionManagers = productionManagers.Where(pm => pm.EstablishedDate.HasValue &&
+                                                                   pm.EstablishedDate.Value.Year == yearFilter.Value);
             }
 
             // Sắp xếp
