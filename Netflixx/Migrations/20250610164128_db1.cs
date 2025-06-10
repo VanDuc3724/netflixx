@@ -134,7 +134,7 @@ namespace Netflixx.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Website = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    EstablishedYear = table.Column<int>(type: "int", nullable: true),
+                    EstablishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Alias = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     CEO = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Headquarters = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),

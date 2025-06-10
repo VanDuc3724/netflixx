@@ -48,10 +48,10 @@ namespace Netflixx.Controllers
                     productionManagers = productionManagers.OrderByDescending(pm => pm.Country);
                     break;
                 case "Year":
-                    productionManagers = productionManagers.OrderBy(pm => pm.EstablishedYear);
+                    productionManagers = productionManagers.OrderBy(pm => pm.EstablishedDate);
                     break;
                 case "year_desc":
-                    productionManagers = productionManagers.OrderByDescending(pm => pm.EstablishedYear);
+                    productionManagers = productionManagers.OrderByDescending(pm => pm.EstablishedDate);
                     break;
                 default:
                     productionManagers = productionManagers.OrderBy(pm => pm.Name);
@@ -96,7 +96,7 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
+        public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
         {
             if (ModelState.IsValid)
             {
@@ -142,7 +142,7 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
         {
             if (id != productionManager.Id)
             {

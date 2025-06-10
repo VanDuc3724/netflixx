@@ -27,9 +27,9 @@ namespace ProductionManagerApp.Models
         [Display(Name = "Quốc gia")]
         public string Country { get; set; }
 
-        [Display(Name = "Năm thành lập")]
-        [Range(1800, 2030, ErrorMessage = "Năm thành lập phải từ 1800 đến 2030")]
-        public int? EstablishedYear { get; set; }
+        [Display(Name = "Ngày thành lập")]
+        [DataType(DataType.Date)]
+        public DateTime? EstablishedDate { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Tên viết tắt")]

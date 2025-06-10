@@ -46,9 +46,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="EstablishedYear" class="form-label"></label>
-                                    <input asp-for="EstablishedYear" class="form-control" type="number" min="1800" max="2030" />
-                                    <span asp-validation-for="EstablishedYear" class="text-danger"></span>
+                                    <label asp-for="EstablishedDate" class="form-label"></label>
+                                    <input asp-for="EstablishedDate" class="form-control" type="date" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="EstablishedDate" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>

@@ -845,8 +845,8 @@ namespace Netflixx.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("EstablishedYear")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EstablishedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Headquarters")
                         .HasMaxLength(200)

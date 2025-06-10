@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250610113654_db1")]
+    [Migration("20250610164128_db1")]
     partial class db1
     {
         /// <inheritdoc />
@@ -848,8 +848,8 @@ namespace Netflixx.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("EstablishedYear")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EstablishedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Headquarters")
                         .HasMaxLength(200)
