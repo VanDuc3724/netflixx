@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Film List";
+}
+
+
+
+<!-- Thêm padding để nội dung không bị navbar che -->
+<div class="container-fluid main-content" style="padding-top: 70px;">
+
+<link rel="stylesheet" href="~/css/film.css" />
+
+    <h1 class="mb-4" style="text-align: center; color: #ff4d6d;">DANH SÁCH PHIM</h1>
+
+<!-- Search and Filter Section -->
+<div class="card mb-4">
+        <div class="card-body" style="background-color: #1f1f1f">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="searchString" class="form-control"
+                           placeholder="Bạn muốn xem gì hôm nay?" value="@ViewBag.SearchString">
+            </div>
+            <div class="col-md-3">
+                <select name="genreFilter" class="form-select">
+                    <option value="">Thể loại</option>
+                    @foreach (var genre in ViewBag.Genres)
+                    {
+                        <option value="@genre" selected="@(genre == ViewBag.SelectedGenre ? "selected" : null)">@genre</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="yearFilter" class="form-select">
+                    <option value="">Các năm</option>
+                    @foreach (var year in ViewBag.Years)
+                    {
+                        <option value="@year" selected="@(year == ViewBag.SelectedYear ? "selected" : null)">@year</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+            </div>
+                <div class="col-md-1">
+                    <a class="btn btn-primary w-100" asp-controller="Film" asp-action="Index">Xóa</a>
+                </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Count -->
+    <!-- <p class="text-muted mb-3">Found @Model.Count results</p> -->
+
+<!-- Film Grid -->
+<div class="row">
+    @foreach (var film in Model)
+    {
+            <div class="col-md-3 mb-3">
+                <div class="card h-100" style="background-color: #1f1f1f">
+                <a asp-action="Detail" asp-route-id="@film.Id">
+                    <img src="@(film.FilmURL ?? "https://via.placeholder.com/300x450")"
+                         class="card-img-top"
+                         alt="@film.Title"
+                         style="height: 450px; object-fit: cover;">
+                </a>
+                    <div class="card-body">
+                    <h5 class="card-title">
+                        <a asp-action="Detail" asp-route-id="@film.Id" class="text-decoration-none">@film.Title</a>
+                    </h5>
+                    <p class="card-text">
+                        <strong>Thể loại:</strong> @film.Genre<br>
+                        <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                        <strong>Giá:</strong> @film.Price VNĐ<br>
+                        <strong>Đánh giá:</strong> @film.Rating/10
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="@film.FilmURL" class="btn btn-primary" target="_blank">Xem</a>
+                    <a asp-action="Detail" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info" style="text-align: center;"> 
+            Không tìm thấy phim nào phù hợp với tiêu chí của bạn. Vui lòng thử bộ lọc khác.
+    </div>
+}
+</div>

@@ -1,0 +1,154 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Film catalog styling */
+.film-card {
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+
+    .film-card:hover {
+        transform: scale(1.03);
+    }
+
+.film-poster {
+    height: 300px;
+    object-fit: cover;
+}
+
+.film-details {
+    padding: 15px;
+}
+
+.price-badge {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.genre-tag {
+    background-color: #e9ecef;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+
+/* Enhance film cards */
+.film-card {
+    background-color: #141414;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .film-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(229, 9, 20, 0.3);
+    }
+
+.film-poster {
+    height: 400px;
+    object-fit: cover;
+}
+
+.card-body {
+    background-color: #000;
+}
+
+.card-title {
+    color: #e50914;
+    font-weight: bold;
+}
+
+.price-badge {
+    font-weight: bold;
+}
+/* Blog Styling */
+.blog-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+    .blog-content h2,
+    .blog-content h3,
+    .blog-content h4 {
+        color: #e50914;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .blog-content p {
+        margin-bottom: 1rem;
+        color: #ddd;
+    }
+
+.card-title {
+    min-height: 3rem;
+}
+
+/* Blog Management */
+.blog-content-preview {
+    max-height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+    .blog-content-preview::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%);
+    }
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+.genre-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.film-card {
+    transition: all 0.3s ease;
+}
+
+    .film-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+    }
+
+.blog-content-preview {
+    position: relative;
+    overflow: hidden;
+}
+
+.form-select:focus,
+.btn:focus {
+    border-color: #e50914;
+    box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
+}

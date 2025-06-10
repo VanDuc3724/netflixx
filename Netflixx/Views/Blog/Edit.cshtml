@@ -1,0 +1,49 @@
+﻿@* Views/Blog/Edit.cshtml *@
+@model Netflixx.Models.BlogPost
+
+@{
+    ViewData["Title"] = "Edit Blog Post";
+}
+
+<div class="container mt-4">
+    <h1 class="text-white">@ViewData["Title"]</h1>
+
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Title" class="control-label text-white"></label>
+            <input asp-for="Title" class="form-control bg-dark text-white" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Content" class="control-label text-white"></label>
+            <textarea asp-for="Content" class="form-control bg-dark text-white" rows="10"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="control-label text-white">Related Film (Optional)</label>
+            <select asp-for="FilmId" class="form-select bg-dark text-white">
+                <option value="">-- Select a Film --</option>
+                @foreach (var film in ViewBag.Films)
+                {
+                    <option value="@film.Id">@film.Title</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save Changes" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-outline-light ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

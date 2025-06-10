@@ -1,0 +1,105 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "Thông tin người dùng";
+}
+<style>
+    body {
+        background-color: #141414;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Update" method="post" id="userForm">
+                <div class="card bg-dark text-white shadow-lg">
+                    <div class="card-header bg-danger text-white text-center" >
+                        <h3 class="mb-0">Chi tiết người dùng</h3>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="Id" />
+                        <table class="table table-borderless text-white">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%;">Họ và tên</th>
+                                    <td>
+                                        <input class="form-control bg-dark text-white border-secondary" asp-for="Name" readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>
+                                        <input class="form-control bg-dark text-white border-secondary" asp-for="Email" readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Số điện thoại</th>
+                                    <td>
+                                        <input class="form-control bg-dark text-white border-secondary" asp-for="PhoneNumber" readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Ngày sinh</th>
+                                    <td>
+                                        <input class="form-control bg-dark text-white border-secondary" asp-for="dateOfBirth" type="date" readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Vai trò</th>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownRoleButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                @Model.Role
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownRoleButton">
+                                                @foreach (var role in Model.AvailableRoles)
+                                                {
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" onclick="selectRole('@role'); return false;">
+                                                            @role
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                        <input type="hidden" name="Role" id="SelectedRole" value="@Model.Role" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái</th>
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" asp-for="IsActive" type="radio" id="activeStatus" value="true" />
+                                            <label class="form-check-label text-white" for="activeStatus">Hoạt động</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" asp-for="IsActive" type="radio" id="deactiveStatus" value="false" />
+                                            <label class="form-check-label text-white" for="deactiveStatus">Vô hiệu hóa</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center bg-dark border-top border-secondary">
+                        <a asp-action="Index" class="btn btn-outline-light me-2">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                        <button type="submit" id="saveBtn" class="btn btn-success me-2 d-none">
+                            Lưu
+                        </button>
+                        <button type="button" id="cancelBtn" class="btn btn-danger d-none">
+                            Hủy
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/User.js"></script>
+}

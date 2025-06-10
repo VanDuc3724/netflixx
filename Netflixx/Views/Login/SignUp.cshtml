@@ -1,0 +1,69 @@
+﻿@model Netflixx.Models.ViewModel.SignUpViewModel
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/signup.css" />
+
+<section class="signup-wrapper">
+    <div class="signup-container">
+        <div class="signup-form">
+            <div class="logo">
+                <img src="~/image/logo/NetflixxLogo.png" alt="Netflixx Logo" />
+            </div>
+            <h2>Đăng ký</h2>
+            <form asp-action="SignUp" method="post">
+                @Html.AntiForgeryToken()
+
+                    
+                <div class="form-group">
+                    <input asp-for="UserName" class="form-control" placeholder=" " />
+                    <label class="form-label">Username</label>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="FullName" class="form-control" placeholder=" " />
+                    <label class="form-label">Họ Tên</label>
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Email" class="form-control" id="emailInput" placeholder=" " type="email" />
+                    <label class="form-label">Email</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <button type="button" id="sendOtpBtn" class="btn-secondary mt-2">Gửi mã OTP</button>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Otp" class="form-control" placeholder=" " />
+                    <label class="form-label">Mã OTP</label>
+                    <span asp-validation-for="Otp" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Password" class="form-control" type="password" id="passwordInput" placeholder=" " />
+                    <label class="form-label">Password</label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                    <div id="passwordRequirements">
+                        <div id="lengthRequirement">Ít nhất 8 ký tự</div>
+                        <div id="uppercaseRequirement">Chứa ít nhất 1 chữ hoa</div>
+                        <div id="numberRequirement">Chứa ít nhất 1 số</div>
+                        <div id="specialRequirement">Chứa ít nhất 1 ký tự đặc biệt</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">Đăng ký</button>
+            </form>
+
+            <div class="login-link">
+                Đã có tài khoản? <a asp-action="Login" asp-controller="Login">Đăng nhập ngay.</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/signup.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

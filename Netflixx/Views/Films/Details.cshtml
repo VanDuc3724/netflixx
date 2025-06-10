@@ -1,0 +1,43 @@
+﻿@* Views/Films/Details.cshtml *@
+@model Netflixx.Models.FilmsModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.FilmURL))
+            {
+                <img src="@Model.FilmURL" class="img-fluid rounded mb-4" alt="@Model.Title poster">
+            }
+        </div>
+        <div class="col-md-8">
+            <h1 class="text-white">@Model.Title</h1>
+
+            <div class="mb-3">
+                <span class="badge bg-primary me-2">@Model.Genre</span>
+                @if (Model.ReleaseDate.HasValue)
+                {
+                    <span class="text-white">Released: @Model.ReleaseDate.Value.ToString("MMMM dd, yyyy")</span>
+                }
+                @if (Model.Price.HasValue)
+                {
+                    <span class="price-badge fs-5 text-danger ms-2">@Model.Price.Value.ToString("C")</span>
+                }
+            </div>
+
+            <div class="mb-4">
+                <h4 class="text-white">Description</h4>
+                <p class="text-white-50">@Model.Description</p>
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left"></i> Back to Catalog
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

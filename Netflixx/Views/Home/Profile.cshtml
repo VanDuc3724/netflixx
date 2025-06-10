@@ -1,0 +1,271 @@
+﻿@model Netflixx.Models.ViewModel.ProfileInputModel
+@{
+    Layout = "_Layout";
+    bool edit = (ViewData["EditMode"] as bool?) == true;
+}
+
+<link rel="stylesheet" href="~/css/profile.css" />
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="/image/logo/NetflixxLogo.png"
+                 alt="Netflixx Logo"
+                 style="height:40px;" />
+        </a>
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+
+
+            <li class="nav-item"><a class="nav-link" href="#">Films</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Series</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+        </ul>
+        <span class="navbar-text me-3">Noti</span>
+        <div class="dropdown">
+            <a class="nav-link dropdown-toggle p-0" href="#" role="button"
+               id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="@ViewBag.AvatarUrl"
+                     class="avatar-trigger"
+                     alt="User avatar" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="avatarDropdown">
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Profile</a></li>
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="History">History</a></li>
+                <li><button class="dropdown-item" type="button">Settings</button></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                        <button type="submit" class="dropdown-item">Sign out</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid maincontent mt-5 pt-5">
+    @if (edit && !ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alertmessage">
+            <ul class="mb-0">
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@err.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+   <form class="profile-form" asp-action="EditProfile" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Email" value="@Model.Email" />
+    <div class="row">
+
+      <!-- LEFT column -->
+      <div class="col-md-4">
+       
+
+                <div class="mb-3">
+                    @* only show picker & preview in edit mode *@
+                    @if (edit)
+                    {
+                        <input type="file" name="AvatarFile" id="avatarFileInput"
+                               accept="image/*" class="visually-hidden"
+                               onchange="previewAvatar(this)" />
+                        <label for="avatarFileInput" class="d-block" style="cursor:pointer">
+                            <img id="avatarPreview"
+                                 src="@(Model.AvatarUrl ?? "/image/logo/avatar_default.jpg")"
+                                 class="rounded-circle avatar-img mb-2 avatarPreview"
+                                 alt="Avatar" />
+                        </label>
+                    }
+                    else
+                    {
+                        <img src="@(Model.AvatarUrl ?? "/image/logo/avatar_default.jpg")"
+                             class="rounded-circle avatar-img mb-2"
+                             alt="Avatar" />
+                    }
+                </div>
+
+                @* Email *@
+                <div class="mb-2">
+
+                    <p class="text-muted">@Model.Email</p>
+
+                </div>
+
+        @* Full Name *@
+        <div class="mb-2">
+          @if (edit)
+          {
+            <input name="FullName" class="form-control" value="@Model.FullName" />
+          }
+          else
+          {
+            <h3 class="fw-bold">@Model.FullName</h3>
+          }
+        </div>
+
+        
+
+        @* Phone *@
+        <div class="mb-2">
+          @if (edit){
+            <input name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" />}
+          else 
+                    {
+                        <p><i class="bi bi-phone me-1 text-muted"></i>@(Model.PhoneNumber ?? "Not set")</p>
+                    }
+        </div>
+
+        @* DOB *@
+        <div class="mb-2">
+                    @if (edit)
+                    {
+                        <input name="DateOfBirth" type="date" class="form-control"
+                        value="@(Model.DateOfBirth?.ToString("dd/MM/yyyy"))" />
+                    }
+                    else
+                    {
+                        <p>
+                            <i class="bi bi-gift me-1 text-muted"></i>@(Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Not set")
+                        </p> }
+        </div>
+
+        @* Address *@
+        <div class="mb-2"> 
+                    @if (edit)
+                    {
+                        <input name="Address" class="form-control" value="@Model.Address
+                        " />
+                    }
+                    else
+                    {
+                        <p><i class="bi bi-house-door me-1 text-muted"></i>@(Model.Address ?? "Not set"
+                        )</p>
+                    }
+                </div>
+
+        
+
+        @* Edit vs Save/Discard *@
+        @if (edit)
+        {
+                    <div class="d-flex gap-2 ">
+            <button type="submit" class="btn btn-success">Save</button>
+            <a asp-action="Profile" class="btn btn-secondary">Discard</a>
+          </div>
+        }
+        else
+        {
+          <a asp-action="Profile" asp-route-edit="true"
+                       class="btn btn-outline-light editbutton">Edit Profile</a>
+        }
+      </div>
+            <div class="col-md-2"></div>
+            <!-- RIGHT column: about, package, activity -->
+            <div class="col-md-6">
+                @* ABOUT *@
+                <div class="mb-3">
+                    <h5 >About</h5>
+                    @if (edit)
+                    {
+                        <textarea name="About"
+                              class="form-control about-textarea"
+                              rows="5">@Model.About</textarea>
+                    }
+                    else
+                    {
+                        <p>
+                            @(String.IsNullOrWhiteSpace(Model.About)
+                                                    ? "Tell us a bit about yourself…"
+                                                    : Model.About)
+                    </p>
+                                        }
+                </div>
+
+
+                <div>
+                    @* Genres *@
+                    <div class="mb-3">
+                        <h5>Genres I Love</h5>
+                        <div id="genreList">
+                            @for (int i = 0; i < Model.Genres.Count; i++)
+                            {
+                                if (edit)
+                                {
+                                    <input name="Genres[@i]" class="form-control mb-1" value="@Model.Genres[i]" />
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary me-1">@Model.Genres[i]</span>
+                                }
+                            }
+                        </div>
+                        @if (edit)
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-light mt-1"
+                                    onclick="addGenre()">
+                                + Add genre
+                            </button>
+                        }
+                    </div>
+                </div>
+                
+
+                <h5 class="mt-4">Current Package</h5>
+                @if (Model.PackageSubscriptions != null && Model.PackageSubscriptions.Any())
+                {
+                    @* var latestPackage = Model.PackageSubscriptions.OrderByDescending(p => p.StartDate).FirstOrDefault(); *@
+                    <p><span class="badge bg-primary">latest-package</span></p>
+                    <small class="text-muted">Started: latestpackage-startdate</small>
+                    @* <p><span class="badge bg-primary">@latestPackage.PackageName</span></p>
+        <small class="text-muted">Started: @latestPackage.StartDate.ToShortDateString()</small> *@
+                }
+                else
+                {
+                    <p><em>No active packages</em></p>
+                }
+
+                <h5 class="mt-4">Recently Watched</h5>
+                @if (Model.FilmPurchases != null && Model.FilmPurchases.Any())
+                {
+                    @* <ul>
+                        @foreach (var purchase in Model.FilmPurchases.OrderByDescending(f => f.PurchaseDate).Take(5))
+                        {
+                            <li>@purchase.Film?.Title ?? "Unknown title" (@purchase.PurchaseDate.ToShortDateString())</li>
+                        }
+                    </ul> *@
+                }
+                else
+                {
+                    <p><em>No recent film activity</em></p>
+                }
+
+                
+            </div>
+    </div>
+  </form>
+</div>
+
+@section Scripts {
+    <script>
+        function previewAvatar(input) {
+          if (input.files && input.files[0]) {
+            const url = URL.createObjectURL(input.files[0]);
+            document.getElementById('avatarPreview').src = url;
+          }
+        }
+
+        function addGenre() {
+          const list = document.getElementById('genreList');
+          const idx  = list.querySelectorAll('input').length;
+          const inp  = document.createElement('input');
+          inp.name   = `Genres[${idx}]`;
+          inp.className = 'form-control mb-1';
+          list.appendChild(inp);
+        }
+    </script>
+}

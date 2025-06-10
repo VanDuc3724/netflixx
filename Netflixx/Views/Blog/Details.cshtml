@@ -1,0 +1,43 @@
+﻿@model Netflixx.Models.BlogPost
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h1 class="text-danger">@Model.Title</h1>
+            <div class="mb-4">
+                <small class="text-muted">
+                    Posted on @Model.CreatedDate.ToString("MMMM dd, yyyy")
+                </small>
+            </div>
+
+            @if (Model.Film != null)
+            {
+                <div class="mb-4">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-2">Related Film</span>
+                        <h5 class="mb-0">@Model.Film.Title</h5>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Film.FilmURL))
+                    {
+                        <img src="@Model.Film.FilmURL" class="img-fluid rounded mt-2"
+                             alt="@Model.Film.Title poster" style="max-height: 300px;">
+                    }
+                </div>
+            }
+
+            <div class="blog-content">
+                @Html.Raw(Model.Content)
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left"></i> Back to Blog
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

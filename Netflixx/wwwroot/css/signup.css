@@ -1,0 +1,224 @@
+﻿/* Các phần giữ nguyên từ trước */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('../image/logo/background1.png') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+}
+
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.65);
+        z-index: -1;
+    }
+
+.signup-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.signup-container {
+    background-color: transparent;
+    padding: 40px;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    color: white;
+}
+
+    .signup-container::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+
+/* Điều chỉnh logo to hơn */
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .logo img {
+        max-width: 500px; /* Tăng kích thước logo */
+        max-height: 200px;
+        object-fit: contain;
+    }
+
+.signup-form h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Floating Label Effect */
+.form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-control {
+    width: 100%;
+    height: 50px; /* cố định chiều cao */
+    font-size: 16px;
+    padding: 0 16px;
+    padding-top: 20px; /* để chừa chỗ cho label nổi lên */
+    padding-bottom: 6px;
+    color: #ffffff !important;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Đặc biệt cho email, nếu cần */
+input[type="email"].form-control {
+    padding: 16px; /* Đồng nhất với .form-control */
+    font-family: 'Segoe UI', sans-serif;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0.3) inset !important;
+}
+
+
+.form-label {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Khi input có focus hoặc có nội dung thì đẩy label lên */
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label {
+    top: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+    background-color: rgba(51, 51, 51, 0.5);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+}
+
+.form-control::placeholder {
+    color: transparent;
+}
+
+/* Các phần còn lại giữ nguyên */
+.btn-primary {
+    background-color: #f34261;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-secondary {
+    background-color: rgba(51, 51, 51, 0.5);
+    border: none;
+    padding: 12px;
+    font-size: 14px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 5px;
+    backdrop-filter: blur(8px);
+}
+
+.btn-primary:hover {
+    background-color: #d72d4a; /* đỏ hồng đậm hơn khi hover */
+}
+
+.login-form a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+    .login-form a:hover {
+        color: #ff4c4c; /* Màu đỏ hồng khi hover */
+    }
+
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #b3b3b3;
+}
+
+    .login-link a {
+        color: white;
+        text-decoration: none;
+    }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+#passwordRequirements {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #b3b3b3;
+    padding-left: 5px;
+}
+
+    #passwordRequirements div {
+        transition: color 0.3s ease;
+        margin: 2px 0;
+    }
+
+        #passwordRequirements div:before {
+            content: "• ";
+        }
+
+.requirement-valid {
+    color: #28a745;
+}
+
+.requirement-invalid {
+    color: #dc3545;
+}
+
+@media (max-width: 576px) {
+    .signup-container {
+        padding: 30px 20px;
+        max-width: 95%;
+    }
+
+    .logo img {
+        max-width: 200px;
+    }
+
+    .signup-form h2 {
+        font-size: 24px;
+    }
+}

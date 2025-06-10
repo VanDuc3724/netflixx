@@ -1,0 +1,116 @@
+@model Netflixx.Models.ViewModel.HomeViewModel
+<link rel="stylesheet" href="~/css/homepage.css" />
+
+
+
+<div class="container-fluid main-content">
+	<div class="banner">
+		<span class="banner-text">
+			@(Model.CheapestFilm != null ?
+						$"Cheapest film: {Model.CheapestFilm.Title} - ${Model.CheapestFilm.Price:F2}" :
+						"No films available")
+
+		</span>
+
+	</div>
+
+	@* <div id="randomCarousel" class="carousel slide carousel-fullwidth" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.CarouselFilms.Count; i++)
+            {
+                var f = Model.CarouselFilms[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@(f.FilmURL ?? "/images/placeholder.png")"
+                         class="d-block carousel-image" />
+
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>@f.Title</h5>
+                        <p>@f.Genre</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button"
+                data-bs-target="#randomCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button"
+                data-bs-target="#randomCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div> *@
+
+	<div id="infoCarousel" class="carousel slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+
+			@for (int i = 0; i < Model.CarouselFilms.Count; i++)
+			{
+				var f = Model.CarouselFilms[i];
+				<div class="carousel-item @(i == 0 ? "active" : "")">
+					<div class="row g-0 vh-75 align-items-center">
+						<!-- vh-75 makes it 75% of viewport height -->
+						<!-- LEFT: Info panel -->
+						<div class="col-md-2"></div>
+						<div class="col-md-3 text-white p-4" style="background:rgba(0,0,0,0.6);">
+							<h2>@f.Title</h2>
+							<p class="mb-1"><strong>Genre:</strong> @f.Genre</p>
+							<p class="mb-1"><strong>Released:</strong> @(f.ReleaseDate?.ToString("yyyy") ?? "—")</p>
+							<p class="mb-3">@f.Description?.Substring(0, Math.Min(200, (f.Description ?? "").Length))…</p>
+							<button class="btn btn-danger btn-lg">▶ Play</button>
+							<button class="btn btn-outline-light btn-lg ms-2">+ My List</button>
+						</div>
+						<div class="col-md-1"></div>
+						<!-- RIGHT: Poster/image -->
+						<div class="col-md-4 p-0 overflow-hidden">
+							<img src="@(f.FilmURL ?? "/images/placeholder.png")"
+								 class="object-fit-cover" alt="@f.Title" />
+
+						</div>
+						<div class="col-md-2"></div>
+
+					</div>
+				</div>
+			}
+
+		</div>
+
+		<button class="carousel-control-prev" type="button" data-bs-target="#infoCarousel" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon"></span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#infoCarousel" data-bs-slide="next">
+			<span class="carousel-control-next-icon"></span>
+		</button>
+	</div>
+
+	<section class="film-section">
+		<div class="d-flex justify-content-between align-items-center mb-2">
+			<h5 class="mb-0">Based on watched</h5>
+			<button class="btn btn-sm btn-outline-light" style="margin-right: 36px">Watch more</button>
+		</div>
+		<div class="film-row">
+			@foreach (var f in Model.RecommendedFilms)
+			{
+				<div class="film-cell">
+					<img src="@(f.FilmURL ?? "/images/placeholder.png")" class="film-thumb" />
+				</div>
+			}
+		</div>
+	</section>
+
+	<section class="film-section">
+		<div class="d-flex justify-content-between align-items-center mb-2">
+			<h5 class="mb-0">Top rated</h5>
+			<button class="btn btn-sm btn-outline-light" style="margin-right: 36px">Watch more</button>
+		</div>
+		<div class="film-row">
+			@foreach (var f in Model.TopRatedFilms)
+			{
+				<div class="film-cell">
+					<img src="@(f.FilmURL ?? "/images/placeholder.png")" class="film-thumb" />
+				</div>
+			}
+		</div>
+	</section>
+</div>
+
+@await Html.PartialAsync("_ProfileModal", Model.CurrentUser)

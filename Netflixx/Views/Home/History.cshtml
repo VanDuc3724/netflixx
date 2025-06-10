@@ -1,0 +1,147 @@
+﻿@model Netflixx.Models.ViewModel.HistoryViewModel
+@{
+    ViewData["Title"] = "Your Watch History";
+}
+<link rel="stylesheet" href="~/css/homepage.css" />
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="/image/logo/NetflixxLogo.png"
+                 alt="Netflixx Logo"
+                 style="height:40px;" />
+        </a>
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="#">Films</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Series</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+        </ul>
+        <span class="navbar-text me-3">Noti</span>
+        <div class="dropdown">
+            <a class="nav-link dropdown-toggle p-0" href="#" role="button"
+               id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="@ViewBag.AvatarUrl"
+                     class="avatar-trigger"
+                     alt="User avatar" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="avatarDropdown">
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Profile</a></li>
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="History">History</a></li>
+                <li><button class="dropdown-item" type="button">Settings</button></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                        <button type="submit" class="dropdown-item">Sign out</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid main-content d-flex flex-column pt-5" style="min-height:100vh; margin">
+    <!-- Live “Member for…” counter -->
+        <h4 style="margin-top: 20px">You have been with us for:</h4>
+    <div class="d-flex justify-content-center align-items-center bg-dark text-white rounded mb-4 py-3">
+        
+        <div class="d-flex align-items-center">
+            <div class="text-center px-3">
+                <div id="up-days" class="fs-2 fw-bold">0</div>
+                <small>days</small>
+            </div>
+            <div class="fs-2 mx-2">:</div>
+            <div class="text-center px-3">
+                <div id="up-hours" class="fs-2 fw-bold">0</div>
+                <small>hrs</small>
+            </div>
+            <div class="fs-2 mx-2">:</div>
+            <div class="text-center px-3">
+                <div id="up-minutes" class="fs-2 fw-bold">0</div>
+                <small>mins</small>
+            </div>
+            <div class="fs-2 mx-2">:</div>
+            <div class="text-center px-3">
+                <div id="up-seconds" class="fs-2 fw-bold">0</div>
+                <small>secs</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row flex-grow-1">
+        <!-- Left: films watched this period -->
+        <div class="col-md-8 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>History</h4>
+                <form class="d-flex" method="get" asp-action="History">
+                    <select name="period" class="form-select me-2" onchange="this.form.submit()">
+                        @foreach (var p in Model.AvailablePeriods)
+                        {
+                            var month = p.Substring(5, 2);
+                            var year = p.Substring(0, 4);
+                            <option value="@p" selected="@(p == Model.SelectedPeriod)">
+                                @($"{month}/{year}")
+                            </option>
+                        }
+                    </select>
+                </form>
+            </div>
+            <div class="flex-grow-1 p-3 bg-dark text-white rounded overflow-auto">
+                @if (!Model.FilmsThisPeriod.Any())
+                {
+                    <em>No films watched in this period.</em>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var film in Model.FilmsThisPeriod)
+                        {
+                            <div style="width:150px;">
+                                <img src="@(film.FilmURL ?? "/images/placeholder.png")"
+                                     class="img-fluid rounded mb-1" />
+                                <div>@film.Title</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right: recommended films -->
+        <div class="col-md-4">
+            <h4  style="margin-bottom: 1.5rem">Based on watched</h4>
+            <div class="p-3 bg-dark text-white rounded">
+                <h6>You Might Like</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var film in Model.RecommendedFilms)
+                    {
+                        <div style="width:100px;">
+                            <img src="@(film.FilmURL ?? "/images/placeholder.png")"
+                                 class="img-fluid rounded mb-1" />
+                            <div style="font-size:.9rem;">@film.Title</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const registeredAt = new Date("@Model.RegisteredAt.ToString("o")");
+        function updateUptime() {
+          const diff = Date.now() - registeredAt.getTime();
+          const days    = Math.floor(diff / 86400000);
+          const hours   = Math.floor((diff % 86400000) / 3600000);
+          const minutes = Math.floor((diff % 3600000) / 60000);
+          const seconds = Math.floor((diff % 60000) / 1000);
+
+          document.getElementById("up-days").textContent    = days;
+          document.getElementById("up-hours").textContent   = hours;
+          document.getElementById("up-minutes").textContent = minutes;
+          document.getElementById("up-seconds").textContent = seconds;
+        }
+        setInterval(updateUptime, 1000);
+        updateUptime();
+    </script>
+}
