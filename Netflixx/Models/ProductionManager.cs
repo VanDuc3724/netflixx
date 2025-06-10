@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Netflixx.Models;
+using Microsoft.AspNetCore.Http;
+
 
 namespace ProductionManagerApp.Models
 {
@@ -46,9 +48,11 @@ namespace ProductionManagerApp.Models
         public string Description { get; set; }
 
         [StringLength(300)]
-        [Display(Name = "Logo URL")]
-        [Url(ErrorMessage = "Vui lòng nhập URL hợp lệ")]
+        [Display(Name = "Logo")]
         public string LogoUrl { get; set; }
+        [NotMapped]
+        [Display(Name = "Logo")]
+        public IFormFile? LogoFile { get; set; }
 
         [Display(Name = "Ngày tạo")]
         public DateTime CreatedAt { get; set; }

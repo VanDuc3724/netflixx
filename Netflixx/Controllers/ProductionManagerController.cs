@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Repositories;
 using ProductionManagerApp.Models;
+using System;
+using System.IO;
 
 namespace Netflixx.Controllers
 {
@@ -94,12 +96,23 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoUrl")] ProductionManager productionManager)
+        public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
         {
             if (ModelState.IsValid)
             {
                 productionManager.CreatedAt = DateTime.Now;
                 productionManager.UpdatedAt = DateTime.Now;
+                if (productionManager.LogoFile != null)
+                {
+                    var ext = Path.GetExtension(productionManager.LogoFile.FileName);
+                    var fn = $"{Guid.NewGuid()}{ext}";
+                    var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fn);
+                    Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+                    using var fs = new FileStream(savePath, FileMode.Create);
+                    await productionManager.LogoFile.CopyToAsync(fs);
+                    productionManager.LogoUrl = $"/image/productionlogos/{fn}";
+                }
+
 
                 _context.Add(productionManager);
                 await _context.SaveChangesAsync();
@@ -129,7 +142,7 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoUrl,CreatedAt")] ProductionManager productionManager)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedYear,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
         {
             if (id != productionManager.Id)
             {
@@ -140,6 +153,18 @@ namespace Netflixx.Controllers
             {
                 try
                 {
+
+                    if (productionManager.LogoFile != null)
+                    {
+                        var ext = Path.GetExtension(productionManager.LogoFile.FileName);
+                        var fn = $"{Guid.NewGuid()}{ext}";
+                        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fn);
+                        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+                        using var fs = new FileStream(savePath, FileMode.Create);
+                        await productionManager.LogoFile.CopyToAsync(fs);
+                        productionManager.LogoUrl = $"/image/productionlogos/{fn}";
+                    }
+
                     productionManager.UpdatedAt = DateTime.Now;
                     _context.Update(productionManager);
                     await _context.SaveChangesAsync();

@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form asp-action="Create" method="post" novalidate>
+                    <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                         <div class="row">
@@ -80,9 +80,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="LogoUrl" class="form-label"></label>
-                                    <input asp-for="LogoUrl" class="form-control" placeholder="URL logo công ty" />
-                                    <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                                    <label asp-for="LogoFile" class="form-label"></label>
+                                    <input asp-for="LogoFile" type="file" class="form-control" accept="image/*" />
+                                    <span asp-validation-for="LogoFile" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -148,33 +148,20 @@
 </style>
 
 <script>
-    // Preview logo khi người dùng nhập URL
-    document.getElementById('LogoUrl').addEventListener('input', function() {
-        const url = this.value;
+     // Preview logo when a file is selected
+    document.getElementById('LogoFile').addEventListener('change', function () {
+        const file = this.files[0];
         const preview = document.getElementById('logoPreview');
         const image = document.getElementById('logoImage');
 
-        if (url && isValidUrl(url)) {
-            image.src = url;
+        if (file) {
+            const url = URL.createObjectURL(file);
             preview.style.display = 'block';
-
-            // Ẩn preview nếu hình ảnh không load được
-            image.onerror = function() {
-                preview.style.display = 'none';
-            };
         } else {
             preview.style.display = 'none';
         }
     });
 
-    function isValidUrl(string) {
-        try {
-            new URL(string);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    }
 
     // Client-side validation
     document.querySelector('form').addEventListener('submit', function(e) {
