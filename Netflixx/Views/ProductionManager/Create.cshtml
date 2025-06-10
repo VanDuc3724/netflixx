@@ -156,9 +156,12 @@
 
         if (file) {
             const url = URL.createObjectURL(file);
+            image.src = url;
+            image.onload = () => URL.revokeObjectURL(url);
             preview.style.display = 'block';
         } else {
             preview.style.display = 'none';
+            image.src = '';
         }
     });
 
