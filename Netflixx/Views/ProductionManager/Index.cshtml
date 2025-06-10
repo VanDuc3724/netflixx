@@ -3,383 +3,110 @@
 @{
     ViewData["Title"] = "Danh sách công ty sản xuất";
 }
+<h2 class="mb-3">@ViewData["Title"]</h2>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-primary">
-                    <i class="fas fa-building me-2"></i>@ViewData["Title"]
-                </h2>
-                <a class="btn btn-primary" asp-action="Create">
-                    <i class="fas fa-plus me-2"></i>Thêm công ty mới
-                </a>
-            </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
 
-            @* Hiển thị thông báo thành công/lỗi *@
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            }
+<p>
+    <a asp-action="Create" class="btn btn-primary">Thêm công ty mới</a>
+</p>
 
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            }
-
-            @* Form tìm kiếm *@
-            <div class="card mb-3">
-                <div class="card-body bg-light">
-                    <form asp-action="Index" method="get">
-                        <div class="row align-items-end">
-                            <div class="col-md-8">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-search me-1"></i>Tìm kiếm công ty
-                                </label>
-                                <input type="text" class="form-control" name="SearchString"
-                                       value="@ViewData["CurrentFilter"]"
-                                       placeholder="Nhập tên công ty, quốc gia hoặc CEO để tìm kiếm..." />
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-grid gap-2 d-md-flex">
-                                    <button class="btn btn-primary flex-fill" type="submit">
-                                        <i class="fas fa-search me-2"></i>Tìm kiếm
-                                    </button>
-                                    <a class="btn btn-outline-secondary" asp-action="Index">
-                                        <i class="fas fa-times me-2"></i>Xóa bộ lọc
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            @* Bảng danh sách *@
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover mb-0">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th width="80">Logo</th>
-                                    <th>
-                                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]"
-                                           asp-route-searchString="@ViewData["CurrentFilter"]"
-                                           class="text-white text-decoration-none">
-                                            Tên công ty
-                                            @if (ViewData["NameSortParm"] == "name_desc")
-                                            {
-                                                <i class="fas fa-sort-up ms-1"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-sort-down ms-1"></i>
-                                            }
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a asp-action="Index" asp-route-sortOrder="@ViewData["CountrySortParm"]"
-                                           asp-route-searchString="@ViewData["CurrentFilter"]"
-                                           class="text-white text-decoration-none">
-                                            Quốc gia
-                                            @if (ViewData["CountrySortParm"] == "country_desc")
-                                            {
-                                                <i class="fas fa-sort-up ms-1"></i>
-                                            }
-                                            else if (ViewData["CountrySortParm"] == "Country")
-                                            {
-                                                <i class="fas fa-sort-down ms-1"></i>
-                                            }
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a asp-action="Index" asp-route-sortOrder="@ViewData["YearSortParm"]"
-                                           asp-route-searchString="@ViewData["CurrentFilter"]"
-                                           class="text-white text-decoration-none">
-                                            Năm thành lập
-                                            @if (ViewData["YearSortParm"] == "year_desc")
-                                            {
-                                                <i class="fas fa-sort-up ms-1"></i>
-                                            }
-                                            else if (ViewData["YearSortParm"] == "Year")
-                                            {
-                                                <i class="fas fa-sort-down ms-1"></i>
-                                            }
-                                        </a>
-                                    </th>
-                                    <th>CEO</th>
-                                    <th width="100">Số phim</th>
-                                    <th width="150">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Any())
-                                {
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>
-                                                @if (!string.IsNullOrEmpty(item.LogoUrl))
-                                                {
-                                                    <img src="@item.LogoUrl" alt="Logo @item.Name"
-                                                         class="img-thumbnail"
-                                                         style="width: 50px; height: 50px; object-fit: cover;" />
-                                                }
-                                                else
-                                                {
-                                                    <div class="bg-light d-flex align-items-center justify-content-center border rounded"
-                                                         style="width: 50px; height: 50px;">
-                                                        <i class="fas fa-building text-muted"></i>
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold text-primary">@Html.DisplayFor(modelItem => item.Name)</div>
-                                                @if (!string.IsNullOrEmpty(item.Alias))
-                                                {
-                                                    <small class="text-muted">(@item.Alias)</small>
-                                                }
-                                                @if (!string.IsNullOrEmpty(item.Website))
-                                                {
-                                                    <div class="mt-1">
-                                                        <a href="@item.Website" target="_blank" class="text-decoration-none small">
-                                                            <i class="fas fa-external-link-alt me-1"></i>Website
-                                                        </a>
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td>
-                                                <i class="fas fa-flag me-2 text-muted"></i>
-                                                @Html.DisplayFor(modelItem => item.Country)
-                                            </td>
-                                            <td>
-                                                @if (item.EstablishedYear.HasValue)
-                                                {
-                                                    <i class="fas fa-calendar me-2 text-muted"></i>
-                                                    @item.EstablishedYear
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted">Chưa cập nhật</span>
-                                                }
-                                            </td>
-                                            <td>
-                                                @if (!string.IsNullOrEmpty(item.CEO))
-                                                {
-                                                    <i class="fas fa-user-tie me-2 text-muted"></i>
-                                                    @Html.DisplayFor(modelItem => item.CEO)
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted">Chưa cập nhật</span>
-                                                }
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-info rounded-pill">
-                                                    @item.Films.Count phim
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="d-grid gap-1">
-                                                    <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id"
-                                                       title="Xem chi tiết công ty @item.Name">
-                                                        <i class="fas fa-eye me-1"></i>Xem chi tiết
-                                                    </a>
-                                                    <a class="btn btn-outline-success btn-sm" asp-action="Edit" asp-route-id="@item.Id"
-                                                       title="Chỉnh sửa thông tin @item.Name">
-                                                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
-                                                    </a>
-                                                    <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id"
-                                                       title="Xóa công ty @item.Name"
-                                                       onclick="return confirm('Bạn có chắc chắn muốn xóa công ty @item.Name?\n\nHành động này không thể hoàn tác!')">
-                                                        <i class="fas fa-trash me-1"></i>Xóa
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5">
-                                            <div class="text-muted">
-                                                <i class="fas fa-folder-open fa-3x mb-3 d-block"></i>
-                                                <h5>Chưa có công ty nào</h5>
-                                                <p class="mb-4">Hiện tại chưa có công ty sản xuất nào trong hệ thống.</p>
-                                                <a class="btn btn-primary" asp-action="Create">
-                                                    <i class="fas fa-plus me-2"></i>Thêm công ty đầu tiên
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            @* Pagination *@
-            @if (Model.TotalPages > 1)
-            {
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <div class="text-muted">
-                        Hiển thị <strong>@((Model.PageIndex - 1) * 10 + 1)</strong> -
-                        <strong>@(Math.Min(Model.PageIndex * 10, Model.TotalCount))</strong>
-                        trong tổng số <strong>@Model.TotalCount</strong> bản ghi
-                    </div>
-
-                    <nav aria-label="Pagination">
-                        <ul class="pagination mb-0">
-                            @if (Model.HasPreviousPage)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-pageNumber="@(Model.PageIndex - 1)"
-                                       asp-route-searchString="@ViewData["CurrentFilter"]">
-                                        <i class="fas fa-chevron-left me-1"></i>Trước
-                                    </a>
-                                </li>
-                            }
-
-                            @{
-                                int startPage = Math.Max(1, Model.PageIndex - 2);
-                                int endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
-                            }
-
-                            @if (startPage > 1)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-pageNumber="1"
-                                       asp-route-searchString="@ViewData["CurrentFilter"]">1</a>
-                                </li>
-                                @if (startPage > 2)
-                                {
-                                    <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                }
-                            }
-
-                            @for (int i = startPage; i <= endPage; i++)
-                            {
-                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-pageNumber="@i"
-                                       asp-route-searchString="@ViewData["CurrentFilter"]">@i</a>
-                                </li>
-                            }
-
-                            @if (endPage < Model.TotalPages)
-                            {
-                                @if (endPage < Model.TotalPages - 1)
-                                {
-                                    <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                }
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-pageNumber="@Model.TotalPages"
-                                       asp-route-searchString="@ViewData["CurrentFilter"]">@Model.TotalPages</a>
-                                </li>
-                            }
-
-                            @if (Model.HasNextPage)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-pageNumber="@(Model.PageIndex + 1)"
-                                       asp-route-searchString="@ViewData["CurrentFilter"]">
-                                        Sau<i class="fas fa-chevron-right ms-1"></i>
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
-                </div>
-            }
-        </div>
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Tìm kiếm công ty">
+        <button type="submit" class="btn btn-primary">Tìm</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Xóa</a>
     </div>
-</div>
+</form>
 
-<style>
-    /* Custom styles for better appearance */
-    .table th {
-        font-weight: 600;
-        border-bottom: 2px solid #dee2e6;
-    }
-
-    .table {
-        background-color: #ffffff; /* Màu nền trắng cho toàn bộ bảng */
-        color: #343a40; /* Màu chữ tối */
-    }
-
-
-    .btn-outline-info:hover {
-        background-color: #17a2b8;
-        border-color: #17a2b8;
-    }
-
-    .btn-outline-success:hover {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .d-grid .btn {
-        transition: all 0.2s ease;
-    }
-
-        .d-grid .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Tên công ty</th>
+            <th>Quốc gia</th>
+            <th>Năm thành lập</th>
+            <th>Trụ sở chính</th>
+            <th>Website</th>
+            <th>CEO</th>
+            <th>Số phim</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.LogoUrl))
+                        {
+                            <img src="@item.LogoUrl" alt="@item.Name Logo" style="height:40px;" onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                        }
+                        else
+                        {
+                            <img src="/image/logo/NetflixxLogo.png" alt="Default Logo" style="height:40px;" />
+                        }
+                    </td>
+                    <td>@item.Name</td>
+                    <td>@item.Country</td>
+                    <td>@item.EstablishedYear</td>
+                    <td>@item.Headquarters</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Website))
+                        {
+                            <a href="@item.Website" target="_blank">@item.Website</a>
+                        }
+                    </td>
+                    <td>@item.CEO</td>
+                    <td>@item.Films.Count</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Chi tiết</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                    </td>
+                </tr>
+            }
         }
-
-    .page-link {
-        color: #495057;
-        border-color: #dee2e6;
-    }
-
-        .page-link:hover {
-            color: #007bff;
-            background-color: #e9ecef;
-            border-color: #dee2e6;
+        else
+        {
+            <tr>
+                <td colspan="9" class="text-center">Chưa có công ty nào.</td>
+            </tr>
         }
+    </tbody>
+</table>
 
-    .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
-
-    .alert {
-        border-radius: 8px;
-        border: none;
-    }
-
-    .badge {
-        font-size: 0.75em;
-    }
-
-    
-</style>
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">Trước</a>
+                </li>
+            }
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a asp-action="Index" asp-route-pageNumber="@i" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">@i</a>
+                </li>
+            }
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="page-link">Sau</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
