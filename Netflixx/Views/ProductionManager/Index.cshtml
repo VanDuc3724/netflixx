@@ -47,7 +47,28 @@
                             <div class="btn-group btn-group-sm w-100">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Chi tiết</a>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success">Sửa</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">Xóa</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@item.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title" id="deleteModalLabel-@item.Id">Xóa công ty sản xuất</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Bạn có chắc muốn xóa <strong>@item.Name</strong>?
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xóa</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
