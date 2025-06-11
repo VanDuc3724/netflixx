@@ -37,6 +37,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\image\logo\" />
     <Folder Include="wwwroot\image\avatars\" />
+    <Folder Include="wwwroot\image\productionlogos\" />
   </ItemGroup>
 
 

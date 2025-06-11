@@ -230,6 +230,17 @@ namespace Netflixx.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+                if (!string.IsNullOrEmpty(productionManager.LogoUrl))
+                {
+                    var fileName = Path.GetFileName(productionManager.LogoUrl);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot", "image", "productionlogos", fileName);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _context.ProductionManagers.Remove(productionManager);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Xóa công ty sản xuất thành công!";
