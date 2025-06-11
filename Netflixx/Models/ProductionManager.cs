@@ -23,9 +23,10 @@ namespace ProductionManagerApp.Models
         public string? Website { get; set; }
 
         [Required(ErrorMessage = "Quốc gia là bắt buộc")]
-        [StringLength(50)]
         [Display(Name = "Quốc gia")]
-        public string Country { get; set; }
+        public int CountryId { get; set; }
+        [ForeignKey("CountryId")]
+        public Country Country { get; set; }
 
         [Display(Name = "Ngày thành lập")]
         [DataType(DataType.Date)]

@@ -73,6 +73,19 @@ namespace Netflixx.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DailyRevenue",
                 columns: table => new
                 {
@@ -123,29 +136,6 @@ namespace Netflixx.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PaymentProviders", x => x.ProviderID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductionManagers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Website = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    EstablishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Alias = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CEO = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Headquarters = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    LogoUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductionManagers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -324,6 +314,35 @@ namespace Netflixx.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductionManagers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Website = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    EstablishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Alias = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CEO = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Headquarters = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    LogoUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductionManagers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductionManagers_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PackageChannels",
                 columns: table => new
                 {
@@ -417,32 +436,6 @@ namespace Netflixx.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Films",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FilmURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    ProductionManagerId = table.Column<int>(type: "int", nullable: true),
-                    Rating = table.Column<float>(type: "real", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Films", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Films_ProductionManagers_ProductionManagerId",
-                        column: x => x.ProductionManagerId,
-                        principalTable: "ProductionManagers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PromotionChannels",
                 columns: table => new
                 {
@@ -515,6 +508,32 @@ namespace Netflixx.Migrations
                         principalTable: "Promotions",
                         principalColumn: "PromotionID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Films",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FilmURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    ProductionManagerId = table.Column<int>(type: "int", nullable: true),
+                    Rating = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Films", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Films_ProductionManagers_ProductionManagerId",
+                        column: x => x.ProductionManagerId,
+                        principalTable: "ProductionManagers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -832,6 +851,11 @@ namespace Netflixx.Migrations
                 columns: new[] { "UserID", "TransactionDate" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductionManagers_CountryId",
+                table: "ProductionManagers",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PromotionChannels_ChannelID",
                 table: "PromotionChannels",
                 column: "ChannelID");
@@ -946,6 +970,9 @@ namespace Netflixx.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductionManagers");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
         }
     }
 }

@@ -37,7 +37,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@item.Name</h5>
                             <p class="card-text">
-                                <small class="text-muted">@item.Country</small><br />
+                                <small class="text-muted">@item.Country?.Name</small><br />
                                 @if (item.EstablishedDate.HasValue)
                                 {
                                     <small class="text-muted">Ngày thành lập: @item.EstablishedDate.Value.ToString("dd/MM/yyyy")</small>
