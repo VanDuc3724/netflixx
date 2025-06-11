@@ -25,6 +25,7 @@
             <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">Xóa</a>
         </div>
     </form>
+
     <div class="row">
         @if (Model.Any())
         {
@@ -40,7 +41,6 @@
                                 @if (item.EstablishedDate.HasValue)
                                 {
                                     <small class="text-muted">Ngày thành lập: @item.EstablishedDate.Value.ToString("dd/MM/yyyy")</small>
-
                                     <br />
                                 }
                                 <small class="text-muted">Films: @item.Films.Count</small>
@@ -52,6 +52,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Delete Modal -->
                     <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@item.Id" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -110,45 +111,84 @@
         </nav>
     }
 </div>
-
 <style>
-    .production-card {
-        background-color: #141414;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        border: 1px solid #333;
+    /* Cài đặt màu sắc nền và văn bản */
+    body {
+        background-color: #121212; /* Màu nền tối để làm nổi bật các yếu tố giao diện */
+        color: #fff; /* Màu văn bản sáng cho dễ đọc trên nền tối */
     }
 
+    /* Màu nền của các thẻ công ty (Production Card) */
+    .production-card {
+        background-color: #1c1c1c; /* Màu xám đen dễ nhìn */
+        border: 1px solid #444; /* Viền xám nhẹ */
+        border-radius: 8px; /* Bo góc mềm mại */
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        /* Hiệu ứng hover cho thẻ công ty */
         .production-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(229, 9, 20, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 123, 255, 0.3); /* Màu xanh biển đậm khi hover */
         }
 
-        .production-card img {
-            height: 180px;
-            object-fit: contain;
-            background-color: #000;
-        }
-
-        .production-card .card-body {
-            background-color: #000;
-            padding: 1.25rem;
-        }
-
+        /* Màu của tiêu đề công ty (Card Title) */
         .production-card .card-title {
             font-size: 1.25rem;
             font-weight: 600;
+            color: #007BFF; /* Màu xanh biển đậm */
         }
 
+    /* Màu nền của các nút */
+    .btn-danger,
+    .btn-outline-danger,
+    .btn-outline-success,
+    .btn-outline-info {
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        /* Màu nền của các nút khi hover */
+        .btn-danger:hover,
+        .btn-outline-danger:hover,
+        .btn-outline-success:hover,
+        .btn-outline-info:hover {
+            background-color: #007BFF; /* Màu xanh biển đậm khi hover */
+            color: white;
+        }
+
+    /* Màu nền của input và nút tìm kiếm */
+    .input-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px; /* Tạo khoảng cách giữa các ô */
+        margin-bottom: 15px;
+    }
+
+        .input-group input,
+        .input-group button {
+            border-radius: 50px;
+        }
+
+        .input-group input {
+            flex-grow: 1; /* Giúp input chiếm hết không gian còn lại */
+        }
+
+        .input-group button {
+            background-color: #007BFF; /* Màu xanh biển đậm cho nút */
+            color: white;
+            padding: 10px 20px; /* Tạo khoảng cách cho nút */
+        }
+
+    /* Màu của phân trang */
     .pagination {
         margin-top: 30px;
         font-size: 1rem;
     }
 
         .pagination .page-item.active .page-link {
-            background-color: #e50914;
-            border-color: #e50914;
+            background-color: #007BFF;
+            border-color: #007BFF;
         }
 
         .pagination .page-link {
@@ -159,28 +199,57 @@
         }
 
             .pagination .page-link:hover {
-                background-color: #e50914;
+                background-color: #007BFF;
                 color: #fff;
             }
 
+    /* Màu nền và viền của các thẻ công ty */
+    .card-img-top {
+        height: 180px;
+        object-fit: contain;
+    }
+
+    /* Màu nền của các card body */
+    /* Màu nền của các thẻ công ty (Production Card) */
+    .production-card {
+        background-color: #2b2b2b; /* Thay đổi màu nền thành xám đen sáng hơn */
+        border: 1px solid #444; /* Viền xám nhẹ */
+        border-radius: 8px; /* Bo góc mềm mại */
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    /* Màu của các nút trong nhóm */
     .btn-group .btn {
         border-radius: 50px;
     }
 
-    .btn-danger, .btn-outline-danger, .btn-outline-success, .btn-outline-info {
-        transition: background-color 0.3s, color 0.3s;
+    /* Cập nhật màu nền của các thông báo thành công và lỗi */
+    .alert-success {
+        background-color: #28a745; /* Màu xanh lá cây cho thông báo thành công */
+        color: white;
     }
 
-        .btn-danger:hover, .btn-outline-danger:hover, .btn-outline-success:hover, .btn-outline-info:hover {
-            background-color: #e50914;
-            color: white;
-        }
-
-    .input-group input, .input-group button {
-        border-radius: 50px;
+    .alert-danger {
+        background-color: #dc3545; /* Màu đỏ cho thông báo lỗi */
+        color: white;
     }
 
-    .input-group button {
-        background-color: #e50914;
+    .alert-info {
+        background-color: #17a2b8; /* Màu xanh dương nhẹ cho thông báo thông tin */
+        color: white;
     }
+
+    /* Màu nền của các card body */
+    .production-card .card-body {
+        background-color: #1e1e2f; /* Màu xanh đen nhạt, tạo cảm giác sang trọng */
+        padding: 1.25rem;
+    }
+
+    .card-img-top {
+        width: 100%; /* Chiếm 100% chiều rộng của thẻ */
+        height: 200px; /* Điều chỉnh chiều cao ảnh */
+        object-fit: cover; /* Đảm bảo ảnh không bị méo, tự động cắt để phủ đầy */
+        background-color: #000; /* Đảm bảo ảnh có nền đen */
+    }
+
 </style>
