@@ -1,186 +1,628 @@
-﻿@model PaginatedList<ProductionManagerApp.Models.ProductionManager>
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quản Lý Công Ty Sản Xuất</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #fff;
+            transition: margin-left 0.3s;
+            overflow-x: hidden;
+        }
 
-@{
-    ViewData["Title"] = "Danh sách công ty sản xuất";
-}
-<div class="container mt-4">
-    <h2 class="text-white mb-4">@ViewData["Title"]</h2>
+        .navbar {
+            z-index: 1100;
+        }
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
-    <p>
-        <a asp-action="Create" class="btn btn-danger shadow-sm">Thêm công ty mới</a>
-    </p>
-    <form asp-action="Index" method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Tìm kiếm công ty">
-            <input type="number" name="yearFilter" value="@ViewData["YearFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Năm">
-            <button type="submit" class="btn btn-danger shadow-sm">Tìm</button>
-            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">Xóa</a>
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            width: 230px;
+            background-color: #2c2c2c;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #444;
+        }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .sidebar a {
+                display: block;
+                padding: 15px 20px;
+                color: #fff;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+                .sidebar a:hover {
+                    background-color: #ff4d6d;
+                }
+
+        .main-content {
+            margin-left: 230px;
+            padding: 100px 20px 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+        .toggle-btn,
+        .show-sidebar-btn {
+            position: fixed;
+            top: 75px;
+            z-index: 1200;
+            background-color: #ff4d6d;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .toggle-btn {
+            left: 10px;
+        }
+
+        .show-sidebar-btn {
+            left: 10px;
+            display: none;
+        }
+
+        .sidebar.collapsed ~ .show-sidebar-btn {
+            display: block;
+        }
+
+        .card {
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #ff4d6d;
+            color: #fff;
+        }
+
+        .filter-card .card-header {
+            background-color: #ff4d6d;
+        }
+
+        .btn-primary {
+            background-color: #ff4d6d;
+            border: none;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border: none;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .table {
+            color: #fff;
+            width: 100%;
+        }
+
+            .table thead {
+                background-color: #333;
+            }
+
+        .modal-content {
+            background-color: #2c2c2c;
+            color: #fff;
+        }
+
+        .badge-primary {
+            background-color: #ff4d6d;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-secondary {
+            background-color: #6c757d;
+        }
+
+        .form-control {
+            background-color: #3c3c3c;
+            border: 1px solid #555;
+            color: #fff;
+        }
+
+            .form-control:focus {
+                background-color: #3c3c3c;
+                border-color: #ff4d6d;
+                color: #fff;
+                box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+            }
+
+        .logo-thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .website-link {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+            .website-link:hover {
+                color: #0d6efd;
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="/image/logo/NetflixxLogo.png" alt="Logo" style="height:40px; margin-right: 10px;" />
+                <span>Netflixx</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
-    </form>
-    <div class="row">
-        @if (Model.Any())
-        {
-            foreach (var item in Model)
-            {
-                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="production-card card h-100 text-white bg-dark shadow-lg">
-                        <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" class="card-img-top" alt="@item.Name Logo" onerror="this.src='/image/logo/NetflixxLogo.png'" />
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Name</h5>
-                            <p class="card-text">
-                                <small class="text-muted">@item.Country</small><br />
-                                @if (item.EstablishedDate.HasValue)
-                                {
-                                    <small class="text-muted">Ngày thành lập: @item.EstablishedDate.Value.ToString("dd/MM/yyyy")</small>
+    </nav>
 
-                                    <br />
-                                }
-                                <small class="text-muted">Films: @item.Films.Count</small>
-                            </p>
-                            <div class="btn-group btn-group-sm w-100">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Chi tiết</a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success">Sửa</a>
-                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">Xóa</button>
-                            </div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <a href="#"><i class="fas fa-filter"></i> Tìm kiếm & Lọc</a>
+            <a href="#"><i class="fas fa-list"></i> Danh sách công ty</a>
+            <a href="#"><i class="fas fa-plus"></i> Thêm công ty mới</a>
+            <a href="#"><i class="fas fa-history"></i> Lịch sử chỉnh sửa</a>
+            <a href="#"><i class="fas fa-trash-alt"></i> Thùng rác</a>
+        </div>
+    </div>
+
+    <!-- Nút thu gọn sidebar -->
+    <div>
+        <button id="toggleSidebar" class="toggle-btn">
+            <i class="fas fa-angle-double-left"></i>
+        </button>
+
+        <!-- Nút hiện lại sidebar khi bị ẩn -->
+        <button id="showSidebar" class="show-sidebar-btn">
+            <i class="fas fa-angle-double-right"></i>
+        </button>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="main-content" id="mainContent">
+        <!-- Card tìm kiếm và lọc -->
+        <div class="card shadow filter-card">
+            <div class="card-header">
+                <strong><i class="fas fa-search"></i> Tìm kiếm & Lọc</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Tên công ty</label>
+                        <input type="text" class="form-control" id="searchName" placeholder="Tìm theo tên công ty...">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Quốc gia</label>
+                        <select class="form-control" id="filterCountry">
+                            <option value="">Tất cả</option>
+                            <option value="USA">Hoa Kỳ</option>
+                            <option value="UK">Anh</option>
+                            <option value="France">Pháp</option>
+                            <option value="Germany">Đức</option>
+                            <option value="Japan">Nhật Bản</option>
+                            <option value="Korea">Hàn Quốc</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>CEO</label>
+                        <input type="text" class="form-control" id="searchCEO" placeholder="Tìm theo CEO...">
+                    </div>
+                    <div class="col-md-3">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary btn-block" id="searchBtn">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card danh sách công ty -->
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong><i class="fas fa-building"></i> Danh Sách Công Ty Sản Xuất</strong>
+                <div>
+                    <button class="btn btn-success btn-sm mr-2" data-toggle="modal" data-target="#addModal">
+                        <i class="fas fa-plus"></i> Thêm Công Ty Mới
+                    </button>
+                    <span class="badge badge-primary">Tổng: 5</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <span class="mr-2">Xem</span>
+                            <select class="form-control" style="width: 80px;" id="pageLength">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="ml-2">mục</span>
                         </div>
                     </div>
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@item.Id" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content bg-dark text-white">
-                                <div class="modal-header border-0">
-                                    <h5 class="modal-title" id="deleteModalLabel-@item.Id">Xóa công ty sản xuất</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Bạn có chắc muốn xóa <strong>@item.Name</strong>?
-                                </div>
-                                <div class="modal-footer border-0">
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                        <button type="submit" class="btn btn-danger">Xóa</button>
-                                    </form>
-                                </div>
-                            </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            <label class="mr-2">Tìm:</label>
+                            <input type="text" class="form-control" style="width: 200px;" id="globalSearch" placeholder="Tìm kiếm...">
                         </div>
                     </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info text-center">Chưa có công ty nào.</div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-image"></i> Logo</th>
+                                <th><i class="fas fa-building"></i> Tên công ty</th>
+                                <th><i class="fas fa-globe"></i> Website</th>
+                                <th><i class="fas fa-flag"></i> Quốc gia</th>
+                                <th><i class="fas fa-calendar"></i> Thành lập</th>
+                                <th><i class="fas fa-user-tie"></i> CEO</th>
+                                <th><i class="fas fa-map-marker-alt"></i> Trụ sở</th>
+                                <th><i class="fas fa-cogs"></i> Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/250px-Netflix_2015_logo.svg.png"
+                                         alt="Netflix" class="logo-thumbnail">
+                                </td>
+                                <td>
+                                    <strong>Netflix</strong>
+                                    <br><small class="text-muted">NFLX</small>
+                                </td>
+                                <td>
+                                    <a href="https://www.netflix.com" target="_blank" class="website-link">
+                                        <i class="fas fa-external-link-alt"></i> netflix.com
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">Hoa Kỳ</span>
+                                </td>
+                                <td>29/08/1997</td>
+                                <td>Reed Hastings</td>
+                                <td>Los Gatos, California</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                data-toggle="modal" data-target="#deleteModal1">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Disney%2B_logo.svg/250px-Disney%2B_logo.svg.png"
+                                         alt="Disney" class="logo-thumbnail">
+                                </td>
+                                <td>
+                                    <strong>Walt Disney Studios</strong>
+                                    <br><small class="text-muted">Disney</small>
+                                </td>
+                                <td>
+                                    <a href="https://www.disney.com" target="_blank" class="website-link">
+                                        <i class="fas fa-external-link-alt"></i> disney.com
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">Hoa Kỳ</span>
+                                </td>
+                                <td>16/10/1923</td>
+                                <td>Bob Chapek</td>
+                                <td>Burbank, California</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                data-toggle="modal" data-target="#deleteModal2">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sony_Pictures_Studios_logo.svg/250px-Sony_Pictures_Studios_logo.svg.png"
+                                         alt="Sony" class="logo-thumbnail">
+                                </td>
+                                <td>
+                                    <strong>Sony Pictures Entertainment</strong>
+                                    <br><small class="text-muted">SPE</small>
+                                </td>
+                                <td>
+                                    <a href="https://www.sonypictures.com" target="_blank" class="website-link">
+                                        <i class="fas fa-external-link-alt"></i> sonypictures.com
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge badge-warning">Nhật Bản</span>
+                                </td>
+                                <td>07/01/1991</td>
+                                <td>Tom Rothman</td>
+                                <td>Culver City, California</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                data-toggle="modal" data-target="#deleteModal3">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Warner_Bros_logo.svg/250px-Warner_Bros_logo.svg.png"
+                                         alt="Warner Bros" class="logo-thumbnail">
+                                </td>
+                                <td>
+                                    <strong>Warner Bros. Entertainment</strong>
+                                    <br><small class="text-muted">WB</small>
+                                </td>
+                                <td>
+                                    <a href="https://www.warnerbros.com" target="_blank" class="website-link">
+                                        <i class="fas fa-external-link-alt"></i> warnerbros.com
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">Hoa Kỳ</span>
+                                </td>
+                                <td>04/04/1923</td>
+                                <td>David Zaslav</td>
+                                <td>Burbank, California</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                data-toggle="modal" data-target="#deleteModal4">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Universal_Pictures_logo.svg/250px-Universal_Pictures_logo.svg.png"
+                                         alt="Universal" class="logo-thumbnail">
+                                </td>
+                                <td>
+                                    <strong>Universal Pictures</strong>
+                                    <br><small class="text-muted">Universal</small>
+                                </td>
+                                <td>
+                                    <a href="https://www.universalpictures.com" target="_blank" class="website-link">
+                                        <i class="fas fa-external-link-alt"></i> universalpictures.com
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">Hoa Kỳ</span>
+                                </td>
+                                <td>08/06/1912</td>
+                                <td>Donna Langley</td>
+                                <td>Universal City, California</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                data-toggle="modal" data-target="#deleteModal5">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span>Đang xem 1 đến 5 trong tổng số 5 mục</span>
+                    </div>
+                    <div>
+                        <nav>
+                            <ul class="pagination mb-0">
+                                <li class="page-item disabled">
+                                    <span class="page-link">Trước</span>
+                                </li>
+                                <li class="page-item active">
+                                    <span class="page-link">1</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">Tiếp</span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
-        }
+        </div>
     </div>
 
-    @if (Model.TotalPages > 1)
-    {
-        <nav>
-            <ul class="pagination justify-content-center">
-                @if (Model.HasPreviousPage)
-                {
-                    <li class="page-item">
-                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Trước</a>
-                    </li>
+    <!-- Modal xác nhận xóa -->
+    <div class="modal fade" id="deleteModal1" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn chắc chắn muốn xóa công ty <strong>Netflix</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thêm các modal xóa khác tương tự -->
+    <div class="modal fade" id="deleteModal2" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn chắc chắn muốn xóa công ty <strong>Walt Disney Studios</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#dataTable').DataTable({
+                "pageLength": 10,
+                "searching": false,
+                "paging": false,
+                "info": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json"
                 }
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a asp-action="Index" asp-route-pageNumber="@i" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">@i</a>
-                    </li>
-                }
-                @if (Model.HasNextPage)
-                {
-                    <li class="page-item">
-                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Sau</a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    }
-</div>
+            });
 
-<style>
-    .production-card {
-        background-color: #141414;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        border: 1px solid #333;
-    }
+            // Sidebar toggle
+            $('#toggleSidebar').click(function () {
+                $('#sidebar').addClass('collapsed');
+                $('#mainContent').addClass('expanded');
+                $('#showSidebar').show();
+            });
 
-        .production-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(229, 9, 20, 0.2);
-        }
+            $('#showSidebar').click(function () {
+                $('#sidebar').removeClass('collapsed');
+                $('#mainContent').removeClass('expanded');
+                $('#showSidebar').hide();
+            });
 
-        .production-card img {
-            height: 180px;
-            object-fit: contain;
-            background-color: #000;
-        }
+            // Search functionality
+            $('#searchBtn').click(function () {
+                var name = $('#searchName').val().toLowerCase();
+                var country = $('#filterCountry').val();
+                var ceo = $('#searchCEO').val().toLowerCase();
 
-        .production-card .card-body {
-            background-color: #000;
-            padding: 1.25rem;
-        }
+                table.rows().every(function () {
+                    var data = this.data();
+                    var nameMatch = name === '' || data[1].toLowerCase().includes(name);
+                    var countryMatch = country === '' || data[3].includes(country);
+                    var ceoMatch = ceo === '' || data[5].toLowerCase().includes(ceo);
 
-        .production-card .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
+                    if (nameMatch && countryMatch && ceoMatch) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
+                    }
+                });
+            });
 
-    .pagination {
-        margin-top: 30px;
-        font-size: 1rem;
-    }
+            // Global search
+            $('#globalSearch').on('keyup', function () {
+                var value = $(this).val().toLowerCase();
+                table.rows().every(function () {
+                    var data = this.data().join(' ').toLowerCase();
+                    if (data.includes(value)) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
+                    }
+                });
+            });
 
-        .pagination .page-item.active .page-link {
-            background-color: #e50914;
-            border-color: #e50914;
-        }
-
-        .pagination .page-link {
-            border-radius: 50%;
-            margin: 0 5px;
-            font-size: 1rem;
-            transition: background-color 0.2s ease;
-        }
-
-            .pagination .page-link:hover {
-                background-color: #e50914;
-                color: #fff;
-            }
-
-    .btn-group .btn {
-        border-radius: 50px;
-    }
-
-    .btn-danger, .btn-outline-danger, .btn-outline-success, .btn-outline-info {
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-        .btn-danger:hover, .btn-outline-danger:hover, .btn-outline-success:hover, .btn-outline-info:hover {
-            background-color: #e50914;
-            color: white;
-        }
-
-    .input-group input, .input-group button {
-        border-radius: 50px;
-    }
-
-    .input-group button {
-        background-color: #e50914;
-    }
-</style>
+            // Page length change
+            $('#pageLength').change(function () {
+                var length = $(this).val();
+                table.page.len(length).draw();
+            });
+        });
+    </script>
+</body>
+</html>
