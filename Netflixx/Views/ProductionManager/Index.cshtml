@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@model PaginatedList<ProductionManagerApp.Models.ProductionManager>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -307,181 +311,51 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/250px-Netflix_2015_logo.svg.png"
-                                         alt="Netflix" class="logo-thumbnail">
-                                </td>
-                                <td>
-                                    <strong>Netflix</strong>
-                                    <br><small class="text-muted">NFLX</small>
-                                </td>
-                                <td>
-                                    <a href="https://www.netflix.com" target="_blank" class="website-link">
-                                        <i class="fas fa-external-link-alt"></i> netflix.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge badge-primary">Hoa Kỳ</span>
-                                </td>
-                                <td>29/08/1997</td>
-                                <td>Reed Hastings</td>
-                                <td>Los Gatos, California</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" title="Xóa"
-                                                data-toggle="modal" data-target="#deleteModal1">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Disney%2B_logo.svg/250px-Disney%2B_logo.svg.png"
-                                         alt="Disney" class="logo-thumbnail">
-                                </td>
-                                <td>
-                                    <strong>Walt Disney Studios</strong>
-                                    <br><small class="text-muted">Disney</small>
-                                </td>
-                                <td>
-                                    <a href="https://www.disney.com" target="_blank" class="website-link">
-                                        <i class="fas fa-external-link-alt"></i> disney.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge badge-primary">Hoa Kỳ</span>
-                                </td>
-                                <td>16/10/1923</td>
-                                <td>Bob Chapek</td>
-                                <td>Burbank, California</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" title="Xóa"
-                                                data-toggle="modal" data-target="#deleteModal2">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sony_Pictures_Studios_logo.svg/250px-Sony_Pictures_Studios_logo.svg.png"
-                                         alt="Sony" class="logo-thumbnail">
-                                </td>
-                                <td>
-                                    <strong>Sony Pictures Entertainment</strong>
-                                    <br><small class="text-muted">SPE</small>
-                                </td>
-                                <td>
-                                    <a href="https://www.sonypictures.com" target="_blank" class="website-link">
-                                        <i class="fas fa-external-link-alt"></i> sonypictures.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge badge-warning">Nhật Bản</span>
-                                </td>
-                                <td>07/01/1991</td>
-                                <td>Tom Rothman</td>
-                                <td>Culver City, California</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" title="Xóa"
-                                                data-toggle="modal" data-target="#deleteModal3">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Warner_Bros_logo.svg/250px-Warner_Bros_logo.svg.png"
-                                         alt="Warner Bros" class="logo-thumbnail">
-                                </td>
-                                <td>
-                                    <strong>Warner Bros. Entertainment</strong>
-                                    <br><small class="text-muted">WB</small>
-                                </td>
-                                <td>
-                                    <a href="https://www.warnerbros.com" target="_blank" class="website-link">
-                                        <i class="fas fa-external-link-alt"></i> warnerbros.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge badge-primary">Hoa Kỳ</span>
-                                </td>
-                                <td>04/04/1923</td>
-                                <td>David Zaslav</td>
-                                <td>Burbank, California</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" title="Xóa"
-                                                data-toggle="modal" data-target="#deleteModal4">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Universal_Pictures_logo.svg/250px-Universal_Pictures_logo.svg.png"
-                                         alt="Universal" class="logo-thumbnail">
-                                </td>
-                                <td>
-                                    <strong>Universal Pictures</strong>
-                                    <br><small class="text-muted">Universal</small>
-                                </td>
-                                <td>
-                                    <a href="https://www.universalpictures.com" target="_blank" class="website-link">
-                                        <i class="fas fa-external-link-alt"></i> universalpictures.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge badge-primary">Hoa Kỳ</span>
-                                </td>
-                                <td>08/06/1912</td>
-                                <td>Donna Langley</td>
-                                <td>Universal City, California</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-info" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" title="Xóa"
-                                                data-toggle="modal" data-target="#deleteModal5">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@(string.IsNullOrEmpty(item.LogoUrl) ? '/image/logo/NetflixxLogo.png' : item.LogoUrl)"
+                                             alt="@item.Name" class="logo-thumbnail" onerror="this.src='/image/logo/NetflixxLogo.png'">
+                                    </td>
+                                    <td>
+                                        <strong>@item.Name</strong>
+                                        @if (!string.IsNullOrEmpty(item.Alias))
+                                        {
+                                            <br />
+
+                                            <small class="text-muted">@item.Alias</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.Website))
+                                        {
+                                            <a href="@item.Website" target="_blank" class="website-link">
+                                                <i class="fas fa-external-link-alt"></i> @item.Website
+                                            </a>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-primary">@item.Country</span>
+                                    </td>
+                                    <td>@item.EstablishedDate?.ToString('dd/MM/yyyy')</td>
+                                    <td>@item.CEO</td>
+                                    <td>@item.Headquarters</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.Id" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id" title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -489,26 +363,27 @@
                 <!-- Pagination -->
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div>
-                        <span>Đang xem 1 đến 5 trong tổng số 5 mục</span>
+                        <span>Đang xem @Model.Count trong tổng số @Model.TotalCount mục</span>
                     </div>
                     <div>
                         <nav>
                             <ul class="pagination mb-0">
-                                <li class="page-item disabled">
-                                    <span class="page-link">Trước</span>
+                                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">Trước</a>
                                 </li>
-                                <li class="page-item active">
-                                    <span class="page-link">1</span>
-                                </li>
-                                <li class="page-item disabled">
-                                    <span class="page-link">Tiếp</span>
+                                @for (var i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                                    </li>
+                                }
+                                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">Tiếp</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
-            </div>
-        </div>
     </div>
 
     <!-- Modal xác nhận xóa -->
