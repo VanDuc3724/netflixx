@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProductionManagerApp.Models;
+using Netflixx.Models;
+using Netflixx.Repositories;
 
 
-namespace ProductionManagerApp.Controllers
+namespace Netflixx.Controllers
 {
     public class ProductionManagerController : Controller
     {
-        private readonly DbContext _context;
+        private readonly DBContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductionManagerController(DbContext context, IWebHostEnvironment webHostEnvironment)
+        public ProductionManagerController(DBContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -24,7 +25,7 @@ namespace ProductionManagerApp.Controllers
             ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
 
-            var productionManagers = from pm in _context.ProductionManager
+            var productionManagers = from pm in _context.ProductionManagers
                                      select pm;
 
             if (!String.IsNullOrEmpty(searchString))

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Netflixx.Models;
 using Microsoft.AspNetCore.Http;
 
 
-namespace ProductionManagerApp.Models
+namespace Netflixx.Models
 {
     public class ProductionManager
     {
