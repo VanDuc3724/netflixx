@@ -449,10 +449,11 @@
             });
 
             // Page length change
-            $('#pageLength').change(function () {
+                       $('#pageLength').change(function () {
                 var length = $(this).val();
                 table.page.len(length).draw();
             });
-        });
-    </script>
-            }
+                });
+            </script>
+            @await Html.PartialAsync("_ProductionManagerMenuScripts")
+        }

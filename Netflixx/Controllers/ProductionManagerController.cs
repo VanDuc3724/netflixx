@@ -210,7 +210,10 @@ namespace Netflixx.Controllers
             {
                 return NotFound();
             }
-
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_DeleteModal", productionManager);
+            }
             return View(productionManager);
         }
 
