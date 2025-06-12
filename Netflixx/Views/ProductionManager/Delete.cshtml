@@ -12,7 +12,7 @@
         <div class="card-body">
             <h3 class="text-danger">@Model.Name</h3>
             <p class="text-muted">
-                @Model.Country?.Name
+                @Model.Country
                 @if (Model.EstablishedDate.HasValue)
                 {
                     <span> | Thành lập: @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")</span>

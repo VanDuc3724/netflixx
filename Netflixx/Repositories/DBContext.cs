@@ -31,22 +31,13 @@ namespace Netflixx.Repositories
         public virtual DbSet<UserAccountsModel> UserAccounts { get; set; }
         public virtual DbSet<PointsTransactionsModel> PointsTransactions { get; set; }
         public virtual DbSet<DailyRevenueModel> DailyRevenue { get; set; }
-        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Country>()
-                  .ToTable("Countries");
-
             modelBuilder.Entity<ProductionManager>()
                    .ToTable("ProductionManagers");
-            modelBuilder.Entity<ProductionManager>()
-                .HasOne(pm => pm.Country)
-                .WithMany(c => c.ProductionManagers)
-                .HasForeignKey(pm => pm.CountryId)
-                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<FilmsModel>()
        .HasOne(f => f.ProductionManager)           
        .WithMany(p => p.Films)                     
