@@ -1,0 +1,186 @@
+﻿@model PaginatedList<ProductionManagerApp.Models.ProductionManager>
+
+@{
+    ViewData["Title"] = "Danh sách công ty sản xuất";
+}
+<div class="container mt-4">
+    <h2 class="text-white mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    <p>
+        <a asp-action="Create" class="btn btn-danger shadow-sm">Thêm công ty mới</a>
+    </p>
+    <form asp-action="Index" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Tìm kiếm công ty">
+            <input type="number" name="yearFilter" value="@ViewData["YearFilter"]" class="form-control bg-dark text-white border-0 shadow-sm" placeholder="Năm">
+            <button type="submit" class="btn btn-danger shadow-sm">Tìm</button>
+            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">Xóa</a>
+        </div>
+    </form>
+    <div class="row">
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="production-card card h-100 text-white bg-dark shadow-lg">
+                        <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" class="card-img-top" alt="@item.Name Logo" onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">
+                                <small class="text-muted">@item.Country</small><br />
+                                @if (item.EstablishedDate.HasValue)
+                                {
+                                    <small class="text-muted">Ngày thành lập: @item.EstablishedDate.Value.ToString("dd/MM/yyyy")</small>
+
+                                    <br />
+                                }
+                                <small class="text-muted">Films: @item.Films.Count</small>
+                            </p>
+                            <div class="btn-group btn-group-sm w-100">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Chi tiết</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success">Sửa</a>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">Xóa</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@item.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title" id="deleteModalLabel-@item.Id">Xóa công ty sản xuất</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Bạn có chắc muốn xóa <strong>@item.Name</strong>?
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xóa</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center">Chưa có công ty nào.</div>
+            </div>
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav>
+            <ul class="pagination justify-content-center">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Trước</a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a asp-action="Index" asp-route-pageNumber="@i" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">@i</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-yearFilter="@ViewData["YearFilter"]" class="page-link">Sau</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+<style>
+    .production-card {
+        background-color: #141414;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: 1px solid #333;
+    }
+
+        .production-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(229, 9, 20, 0.2);
+        }
+
+        .production-card img {
+            height: 180px;
+            object-fit: contain;
+            background-color: #000;
+        }
+
+        .production-card .card-body {
+            background-color: #000;
+            padding: 1.25rem;
+        }
+
+        .production-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+    .pagination {
+        margin-top: 30px;
+        font-size: 1rem;
+    }
+
+        .pagination .page-item.active .page-link {
+            background-color: #e50914;
+            border-color: #e50914;
+        }
+
+        .pagination .page-link {
+            border-radius: 50%;
+            margin: 0 5px;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+        }
+
+            .pagination .page-link:hover {
+                background-color: #e50914;
+                color: #fff;
+            }
+
+    .btn-group .btn {
+        border-radius: 50px;
+    }
+
+    .btn-danger, .btn-outline-danger, .btn-outline-success, .btn-outline-info {
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .btn-danger:hover, .btn-outline-danger:hover, .btn-outline-success:hover, .btn-outline-info:hover {
+            background-color: #e50914;
+            color: white;
+        }
+
+    .input-group input, .input-group button {
+        border-radius: 50px;
+    }
+
+    .input-group button {
+        background-color: #e50914;
+    }
+</style>

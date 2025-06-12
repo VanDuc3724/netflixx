@@ -31,7 +31,6 @@ namespace Netflixx.Repositories
         public virtual DbSet<UserAccountsModel> UserAccounts { get; set; }
         public virtual DbSet<PointsTransactionsModel> PointsTransactions { get; set; }
         public virtual DbSet<DailyRevenueModel> DailyRevenue { get; set; }
-        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,8 +38,6 @@ namespace Netflixx.Repositories
 
             modelBuilder.Entity<ProductionManager>()
                    .ToTable("ProductionManagers");
-            modelBuilder.Entity<Country>()
-                   .ToTable("Countries");
             modelBuilder.Entity<FilmsModel>()
        .HasOne(f => f.ProductionManager)           
        .WithMany(p => p.Films)                     

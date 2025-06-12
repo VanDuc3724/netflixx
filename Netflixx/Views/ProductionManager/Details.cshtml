@@ -1,0 +1,71 @@
+﻿@model ProductionManagerApp.Models.ProductionManager
+
+@{
+    ViewData["Title"] = "Chi tiết công ty";
+}
+<div class="container mt-4">
+    <div class="card profile-card bg-dark text-white shadow-lg">
+        <div class="row g-0">
+            <div class="col-md-4 text-center p-4">
+                <img src="@((!string.IsNullOrEmpty(Model.LogoUrl) ? Model.LogoUrl : "/image/logo/NetflixxLogo.png"))" class="img-fluid rounded mb-3 profile-logo" alt="@Model.Name logo" onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                <h3 class="card-title">@Model.Name</h3>
+                @if (!string.IsNullOrEmpty(Model.Website))
+                {
+                    <p class="mb-0"><a href="@Model.Website" target="_blank" class="link-info text-decoration-none">@Model.Website</a></p>
+                }
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <table class="table table-borderless text-white mb-0">
+                        <tbody>
+                            <tr>
+                                <th style="width:30%;">Quốc gia:</th>
+                                <td>@Model.Country</td>
+                            </tr>
+                            <tr>
+                                <th>Ngày thành lập:</th>
+                                <td>@Model.EstablishedDate?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th>Tên viết tắt:</th>
+                                <td>@Model.Alias</td>
+                            </tr>
+                            <tr>
+                                <th>CEO:</th>
+                                <td>@Model.CEO</td>
+                            </tr>
+                            <tr>
+                                <th>Trụ sở chính:</th>
+                                <td>@Model.Headquarters</td>
+                            </tr>
+                            <tr>
+                                <th>Mô tả:</th>
+                                <td>@Model.Description</td>
+                            </tr>
+                            <tr>
+                                <th>Số phim:</th>
+                                <td>@Model.Films.Count</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-dark text-center border-0">
+            <a asp-action="Index" class="btn btn-outline-light me-2"><i class="bi bi-arrow-left"></i> Quay lại</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-pencil-square"></i> Chỉnh sửa</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-card {
+        border: 1px solid #333;
+    }
+
+    .profile-logo {
+        max-height: 180px;
+        object-fit: contain;
+        background-color: #000;
+    }
+</style>
