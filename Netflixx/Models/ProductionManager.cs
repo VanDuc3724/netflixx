@@ -21,11 +21,12 @@ namespace ProductionManagerApp.Models
         [Display(Name = "Website")]
         [Url(ErrorMessage = "Vui lòng nhập URL hợp lệ")]
         public string? Website { get; set; }
-
-        [Required(ErrorMessage = "Quốc gia là bắt buộc")]
-        [StringLength(50)]
+        
+        [Required]
         [Display(Name = "Quốc gia")]
-        public string Country { get; set; }
+        [ForeignKey("Country")]
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
 
         [Display(Name = "Ngày thành lập")]
         [DataType(DataType.Date)]

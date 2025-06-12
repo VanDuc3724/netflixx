@@ -4,6 +4,7 @@ using Netflixx.Repositories;
 using ProductionManagerApp.Models;
 using System;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Netflixx.Controllers
 {
@@ -24,15 +25,15 @@ namespace Netflixx.Controllers
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
             ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";
-
-            var productionManagers = from pm in _context.ProductionManagers
-                                     select pm;
+            var productionManagers = _context.ProductionManagers
+                                                    .Include(pm => pm.Country)
+                                                    .AsQueryable();
 
             // Tìm kiếm
             if (!String.IsNullOrEmpty(searchString))
             {
                 productionManagers = productionManagers.Where(pm => pm.Name.Contains(searchString)
-                                                       || pm.Country.Contains(searchString)
+                                                       || pm.Country.Name.Contains(searchString)
                                                        || pm.CEO.Contains(searchString));
             }
             if (yearFilter.HasValue)
@@ -48,10 +49,10 @@ namespace Netflixx.Controllers
                     productionManagers = productionManagers.OrderByDescending(pm => pm.Name);
                     break;
                 case "Country":
-                    productionManagers = productionManagers.OrderBy(pm => pm.Country);
+                    productionManagers = productionManagers.OrderBy(pm => pm.Country.Name);
                     break;
                 case "country_desc":
-                    productionManagers = productionManagers.OrderByDescending(pm => pm.Country);
+                    productionManagers = productionManagers.OrderByDescending(pm => pm.Country.Name);
                     break;
                 case "Year":
                     productionManagers = productionManagers.OrderBy(pm => pm.EstablishedDate);
@@ -78,6 +79,7 @@ namespace Netflixx.Controllers
 
             var productionManager = await _context.ProductionManagers
                 .Include(pm => pm.Films)
+                .Include(pm => pm.Country)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (productionManager == null)
@@ -96,13 +98,14 @@ namespace Netflixx.Controllers
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
+            ViewBag.CountryList = new SelectList(_context.Countries, "Id", "Name");
             return View(model);
         }
 
         // POST: ProductionManager/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
+        public async Task<IActionResult> Create([Bind("Name,Website,CountryId,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
         {
             if (ModelState.IsValid)
             {
@@ -126,6 +129,7 @@ namespace Netflixx.Controllers
                 TempData["SuccessMessage"] = "Thêm công ty sản xuất thành công!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CountryList = new SelectList(_context.Countries, "Id", "Name");
             return View(productionManager);
         }
 
@@ -137,18 +141,20 @@ namespace Netflixx.Controllers
                 return NotFound();
             }
 
-            var productionManager = await _context.ProductionManagers.FindAsync(id);
-            if (productionManager == null)
+            var productionManager = await _context.ProductionManagers
+                            .Include(pm => pm.Country)
+                            .FirstOrDefaultAsync(m => m.Id == id); if (productionManager == null)
             {
                 return NotFound();
             }
+            ViewBag.CountryList = new SelectList(_context.Countries, "Id", "Name");
             return View(productionManager);
         }
 
         // POST: ProductionManager/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,CountryId,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
         {
             if (id != productionManager.Id)
             {
@@ -190,6 +196,7 @@ namespace Netflixx.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.CountryList = new SelectList(_context.Countries, "Id", "Name");
             return View(productionManager);
         }
 
@@ -203,6 +210,7 @@ namespace Netflixx.Controllers
 
             var productionManager = await _context.ProductionManagers
                 .Include(pm => pm.Films)
+                .Include(pm => pm.Country)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (productionManager == null)
@@ -220,6 +228,7 @@ namespace Netflixx.Controllers
         {
             var productionManager = await _context.ProductionManagers
                 .Include(pm => pm.Films)
+                .Include(pm => pm.Country)
                 .FirstOrDefaultAsync(pm => pm.Id == id);
 
             if (productionManager != null)
