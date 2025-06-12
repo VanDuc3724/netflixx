@@ -1,59 +1,66 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Netflixx.Models;
 using Netflixx.Repositories;
-
+using ProductionManagerApp.Models;
+using System;
+using System.IO;
 
 namespace Netflixx.Controllers
 {
     public class ProductionManagerController : Controller
     {
         private readonly DBContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductionManagerController(DBContext context, IWebHostEnvironment webHostEnvironment)
+        public ProductionManagerController(DBContext context)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: ProductionManager
-        public async Task<IActionResult> Index(string searchString, string sortOrder, int? pageNumber)
+        public async Task<IActionResult> Index(string searchString, int? yearFilter, string sortOrder, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["YearFilter"] = yearFilter;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";
 
             var productionManagers = from pm in _context.ProductionManagers
                                      select pm;
 
+            // Tìm kiếm
             if (!String.IsNullOrEmpty(searchString))
             {
-                productionManagers = productionManagers.Where(s => s.Name.Contains(searchString)
-                                       || s.Country.Contains(searchString)
-                                       || s.CEO.Contains(searchString));
+                productionManagers = productionManagers.Where(pm => pm.Name.Contains(searchString)
+                                                       || pm.Country.Contains(searchString)
+                                                       || pm.CEO.Contains(searchString));
+            }
+            if (yearFilter.HasValue)
+            {
+                productionManagers = productionManagers.Where(pm => pm.EstablishedDate.HasValue &&
+                                                                   pm.EstablishedDate.Value.Year == yearFilter.Value);
             }
 
+            // Sắp xếp
             switch (sortOrder)
             {
                 case "name_desc":
-                    productionManagers = productionManagers.OrderByDescending(s => s.Name);
+                    productionManagers = productionManagers.OrderByDescending(pm => pm.Name);
                     break;
                 case "Country":
-                    productionManagers = productionManagers.OrderBy(s => s.Country);
+                    productionManagers = productionManagers.OrderBy(pm => pm.Country);
                     break;
                 case "country_desc":
-                    productionManagers = productionManagers.OrderByDescending(s => s.Country);
+                    productionManagers = productionManagers.OrderByDescending(pm => pm.Country);
                     break;
-                case "Date":
-                    productionManagers = productionManagers.OrderBy(s => s.EstablishedDate);
+                case "Year":
+                    productionManagers = productionManagers.OrderBy(pm => pm.EstablishedDate);
                     break;
-                case "date_desc":
-                    productionManagers = productionManagers.OrderByDescending(s => s.EstablishedDate);
+                case "year_desc":
+                    productionManagers = productionManagers.OrderByDescending(pm => pm.EstablishedDate);
                     break;
                 default:
-                    productionManagers = productionManagers.OrderBy(s => s.Name);
+                    productionManagers = productionManagers.OrderBy(pm => pm.Name);
                     break;
             }
 
@@ -70,7 +77,7 @@ namespace Netflixx.Controllers
             }
 
             var productionManager = await _context.ProductionManagers
-                .Include(p => p.Films)
+                .Include(pm => pm.Films)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (productionManager == null)
@@ -84,7 +91,12 @@ namespace Netflixx.Controllers
         // GET: ProductionManager/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new ProductionManager
+            {
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            return View(model);
         }
 
         // POST: ProductionManager/Create
@@ -94,30 +106,24 @@ namespace Netflixx.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Handle logo upload
-                if (productionManager.LogoFile != null)
-                {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logos");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + productionManager.LogoFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await productionManager.LogoFile.CopyToAsync(fileStream);
-                    }
-
-                    productionManager.LogoUrl = "/images/logos/" + uniqueFileName;
-                }
-
                 productionManager.CreatedAt = DateTime.Now;
                 productionManager.UpdatedAt = DateTime.Now;
+                if (productionManager.LogoFile != null)
+                {
+                    var ext = Path.GetExtension(productionManager.LogoFile.FileName);
+                    var fn = $"{Guid.NewGuid()}{ext}";
+                    var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fn);
+                    Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+                    using var fs = new FileStream(savePath, FileMode.Create);
+                    await productionManager.LogoFile.CopyToAsync(fs);
+                    productionManager.LogoUrl = $"/image/productionlogos/{fn}";
+                }
+
 
                 _context.Add(productionManager);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Công ty sản xuất đã được tạo thành công!";
+                TempData["SuccessMessage"] = "Thêm công ty sản xuất thành công!";
                 return RedirectToAction(nameof(Index));
             }
             return View(productionManager);
@@ -142,7 +148,7 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoUrl,LogoFile,CreatedAt")] ProductionManager productionManager)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
         {
             if (id != productionManager.Id)
             {
@@ -153,38 +159,23 @@ namespace Netflixx.Controllers
             {
                 try
                 {
-                    // Handle logo upload
+
                     if (productionManager.LogoFile != null)
                     {
-                        // Delete old logo if exists
-                        if (!string.IsNullOrEmpty(productionManager.LogoUrl))
-                        {
-                            string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, productionManager.LogoUrl.TrimStart('/'));
-                            if (System.IO.File.Exists(oldFilePath))
-                            {
-                                System.IO.File.Delete(oldFilePath);
-                            }
-                        }
-
-                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logos");
-                        Directory.CreateDirectory(uploadsFolder);
-
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + productionManager.LogoFile.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await productionManager.LogoFile.CopyToAsync(fileStream);
-                        }
-
-                        productionManager.LogoUrl = "/images/logos/" + uniqueFileName;
+                        var ext = Path.GetExtension(productionManager.LogoFile.FileName);
+                        var fn = $"{Guid.NewGuid()}{ext}";
+                        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fn);
+                        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+                        using var fs = new FileStream(savePath, FileMode.Create);
+                        await productionManager.LogoFile.CopyToAsync(fs);
+                        productionManager.LogoUrl = $"/image/productionlogos/{fn}";
                     }
 
                     productionManager.UpdatedAt = DateTime.Now;
                     _context.Update(productionManager);
                     await _context.SaveChangesAsync();
 
-                    TempData["SuccessMessage"] = "Công ty sản xuất đã được cập nhật thành công!";
+                    TempData["SuccessMessage"] = "Cập nhật công ty sản xuất thành công!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -211,6 +202,7 @@ namespace Netflixx.Controllers
             }
 
             var productionManager = await _context.ProductionManagers
+                .Include(pm => pm.Films)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (productionManager == null)
@@ -226,14 +218,23 @@ namespace Netflixx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productionManager = await _context.ProductionManagers.FindAsync(id);
+            var productionManager = await _context.ProductionManagers
+                .Include(pm => pm.Films)
+                .FirstOrDefaultAsync(pm => pm.Id == id);
 
             if (productionManager != null)
             {
-                // Delete logo file if exists
+                if (productionManager.Films.Any())
+                {
+                    TempData["ErrorMessage"] = "Không thể xóa công ty sản xuất này vì còn có phim liên quan!";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 if (!string.IsNullOrEmpty(productionManager.LogoUrl))
                 {
-                    string filePath = Path.Combine(_webHostEnvironment.WebRootPath, productionManager.LogoUrl.TrimStart('/'));
+                    var fileName = Path.GetFileName(productionManager.LogoUrl);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot", "image", "productionlogos", fileName);
                     if (System.IO.File.Exists(filePath))
                     {
                         System.IO.File.Delete(filePath);
@@ -242,8 +243,7 @@ namespace Netflixx.Controllers
 
                 _context.ProductionManagers.Remove(productionManager);
                 await _context.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "Công ty sản xuất đã được xóa thành công!";
+                TempData["SuccessMessage"] = "Xóa công ty sản xuất thành công!";
             }
 
             return RedirectToAction(nameof(Index));
@@ -252,31 +252,6 @@ namespace Netflixx.Controllers
         private bool ProductionManagerExists(int id)
         {
             return _context.ProductionManagers.Any(e => e.Id == id);
-        }
-    }
-
-    // Helper class for pagination
-    public class PaginatedList<T> : List<T>
-    {
-        public int PageIndex { get; private set; }
-        public int TotalPages { get; private set; }
-
-        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
-        {
-            PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-
-            this.AddRange(items);
-        }
-
-        public bool HasPreviousPage => PageIndex > 1;
-        public bool HasNextPage => PageIndex < TotalPages;
-
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
-        {
-            var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }
 }

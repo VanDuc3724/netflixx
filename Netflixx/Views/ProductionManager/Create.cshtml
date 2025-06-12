@@ -1,102 +1,36 @@
-﻿﻿@model Netflixx.Models.ProductionManager
+﻿@model ProductionManagerApp.Models.ProductionManager
 
 @{
     ViewData["Title"] = "Thêm Công ty Sản xuất";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-plus"></i> Thêm Công ty Sản xuất mới
-                    </h4>
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm Công ty Sản xuất mới
+                    </h3>
                 </div>
+
                 <div class="card-body">
-                    <form asp-action="Create" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Name" class="control-label font-weight-bold"></label>
-                                    <input asp-for="Name" class="form-control" placeholder="Nhập tên công ty" />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Alias" class="control-label font-weight-bold"></label>
-                                    <input asp-for="Alias" class="form-control" placeholder="Tên viết tắt" />
-                                    <span asp-validation-for="Alias" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Country" class="control-label font-weight-bold"></label>
-                                    <input asp-for="Country" class="form-control" placeholder="Nhập quốc gia" />
-                                    <span asp-validation-for="Country" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="EstablishedDate" class="control-label font-weight-bold"></label>
-                                    <input asp-for="EstablishedDate" class="form-control" type="date" />
-                                    <span asp-validation-for="EstablishedDate" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+                        @await Html.PartialAsync("_ProductionManagerForm", Model)
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="CEO" class="control-label font-weight-bold"></label>
-                                    <input asp-for="CEO" class="form-control" placeholder="Tên CEO" />
-                                    <span asp-validation-for="CEO" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Website" class="control-label font-weight-bold"></label>
-                                    <input asp-for="Website" class="form-control" placeholder="https://example.com" />
-                                    <span asp-validation-for="Website" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label asp-for="Headquarters" class="control-label font-weight-bold"></label>
-                            <input asp-for="Headquarters" class="form-control" placeholder="Địa chỉ trụ sở chính" />
-                            <span asp-validation-for="Headquarters" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="LogoFile" class="control-label font-weight-bold"></label>
-                            <div class="custom-file">
-                                <input asp-for="LogoFile" class="custom-file-input" id="logoFile" accept="image/*" />
-                                <label class="custom-file-label" for="logoFile">Chọn file logo...</label>
-                            </div>
-                            <small class="form-text text-muted">Chấp nhận file: JPG, PNG, GIF (tối đa 5MB)</small>
-                            <span asp-validation-for="LogoFile" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Description" class="control-label font-weight-bold"></label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả về công ty..."></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-success btn-lg mr-3">
-                                <i class="fas fa-save"></i> Lưu
-                            </button>
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="fas fa-arrow-left"></i> Quay lại
+                        <div class="form-group text-right">
+                            <a asp-action="Index" class="btn btn-secondary mr-2">
+                                <i class="fas fa-arrow-left mr-1"></i>
+                                Quay lại
                             </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-1"></i>
+                                Lưu thông tin
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -105,53 +39,76 @@
     </div>
 </div>
 
+<style>
+    .required::after {
+        content: " *";
+        color: red;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .card {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border: none;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+</style>
+
+<script>
+     // Preview logo when a file is selected
+    document.getElementById('LogoFile').addEventListener('change', function () {
+        const file = this.files[0];
+        const preview = document.getElementById('logoPreview');
+        const image = document.getElementById('logoImage');
+
+        if (file) {
+            const url = URL.createObjectURL(file);
+            image.src = url;
+            image.onload = () => URL.revokeObjectURL(url);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+            image.src = '';
+        }
+    });
+
+
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Kiểm tra các trường bắt buộc
+        const requiredFields = ['Name', 'Country'];
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        // Custom file input label
-        $('.custom-file-input').on('change', function() {
-            var fileName = $(this).val().split('\\').pop();
-            $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
-        });
-
-        // Preview image
-        $('#logoFile').change(function() {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    if ($('#logoPreview').length === 0) {
-                        $('#logoFile').closest('.form-group').append('<div id="logoPreview" class="mt-2"><img id="preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" /></div>');
-                    }
-                    $('#preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Form validation
-        $('form').submit(function() {
-            var isValid = true;
-
-            // Check required fields
-            $('input[required], select[required]').each(function() {
-                if ($(this).val() === '') {
-                    isValid = false;
-                    $(this).addClass('is-invalid');
-                } else {
-                    $(this).removeClass('is-invalid');
-                }
-            });
-
-            if (!isValid) {
-                $('html, body').animate({
-                    scrollTop: $('.is-invalid').first().offset().top - 100
-                }, 500);
-                return false;
-            }
-        });
-    </script>
 }

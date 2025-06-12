@@ -1,222 +1,30 @@
-﻿﻿@model Netflixx.Models.ProductionManager
+﻿@model ProductionManagerApp.Models.ProductionManager
 
 @{
-    ViewData["Title"] = "Xóa Công ty Sản xuất";
+    ViewData["Title"] = "Xóa công ty sản xuất";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-exclamation-triangle"></i> Xác nhận xóa Công ty Sản xuất
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-danger">
-                        <h5 class="alert-heading">
-                            <i class="fas fa-warning"></i> Cảnh báo!
-                        </h5>
-                        <p class="mb-0">
-                            Bạn có chắc chắn muốn xóa công ty sản xuất này?
-                            <strong>Thao tác này không thể hoàn tác!</strong>
-                        </p>
-                    </div>
+<div class="container mt-4">
+    <h1 class="text-white">@ViewData["Title"]</h1>
+    <h3 class="text-warning">Bạn có chắc muốn xóa công ty này?</h3>
 
-                    <div class="row">
-                        <div class="col-md-8">
-                            <dl class="row">
-                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name):</dt>
-                                <dd class="col-sm-8">
-                                    <strong class="text-primary">@Html.DisplayFor(model => model.Name)</strong>
-                                    @if (!string.IsNullOrEmpty(Model.Alias))
-                                    {
-                                        <span class="badge badge-secondary ml-2">@Model.Alias</span>
-                                    }
-                                </dd>
+    <div class="card bg-dark text-white mt-4">
+        <div class="card-body">
+            <h3 class="text-danger">@Model.Name</h3>
+            <p class="text-muted">
+                @Model.Country
+                @if (Model.EstablishedDate.HasValue)
+                {
+                    <span> | Thành lập: @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")</span>
+                }
+            </p>
+            <p class="text-muted">Số phim: @Model.Films.Count</p>
 
-                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Country):</dt>
-                                <dd class="col-sm-8">
-                                    <i class="fas fa-flag"></i> @Html.DisplayFor(model => model.Country)
-                                </dd>
-
-                                @if (!string.IsNullOrEmpty(Model.CEO))
-                                {
-                                    <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CEO):</dt>
-                                    <dd class="col-sm-8">
-                                        <i class="fas fa-user-tie"></i> @Html.DisplayFor(model => model.CEO)
-                                    </dd>
-                                }
-
-                                @if (Model.EstablishedDate.HasValue)
-                                {
-                                    <dt class="col-sm-4">@Html.DisplayNameFor(model => model.EstablishedDate):</dt>
-                                    <dd class="col-sm-8">
-                                        <i class="fas fa-calendar"></i> @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")
-                                    </dd>
-                                }
-
-                                @if (!string.IsNullOrEmpty(Model.Headquarters))
-                                {
-                                    <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Headquarters):</dt>
-                                    <dd class="col-sm-8">
-                                        <i class="fas fa-map-marker-alt"></i> @Html.DisplayFor(model => model.Headquarters)
-                                    </dd>
-                                }
-
-                                @if (!string.IsNullOrEmpty(Model.Website))
-                                {
-                                    <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Website):</dt>
-                                    <dd class="col-sm-8">
-                                        <a href="@Model.Website" target="_blank" class="text-primary">
-                                            <i class="fas fa-external-link-alt"></i> @Model.Website
-                                        </a>
-                                    </dd>
-                                }
-
-                                <dt class="col-sm-4">Số lượng phim:</dt>
-                                <dd class="col-sm-8">
-                                    <span class="badge badge-info">@Model.Films.Count() phim</span>
-                                </dd>
-
-                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedAt):</dt>
-                                <dd class="col-sm-8">
-                                    <i class="fas fa-clock"></i> @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            @if (!string.IsNullOrEmpty(Model.LogoUrl))
-                            {
-                                <div class="mb-3">
-                                    <img src="@Model.LogoUrl" alt="Logo @Model.Name" class="img-fluid rounded shadow" style="max-width: 150px; max-height: 150px; opacity: 0.7;" />
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="mb-3">
-                                    <i class="fas fa-image text-muted" style="font-size: 80px; opacity: 0.5;"></i>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    @if (!string.IsNullOrEmpty(Model.Description))
-                    {
-                        <hr>
-                        <h6><i class="fas fa-info-circle"></i> Mô tả</h6>
-                        <div class="alert alert-light">
-                            @Html.Raw(Model.Description.Replace("\n", "<br/>"))
-                        </div>
-                    }
-
-                    @if (Model.Films.Any())
-                    {
-                        <hr>
-                        <div class="alert alert-warning">
-                            <h6 class="alert-heading">
-                                <i class="fas fa-film"></i> Danh sách phim sẽ bị ảnh hưởng
-                            </h6>
-                            <div class="row">
-                                @foreach (var film in Model.Films.Take(4))
-                                {
-                                    <div class="col-md-6 mb-2">
-                                        <div class="card">
-                                            <div class="card-body p-2">
-                                                <h6 class="card-title mb-1">@film.Title</h6>
-                                                @if (film.ReleaseDate.HasValue)
-                                                {
-                                                    <small class="text-muted">@film.ReleaseDate.Value.Year</small>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                            @if (Model.Films.Count() > 4)
-                            {
-                                <small class="text-muted">và @(Model.Films.Count() - 4) phim khác...</small>
-                            }
-                        </div>
-                    }
-
-                    <div class="text-center mt-4">
-                        <form asp-action="Delete" method="post" class="d-inline">
-                            <input type="hidden" asp-for="Id" />
-                            <button type="submit" class="btn btn-danger btn-lg mr-3" id="confirmDelete">
-                                <i class="fas fa-trash"></i> Xác nhận xóa
-                            </button>
-                        </form>
-                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info btn-lg mr-3">
-                            <i class="fas fa-eye"></i> Xem chi tiết
-                        </a>
-                        <a asp-action="Index" class="btn btn-secondary btn-lg">
-                            <i class="fas fa-arrow-left"></i> Quay lại danh sách
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <form asp-action="Delete" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-outline-light ms-2">Hủy</a>
+            </form>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Confirmation dialog
-            $('#confirmDelete').click(function(e) {
-                e.preventDefault();
-
-                Swal.fire({
-                    title: 'Bạn có chắc chắn?',
-                    text: 'Công ty "@Model.Name" sẽ bị xóa vĩnh viễn!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#dc3545',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Xóa!',
-                    cancelButtonText: 'Hủy',
-                    customClass: {
-                        confirmButton: 'btn btn-danger',
-                        cancelButton: 'btn btn-secondary'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Show loading
-                        Swal.fire({
-                            title: 'Đang xóa...',
-                            text: 'Vui lòng đợi trong giây lát',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        // Submit form
-                        $(this).closest('form').submit();
-                    }
-                });
-            });
-
-            // Add hover effects
-            $('.card').hover(
-                function() {
-                    $(this).addClass('shadow-lg').css('transform', 'translateY(-2px)');
-                },
-                function() {
-                    $(this).removeClass('shadow-lg').css('transform', 'translateY(0)');
-                }
-            );
-
-            // Animate warning alert
-            $('.alert-danger').hide().fadeIn(1000);
-        });
-    </script>
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-}
