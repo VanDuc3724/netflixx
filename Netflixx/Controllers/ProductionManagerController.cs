@@ -253,5 +253,26 @@ namespace Netflixx.Controllers
         {
             return _context.ProductionManagers.Any(e => e.Id == id);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _context.ProductionManagers
+                .AsNoTracking()
+                .Select(pm => new
+                {
+                    pm.Id,
+                    pm.Name,
+                    pm.Alias,
+                    pm.Website,
+                    pm.Country,
+                    EstablishedDate = pm.EstablishedDate.HasValue ? pm.EstablishedDate.Value.ToString("dd/MM/yyyy") : string.Empty,
+                    pm.CEO,
+                    pm.Headquarters,
+                    pm.LogoUrl
+                })
+                .ToListAsync();
+
+            return Json(list);
+        }
     }
 }

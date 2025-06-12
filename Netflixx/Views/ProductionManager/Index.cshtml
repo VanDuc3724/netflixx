@@ -311,51 +311,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        <img src="@(string.IsNullOrEmpty(item.LogoUrl) ? '/image/logo/NetflixxLogo.png' : item.LogoUrl)"
-                                             alt="@item.Name" class="logo-thumbnail" onerror="this.src='/image/logo/NetflixxLogo.png'">
-                                    </td>
-                                    <td>
-                                        <strong>@item.Name</strong>
-                                        @if (!string.IsNullOrEmpty(item.Alias))
-                                        {
-                                            <br />
-
-                                            <small class="text-muted">@item.Alias</small>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.Website))
-                                        {
-                                            <a href="@item.Website" target="_blank" class="website-link">
-                                                <i class="fas fa-external-link-alt"></i> @item.Website
-                                            </a>
-                                        }
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-primary">@item.Country</span>
-                                    </td>
-                                    <td>@item.EstablishedDate?.ToString('dd/MM/yyyy')</td>
-                                    <td>@item.CEO</td>
-                                    <td>@item.Headquarters</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.Id" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id" title="Xem chi tiết">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Xóa">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+                           
                         </tbody>
                     </table>
                 </div>
@@ -437,12 +393,62 @@
         $(document).ready(function () {
             // Initialize DataTable
             var table = $('#dataTable').DataTable({
-                "pageLength": 10,
-                "searching": false,
-                "paging": false,
-                "info": false,
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json"
+                        ajax: {
+                            url: '/ProductionManager/GetAll',
+                            dataSrc: ''
+                        },
+                        columns: [
+                            {
+                                data: 'logoUrl',
+                                render: function (data, type, row) {
+                                    var src = data ? data : '/image/logo/NetflixxLogo.png';
+                                    return '<img src="' + src + '" alt="' + row.name + '" class="logo-thumbnail" onerror="this.src=\'/image/logo/NetflixxLogo.png\'">';
+                                }
+                            },
+                            {
+                                data: 'name',
+                                render: function (data, type, row) {
+                                    if (row.alias) {
+                                        return '<strong>' + data + '</strong><br/><small class="text-muted">' + row.alias + '</small>';
+                                    }
+                                    return '<strong>' + data + '</strong>';
+                                }
+                            },
+                            {
+                                data: 'website',
+                                render: function (data) {
+                                    if (data) {
+                                        return '<a href="' + data + '" target="_blank" class="website-link"><i class="fas fa-external-link-alt"></i> ' + data + '</a>';
+                                    }
+                                    return '';
+                                }
+                            },
+                            {
+                                data: 'country',
+                                render: function (data) {
+                                    return '<span class="badge badge-primary">' + data + '</span>';
+                                }
+                            },
+                            { data: 'establishedDate' },
+                            { data: 'ceo' },
+                            { data: 'headquarters' },
+                            {
+                                data: 'id',
+                                render: function (data) {
+                                    return '<div class="btn-group">' +
+                                        '<a class="btn btn-sm btn-primary" href="/ProductionManager/Edit/' + data + '" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>' +
+                                        '<a class="btn btn-sm btn-info" href="/ProductionManager/Details/' + data + '" title="Xem chi tiết"><i class="fas fa-eye"></i></a>' +
+                                        '<a class="btn btn-sm btn-danger" href="/ProductionManager/Delete/' + data + '" title="Xóa"><i class="fas fa-trash"></i></a>' +
+                                        '</div>';
+                                }
+                            }
+                        ],
+                        pageLength: 10,
+                        searching: false,
+                        paging: false,
+                        info: false,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json'
                 }
             });
 
