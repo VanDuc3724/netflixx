@@ -212,8 +212,9 @@ namespace Netflixx.Controllers
             }
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("_DeleteModal", productionManager);
+                return PartialView("Delete", productionManager);
             }
+
             return View(productionManager);
         }
 

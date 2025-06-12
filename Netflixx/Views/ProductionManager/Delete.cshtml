@@ -1,41 +1,71 @@
 ﻿@model ProductionManagerApp.Models.ProductionManager
-
 @{
+    bool isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+    if (isAjax)
+    {
+        Layout = null;
+    }
     ViewData["Title"] = "Xóa công ty sản xuất";
 }
-
-@section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-}
-
-@await Html.PartialAsync("_ProductionManagerMenu")
-
+@if (!isAjax)
+{
+    @section Styles {
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    }
+    @await Html.PartialAsync("_ProductionManagerMenu")
 <div class="main-content" id="mainContent">
-
-<div class="container mt-4">
-    <h1 class="text-white">@ViewData["Title"]</h1>
-    <h3 class="text-warning">Bạn có chắc muốn xóa công ty này?</h3>
-
-    <div class="card bg-dark text-white mt-4">
-        <div class="card-body">
-            <h3 class="text-danger">@Model.Name</h3>
-            <p class="text-muted">
-                @Model.Country
-                @if (Model.EstablishedDate.HasValue)
-                {
-                    <span> | Thành lập: @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")</span>
-                }
-            </p>
-            <p class="text-muted">Số phim: @Model.Films.Count</p>
-
-            <form asp-action="Delete" class="mt-4">
-                <input type="hidden" asp-for="Id" />
-                <input type="submit" value="Xóa" class="btn btn-danger" />
-                <a asp-action="Index" class="btn btn-outline-light ms-2">Hủy</a>
-            </form>
+        <div class="container mt-4">
+            <h1 class="text-white">@ViewData["Title"]</h1>
+            <h3 class="text-warning">Bạn có chắc muốn xóa công ty này?</h3>
+            <div class="card bg-dark text-white mt-4">
+                <div class="card-body">
+                    <h3 class="text-danger">@Model.Name</h3>
+                    <p class="text-muted">
+                        @Model.Country
+                        @if (Model.EstablishedDate.HasValue)
+                        {
+                            <span> | Thành lập: @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")</span>
+                        }
+                    </p>
+                    <p class="text-muted">Số phim: @Model.Films.Count</p>
+ <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="Xóa" class="btn btn-danger" />
+                        <a asp-action="Index" class="btn btn-outline-light ms-2">Hủy</a>
+                    </form>
+                </div>
+            </div>
         </div>
-        </div>
-
     </div>
-</div>
-@await Html.PartialAsync("_ProductionManagerMenuScripts")
+
+    @await Html.PartialAsync("_ProductionManagerMenuScripts")
+}
+else
+{
+    <div class="modal-content bg-dark text-white">
+        <form asp-action="Delete" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title">@ViewData["Title"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 class="text-danger">@Model.Name</h3>
+                <p class="text-muted">
+                    @Model.Country
+                    @if (Model.EstablishedDate.HasValue)
+                    {
+                        <span> | Thành lập: @Model.EstablishedDate.Value.ToString("dd/MM/yyyy")</span>
+                    }
+                </p>
+                <p class="text-muted">Số phim: @Model.Films.Count</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Hủy</button>
+            </div>
+        </form>
+    </div>
+}
