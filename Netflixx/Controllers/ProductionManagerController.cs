@@ -4,8 +4,6 @@ using Netflixx.Repositories;
 using ProductionManagerApp.Models;
 using System;
 using System.IO;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Netflixx.Services;
 
 namespace Netflixx.Controllers
 {
@@ -93,8 +91,6 @@ namespace Netflixx.Controllers
         // GET: ProductionManager/Create
         public IActionResult Create()
         {
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames());
-
             var model = new ProductionManager
             {
                 CreatedAt = DateTime.Now,
@@ -108,8 +104,6 @@ namespace Netflixx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile")] ProductionManager productionManager)
         {
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames());
-
             if (ModelState.IsValid)
             {
                 productionManager.CreatedAt = DateTime.Now;
@@ -132,8 +126,6 @@ namespace Netflixx.Controllers
                 TempData["SuccessMessage"] = "Thêm công ty sản xuất thành công!";
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames(), productionManager.Country);
-
             return View(productionManager);
         }
 
@@ -150,9 +142,7 @@ namespace Netflixx.Controllers
             {
                 return NotFound();
             }
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames(), productionManager.Country);
             return View(productionManager);
-
         }
 
         // POST: ProductionManager/Edit/5
@@ -164,8 +154,6 @@ namespace Netflixx.Controllers
             {
                 return NotFound();
             }
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames(), productionManager.Country);
-
 
             if (ModelState.IsValid)
             {
@@ -202,8 +190,6 @@ namespace Netflixx.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.CountryList = new SelectList(CountryProvider.GetCountryNames(), productionManager.Country);
-
             return View(productionManager);
         }
 
