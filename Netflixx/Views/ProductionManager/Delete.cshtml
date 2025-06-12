@@ -4,6 +4,10 @@
     ViewData["Title"] = "Xóa công ty sản xuất";
 }
 
+@await Html.PartialAsync("_ProductionManagerMenu")
+
+<div class="main-content" id="mainContent">
+
 <div class="container mt-4">
     <h1 class="text-white">@ViewData["Title"]</h1>
     <h3 class="text-warning">Bạn có chắc muốn xóa công ty này?</h3>
@@ -26,5 +30,8 @@
                 <a asp-action="Index" class="btn btn-outline-light ms-2">Hủy</a>
             </form>
         </div>
+        </div>
+
     </div>
 </div>
+@await Html.PartialAsync("_ProductionManagerMenuScripts")

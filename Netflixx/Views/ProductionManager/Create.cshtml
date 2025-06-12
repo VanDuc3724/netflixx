@@ -4,6 +4,10 @@
     ViewData["Title"] = "Thêm Công ty Sản xuất";
 }
 
+@await Html.PartialAsync("_ProductionManagerMenu")
+
+<div class="main-content" id="mainContent">
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -37,7 +41,9 @@
             </div>
         </div>
     </div>
+</div
 </div>
+
 
 <style>
     .required::after {
@@ -106,6 +112,8 @@
         }
     });
 </script>
+@await Html.PartialAsync("_ProductionManagerMenuScripts")
+
 
 @section Scripts {
     @{
