@@ -204,7 +204,6 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div>
-            <a href="#"><i class="fas fa-filter"></i> Tìm kiếm & Lọc</a>
             <a href="#"><i class="fas fa-list"></i> Danh sách công ty</a>
             <a href="#"><i class="fas fa-plus"></i> Thêm công ty mới</a>
             <a href="#"><i class="fas fa-history"></i> Lịch sử chỉnh sửa</a>
@@ -280,19 +279,15 @@
                         <div class="d-flex align-items-center">
                             <span class="mr-2">Xem</span>
                             <select class="form-control" style="width: 80px;" id="pageLength">
+                                <option value="5">5</option>
                                 <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
                             <span class="ml-2">mục</span>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
-                            <label class="mr-2">Tìm:</label>
-                            <input type="text" class="form-control" style="width: 200px;" id="globalSearch" placeholder="Tìm kiếm...">
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -468,14 +463,14 @@
             // Search functionality
             $('#searchBtn').click(function () {
                 var name = $('#searchName').val().toLowerCase();
-                var country = $('#filterCountry').val();
-                var ceo = $('#searchCEO').val().toLowerCase();
+                        var country = $('#filterCountry').val().toLowerCase();
+                        var ceo = $('#searchCEO').val().toLowerCase();
 
                 table.rows().every(function () {
-                    var data = this.data();
-                    var nameMatch = name === '' || data[1].toLowerCase().includes(name);
-                    var countryMatch = country === '' || data[3].includes(country);
-                    var ceoMatch = ceo === '' || data[5].toLowerCase().includes(ceo);
+                            var rowData = this.data();
+                            var nameMatch = !name || (rowData.name && rowData.name.toLowerCase().includes(name));
+                            var countryMatch = !country || (rowData.country && rowData.country.toLowerCase().includes(country));
+                            var ceoMatch = !ceo || (rowData.ceo && rowData.ceo.toLowerCase().includes(ceo));
 
                     if (nameMatch && countryMatch && ceoMatch) {
                         $(this.node()).show();
@@ -489,8 +484,9 @@
             $('#globalSearch').on('keyup', function () {
                 var value = $(this).val().toLowerCase();
                 table.rows().every(function () {
-                    var data = this.data().join(' ').toLowerCase();
-                    if (data.includes(value)) {
+                             var rowData = this.data();
+                            var combined = Object.values(rowData).join(' ').toLowerCase();
+                            if (combined.includes(value)) {
                         $(this.node()).show();
                     } else {
                         $(this.node()).hide();
