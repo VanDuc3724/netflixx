@@ -817,24 +817,6 @@ namespace Netflixx.Migrations
                     b.ToTable("PackageSubscriptionUpgrades");
                 });
 
-            modelBuilder.Entity("ProductionManagerApp.Models.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries", (string)null);
-                });
-
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
                 {
                     b.Property<int>("Id")
@@ -851,8 +833,10 @@ namespace Netflixx.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -885,8 +869,6 @@ namespace Netflixx.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("ProductionManagers", (string)null);
                 });
@@ -1226,17 +1208,6 @@ namespace Netflixx.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
-                {
-                    b.HasOne("ProductionManagerApp.Models.Country", "Country")
-                        .WithMany("ProductionManagers")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("Netflixx.Models.AppUserModel", b =>
                 {
                     b.Navigation("Account")
@@ -1319,11 +1290,6 @@ namespace Netflixx.Migrations
                     b.Navigation("PromotionPackages");
 
                     b.Navigation("PromotionUsages");
-                });
-
-            modelBuilder.Entity("ProductionManagerApp.Models.Country", b =>
-                {
-                    b.Navigation("ProductionManagers");
                 });
 
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
