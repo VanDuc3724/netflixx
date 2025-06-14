@@ -57,47 +57,50 @@
     </div>
 </div>
 
-@await Html.PartialAsync("_ProductionManagerMenuScripts")
-<script>
-    $(document).ready(function () {
-       function filterTable() {
-            var action = $('#filterAction').val().toLowerCase();
-            var company = $('#searchCompany').val().toLowerCase();
-            var date = $('#searchDate').val();
+@section Scripts {
+    @await Html.PartialAsync("_ProductionManagerMenuScripts")
+    <script>
+        $(document).ready(function () {
+            function filterTable() {
+                var action = $('#filterAction').val().toLowerCase();
+                var company = $('#searchCompany').val().toLowerCase();
+                var date = $('#searchDate').val();
 
-            $('#historyAllTable tbody tr').each(function () {
-                var row = $(this);
-                var rowDateText = row.find('td:eq(0)').text().trim();
-                var rowCompany = row.find('td:eq(1)').text().toLowerCase();
-                var rowAction = row.find('td:eq(2)').text().toLowerCase();
+             $('#historyAllTable tbody tr').each(function () {
+                    var row = $(this);
+                    var rowDateText = row.find('td:eq(0)').text().trim();
+                    var rowCompany = row.find('td:eq(1)').text().toLowerCase();
+                    var rowAction = row.find('td:eq(2)').text().toLowerCase();
 
-                var show = true;
+                    var show = true;
 
-                if (action && rowAction.indexOf(action) === -1) {
-                    show = false;
-                }
+                    if (action && rowAction.indexOf(action) === -1) {
+                        show = false;
+                    }
 
-                if (company && rowCompany.indexOf(company) === -1) {
-                    show = false;
-                }
+                   if (company && rowCompany.indexOf(company) === -1) {
+                        show = false;
+                    }
 
-                if (date) {
-                    var parts = rowDateText.split(' ')[0].split('/'); // dd/MM/yyyy
-                    if (parts.length === 3) {
-                        var formatted = parts[2] + '-' + parts[1] + '-' + parts[0];
-                        if (formatted !== date) {
-                            show = false;
-                        }
+                 if (date) {
+                        var parts = rowDateText.split(' ')[0].split('/'); // dd/MM/yyyy
+                        if (parts.length === 3) {
+                            var formatted = parts[2] + '-' + parts[1] + '-' + parts[0];
+                            if (formatted !== date) {
+                                show = false;
+                            }
                     }
                 }
 
-                row.toggle(show);
-            });
-         }
+      row.toggle(show);
+                });
+            }
 
-        $('#searchCompany').on('keyup', filterTable);
-        $('#filterAction').on('change', filterTable);
-        $('#searchDate').on('change keyup', filterTable);
-        $('#searchButton').on('click', filterTable);
-    });
-</script>
+
+         $('#searchCompany').on('keyup', filterTable);
+              $('#filterAction').on('change', filterTable);
+              $('#searchDate').on('change keyup', filterTable);
+              $('#searchButton').on('click', filterTable);
+          });
+    </script>
+}
