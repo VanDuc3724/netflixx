@@ -313,5 +313,15 @@ namespace Netflixx.Controllers
             ViewBag.ProductionManagerId = id;
             return View(list);
         }
+        [HttpGet]
+        public async Task<IActionResult> HistoryAll()
+        {
+            var list = await _context.ProductionManagerHistories
+                .Include(h => h.ProductionManager)
+                .OrderByDescending(h => h.Timestamp)
+                .ToListAsync();
+            return View("HistoryAll", list);
+        }
+
     }
 }
