@@ -28,7 +28,7 @@
                         {
                             <tr>
                                 <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@item.ProductionManager?.Name</td>
+                                <td>@(item.ProductionManagerName ?? item.ProductionManager?.Name)</td>
                                 <td>@item.Action</td>
                             </tr>
                         }

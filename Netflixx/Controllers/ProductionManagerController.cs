@@ -126,6 +126,7 @@ namespace Netflixx.Controllers
                 _context.ProductionManagerHistories.Add(new ProductionManagerHistory
                 {
                     ProductionManagerId = productionManager.Id,
+                    ProductionManagerName = productionManager.Name,
                     Action = "Create",
                     Timestamp = DateTime.Now
                 });
@@ -186,6 +187,7 @@ namespace Netflixx.Controllers
                     _context.ProductionManagerHistories.Add(new ProductionManagerHistory
                     {
                         ProductionManagerId = productionManager.Id,
+                        ProductionManagerName = productionManager.Name,
                         Action = "Edit",
                         Timestamp = DateTime.Now
                     });
@@ -266,6 +268,7 @@ namespace Netflixx.Controllers
                 _context.ProductionManagerHistories.Add(new ProductionManagerHistory
                 {
                     ProductionManagerId = productionManager.Id,
+                    ProductionManagerName = productionManager.Name,
                     Action = "Delete",
                     Timestamp = DateTime.Now
                 });

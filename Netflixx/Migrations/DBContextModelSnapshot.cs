@@ -889,6 +889,10 @@ namespace Netflixx.Migrations
                     b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProductionManagerName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 

@@ -12,8 +12,8 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250614055647_DB1")]
-    partial class DB1
+    [Migration("20250614065201_db1")]
+    partial class db1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -891,6 +891,10 @@ namespace Netflixx.Migrations
 
                     b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductionManagerName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");

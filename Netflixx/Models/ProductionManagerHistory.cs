@@ -11,6 +11,9 @@ namespace ProductionManagerApp.Models
 
         public int? ProductionManagerId { get; set; }
 
+        [StringLength(100)]
+        public string? ProductionManagerName { get; set; }
+
         [StringLength(20)]
         public string Action { get; set; } = string.Empty;
 
