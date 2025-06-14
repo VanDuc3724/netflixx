@@ -203,12 +203,8 @@
                         <label>Quốc gia</label>
                         <select class="form-control" id="filterCountry">
                             <option value="">Tất cả</option>
-                            <option value="USA">Hoa Kỳ</option>
-                            <option value="UK">Anh</option>
-                            <option value="France">Pháp</option>
-                            <option value="Germany">Đức</option>
-                            <option value="Japan">Nhật Bản</option>
-                            <option value="Korea">Hàn Quốc</option>
+                        @await Html.PartialAsync("_CountryOptions", null)
+
                         </select>
                     </div>
                     <div class="col-md-3">

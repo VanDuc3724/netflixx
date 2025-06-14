@@ -1,0 +1,29 @@
+﻿@model string
+@{
+    var countries = new List<(string Code, string Name)> {
+        ("USA", "Hoa Kỳ"),
+        ("UK", "Anh"),
+        ("France", "Pháp"),
+        ("Germany", "Đức"),
+        ("Japan", "Nhật Bản"),
+        ("Korea", "Hàn Quốc"),
+        ("China", "Trung Quốc"),
+        ("Canada", "Canada"),
+        ("Australia", "Úc"),
+        ("India", "Ấn Độ"),
+        ("Italy", "Ý"),
+        ("Spain", "Tây Ban Nha"),
+        ("Brazil", "Brazil"),
+        ("Russia", "Nga"),
+        ("Mexico", "Mexico"),
+        ("Thailand", "Thái Lan"),
+        ("Singapore", "Singapore"),
+        ("Indonesia", "Indonesia"),
+        ("Philippines", "Philippines"),
+        ("Other", "Khác")
+    };
+}
+@foreach (var c in countries)
+{
+    <option value="@c.Code" @(Model == c.Code ? "selected" : "")>@c.Name</option>
+}

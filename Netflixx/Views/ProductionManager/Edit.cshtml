@@ -259,16 +259,7 @@
                                             <label asp-for="Country" class="form-label required">Quốc gia</label>
                                             <select asp-for="Country" class="form-control">
                                                 <option value="">-- Chọn quốc gia --</option>
-                                                <option value="USA">Hoa Kỳ</option>
-                                                <option value="UK">Anh</option>
-                                                <option value="France">Pháp</option>
-                                                <option value="Germany">Đức</option>
-                                                <option value="Japan">Nhật Bản</option>
-                                                <option value="Korea">Hàn Quốc</option>
-                                                <option value="China">Trung Quốc</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Úc</option>
-                                                <option value="Other">Khác</option>
+                                                @await Html.PartialAsync("_CountryOptions", Model.Country)
                                             </select>
                                             <span asp-validation-for="Country" class="text-danger"></span>
                                         </div>
