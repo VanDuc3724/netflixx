@@ -201,12 +201,12 @@
                     </div>
                     <div class="col-md-3">
                         <label>Quốc gia</label>
-                        <select class="form-control" id="filterCountry">
-                            <option value="">Tất cả</option>
+                    <input type="text" class="form-control" id="filterCountry" list="filterCountryList" placeholder="Tất cả" />
+                    <datalist id="filterCountryList">
                         @await Html.PartialAsync("_CountryOptions", null)
 
-                        </select>
-                    </div>
+                    </datalist>
+                </div>
                     <div class="col-md-3">
                         <label>CEO</label>
                         <input type="text" class="form-control" id="searchCEO" placeholder="Tìm theo CEO...">

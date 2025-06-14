@@ -257,10 +257,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label asp-for="Country" class="form-label required">Quốc gia</label>
-                                            <select asp-for="Country" class="form-control">
-                                                <option value="">-- Chọn quốc gia --</option>
+                                            <input asp-for="Country" class="form-control" list="countryList" placeholder="Nhập hoặc chọn quốc gia" />
+                                            <datalist id="countryList">
                                                 @await Html.PartialAsync("_CountryOptions", Model.Country)
-                                            </select>
+                                            </datalist>
                                             <span asp-validation-for="Country" class="text-danger"></span>
                                         </div>
                                     </div>
