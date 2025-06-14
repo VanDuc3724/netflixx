@@ -12,21 +12,24 @@
                 <h4>Tất cả thay đổi của công ty sản xuất</h4>
             </div>
             <div class="card-body">
-                <table class="table table-dark table-striped">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm..." />
+                </div>
+                <table class="table table-dark table-striped" id="historyAllTable">
                     <thead>
                         <tr>
+                            <th>Thời gian</th>
                             <th>Công ty</th>
                             <th>Thao tác</th>
-                            <th>Thời gian</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>@item.ProductionManager?.Name</td>
                                 <td>@item.Action</td>
-                                <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
                             </tr>
                         }
                     </tbody>
@@ -37,3 +40,13 @@
 </div>
 
 @await Html.PartialAsync("_ProductionManagerMenuScripts")
+<script>
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function () {
+            var value = $(this).val().toLowerCase();
+            $('#historyAllTable tbody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
