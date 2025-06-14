@@ -32,12 +32,16 @@ namespace Netflixx.Repositories
         public virtual DbSet<PointsTransactionsModel> PointsTransactions { get; set; }
         public virtual DbSet<DailyRevenueModel> DailyRevenue { get; set; }
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
+        public virtual DbSet<ProductionManagerHistory> ProductionManagerHistories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ProductionManager>()
                    .ToTable("ProductionManagers");
+            modelBuilder.Entity<ProductionManagerHistory>()
+                   .ToTable("ProductionManagerHistories");
             modelBuilder.Entity<FilmsModel>()
        .HasOne(f => f.ProductionManager)           
        .WithMany(p => p.Films)                     

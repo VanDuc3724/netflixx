@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ProductionManagerApp.Models.ProductionManagerHistory>
+@{
+    ViewData["Title"] = "Lịch sử chỉnh sửa";
+}
+
+@await Html.PartialAsync("_ProductionManagerMenu")
+
+<div class="main-content" id="mainContent">
+    <div class="container mt-4">
+        <div class="card bg-dark text-white shadow-lg">
+            <div class="card-header">
+                <h4>Lịch sử chỉnh sửa</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>Thao tác</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Action</td>
+                                <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Details" asp-route-id="@ViewBag.ProductionManagerId" class="btn btn-outline-light">Quay lại</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_ProductionManagerMenuScripts")

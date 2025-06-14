@@ -123,6 +123,14 @@ namespace Netflixx.Controllers
 
                 _context.Add(productionManager);
                 await _context.SaveChangesAsync();
+                _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                {
+                    ProductionManagerId = productionManager.Id,
+                    Action = "Create",
+                    Timestamp = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
+
 
                 TempData["SuccessMessage"] = "Thêm công ty sản xuất thành công!";
                 return RedirectToAction(nameof(Index));
@@ -175,6 +183,14 @@ namespace Netflixx.Controllers
                     productionManager.UpdatedAt = DateTime.Now;
                     _context.Update(productionManager);
                     await _context.SaveChangesAsync();
+                    _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                    {
+                        ProductionManagerId = productionManager.Id,
+                        Action = "Edit",
+                        Timestamp = DateTime.Now
+                    });
+                    await _context.SaveChangesAsync();
+
 
                     TempData["SuccessMessage"] = "Cập nhật công ty sản xuất thành công!";
                 }
@@ -248,6 +264,13 @@ namespace Netflixx.Controllers
 
                 _context.ProductionManagers.Remove(productionManager);
                 await _context.SaveChangesAsync();
+                _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                {
+                    ProductionManagerId = productionManager.Id,
+                    Action = "Delete",
+                    Timestamp = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Xóa công ty sản xuất thành công!";
             }
 
@@ -278,6 +301,16 @@ namespace Netflixx.Controllers
                 .ToListAsync();
 
             return Json(list);
+        }
+        [HttpGet]
+        public async Task<IActionResult> History(int id)
+        {
+            var list = await _context.ProductionManagerHistories
+                .Where(h => h.ProductionManagerId == id)
+                .OrderByDescending(h => h.Timestamp)
+                .ToListAsync();
+            ViewBag.ProductionManagerId = id;
+            return View(list);
         }
     }
 }
