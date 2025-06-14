@@ -12,8 +12,21 @@
                 <h4>Tất cả thay đổi của công ty sản xuất</h4>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm..." />
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-2">
+                        <input type="text" class="form-control" id="searchCompany" placeholder="Tên công ty..." />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <select class="form-control" id="filterAction">
+                            <option value="">Tất cả thao tác</option>
+                            <option value="Create">Create</option>
+                            <option value="Edit">Edit</option>
+                            <option value="Delete">Delete</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <input type="date" class="form-control" id="searchDate" />
+                    </div>
                 </div>
                 <table class="table table-dark table-striped" id="historyAllTable">
                     <thead>
@@ -42,11 +55,43 @@
 @await Html.PartialAsync("_ProductionManagerMenuScripts")
 <script>
     $(document).ready(function () {
-        $('#searchInput').on('keyup', function () {
-            var value = $(this).val().toLowerCase();
-            $('#historyAllTable tbody tr').filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+       function filterTable() {
+            var action = $('#filterAction').val().toLowerCase();
+            var company = $('#searchCompany').val().toLowerCase();
+            var date = $('#searchDate').val();
+
+            $('#historyAllTable tbody tr').each(function () {
+                var row = $(this);
+                var rowDateText = row.find('td:eq(0)').text().trim();
+                var rowCompany = row.find('td:eq(1)').text().toLowerCase();
+                var rowAction = row.find('td:eq(2)').text().toLowerCase();
+
+                var show = true;
+
+                if (action && rowAction.indexOf(action) === -1) {
+                    show = false;
+                }
+
+                if (company && rowCompany.indexOf(company) === -1) {
+                    show = false;
+                }
+
+                if (date) {
+                    var parts = rowDateText.split(' ')[0].split('/'); // dd/MM/yyyy
+                    if (parts.length === 3) {
+                        var formatted = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        if (formatted !== date) {
+                            show = false;
+                        }
+                    }
+                }
+
+                row.toggle(show);
             });
-        });
+         }
+
+        $('#searchCompany').on('keyup', filterTable);
+        $('#filterAction').on('change', filterTable);
+        $('#searchDate').on('change keyup', filterTable);
     });
 </script>
