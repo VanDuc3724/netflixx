@@ -42,6 +42,11 @@ namespace Netflixx.Repositories
                    .ToTable("ProductionManagers");
             modelBuilder.Entity<ProductionManagerHistory>()
                    .ToTable("ProductionManagerHistories");
+            modelBuilder.Entity<ProductionManagerHistory>()
+                  .HasOne(h => h.ProductionManager)
+                  .WithMany(p => p.Histories)
+                  .HasForeignKey(h => h.ProductionManagerId)
+                  .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<FilmsModel>()
        .HasOne(f => f.ProductionManager)           
        .WithMany(p => p.Films)                     

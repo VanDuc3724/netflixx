@@ -61,5 +61,7 @@ namespace ProductionManagerApp.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual ICollection<FilmsModel> Films { get; set; } = new List<FilmsModel>();
+        public virtual ICollection<ProductionManagerHistory> Histories { get; set; } = new List<ProductionManagerHistory>();
+
     }
 }

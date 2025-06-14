@@ -12,8 +12,8 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250614053457_db1")]
-    partial class db1
+    [Migration("20250614055647_DB1")]
+    partial class DB1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -889,7 +889,7 @@ namespace Netflixx.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("ProductionManagerId")
+                    b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
@@ -1240,10 +1240,9 @@ namespace Netflixx.Migrations
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManagerHistory", b =>
                 {
                     b.HasOne("ProductionManagerApp.Models.ProductionManager", "ProductionManager")
-                        .WithMany()
+                        .WithMany("Histories")
                         .HasForeignKey("ProductionManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ProductionManager");
                 });
@@ -1335,6 +1334,8 @@ namespace Netflixx.Migrations
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
                 {
                     b.Navigation("Films");
+
+                    b.Navigation("Histories");
                 });
 #pragma warning restore 612, 618
         }

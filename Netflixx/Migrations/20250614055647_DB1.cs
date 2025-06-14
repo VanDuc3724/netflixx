@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Netflixx.Migrations
 {
     /// <inheritdoc />
-    public partial class db1 : Migration
+    public partial class DB1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -448,7 +448,7 @@ namespace Netflixx.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductionManagerId = table.Column<int>(type: "int", nullable: false),
+                    ProductionManagerId = table.Column<int>(type: "int", nullable: true),
                     Action = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -460,7 +460,7 @@ namespace Netflixx.Migrations
                         column: x => x.ProductionManagerId,
                         principalTable: "ProductionManagers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(

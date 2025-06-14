@@ -9,7 +9,7 @@ namespace ProductionManagerApp.Models
         [Key]
         public int Id { get; set; }
 
-        public int ProductionManagerId { get; set; }
+        public int? ProductionManagerId { get; set; }
 
         [StringLength(20)]
         public string Action { get; set; } = string.Empty;
@@ -17,6 +17,6 @@ namespace ProductionManagerApp.Models
         public DateTime Timestamp { get; set; }
 
         [ForeignKey("ProductionManagerId")]
-        public ProductionManager ProductionManager { get; set; }
+        public ProductionManager? ProductionManager { get; set; }
     }
 }

@@ -886,7 +886,7 @@ namespace Netflixx.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("ProductionManagerId")
+                    b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
@@ -1237,10 +1237,9 @@ namespace Netflixx.Migrations
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManagerHistory", b =>
                 {
                     b.HasOne("ProductionManagerApp.Models.ProductionManager", "ProductionManager")
-                        .WithMany()
+                        .WithMany("Histories")
                         .HasForeignKey("ProductionManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ProductionManager");
                 });
@@ -1332,6 +1331,8 @@ namespace Netflixx.Migrations
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>
                 {
                     b.Navigation("Films");
+
+                    b.Navigation("Histories");
                 });
 #pragma warning restore 612, 618
         }

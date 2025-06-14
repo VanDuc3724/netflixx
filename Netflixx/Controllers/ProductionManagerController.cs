@@ -262,14 +262,15 @@ namespace Netflixx.Controllers
                     }
                 }
 
-                _context.ProductionManagers.Remove(productionManager);
-                await _context.SaveChangesAsync();
+              
                 _context.ProductionManagerHistories.Add(new ProductionManagerHistory
                 {
                     ProductionManagerId = productionManager.Id,
                     Action = "Delete",
                     Timestamp = DateTime.Now
                 });
+                await _context.SaveChangesAsync();
+                _context.ProductionManagers.Remove(productionManager);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Xóa công ty sản xuất thành công!";
             }
