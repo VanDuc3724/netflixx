@@ -255,15 +255,6 @@
 
             $('#searchButton').on('click', filterTable);
 
-            // Filter on Enter key
-            $('#searchCompany, #searchDate').on('keypress', function(e) {
-                if (e.which === 13) {
-                    filterTable();
-                }
-            });
-
-            // Filter on action change
-            $('#filterAction').on('change', filterTable);
-        });
+          });
     </script>
 }
