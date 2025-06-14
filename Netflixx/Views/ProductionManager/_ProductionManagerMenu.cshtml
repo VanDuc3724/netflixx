@@ -82,11 +82,8 @@
     <div>
         <a asp-controller="ProductionManager" asp-action="Index"><i class="fas fa-list"></i> Danh sách công ty</a>
         <a asp-controller="ProductionManager" asp-action="Create"><i class="fas fa-plus"></i> Thêm công ty mới</a>
-        @if (ViewData["ProductionManagerId"] != null)
-        {
-            <a asp-controller="ProductionManager" asp-action="History" asp-route-id="@ViewData["ProductionManagerId"]"><i class="fas fa-history"></i> Lịch sử chỉnh sửa</a>
-        }
-        <a asp-controller="ProductionManager" asp-action="HistoryAll"><i class="fas fa-history"></i> Lịch Sử Chỉnh Sửa</a>
+        
+        <a asp-controller="ProductionManager" asp-action="HistoryAll"><i class="fas fa-history"></i> Lịch sử chỉnh sửa</a>
 
         <a href="#"><i class="fas fa-trash-alt"></i> Thùng rác</a>
     </div>
