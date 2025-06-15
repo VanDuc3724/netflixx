@@ -158,7 +158,7 @@ namespace Netflixx.Controllers
         // POST: ProductionManager/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,CreatedAt")] ProductionManager productionManager)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Website,Country,EstablishedDate,Alias,CEO,Headquarters,Description,LogoFile,LogoUrl,CreatedAt")] ProductionManager productionManager)
         {
             if (id != productionManager.Id)
             {
@@ -172,6 +172,16 @@ namespace Netflixx.Controllers
 
                     if (productionManager.LogoFile != null)
                     {
+                        if (!string.IsNullOrEmpty(productionManager.LogoUrl))
+                        {
+                            var oldFileName = Path.GetFileName(productionManager.LogoUrl);
+                            var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                "wwwroot", "image", "productionlogos", oldFileName);
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
                         var ext = Path.GetExtension(productionManager.LogoFile.FileName);
                         var fn = $"{Guid.NewGuid()}{ext}";
                         var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fn);
