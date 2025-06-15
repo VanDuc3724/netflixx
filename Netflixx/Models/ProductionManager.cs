@@ -54,6 +54,12 @@ namespace ProductionManagerApp.Models
         [Display(Name = "Logo")]
         public IFormFile? LogoFile { get; set; }
 
+        [Display(Name = "Đã xóa")]
+        public bool IsDeleted { get; set; } = false;
+
+        [Display(Name = "Thời gian xóa")]
+        public DateTime? DeletedAt { get; set; }
+
         [Display(Name = "Ngày tạo")]
         public DateTime CreatedAt { get; set; }
 

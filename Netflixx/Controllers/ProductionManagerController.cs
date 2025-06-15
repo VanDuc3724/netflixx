@@ -27,6 +27,7 @@ namespace Netflixx.Controllers
             ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";
 
             var productionManagers = from pm in _context.ProductionManagers
+                                     where !pm.IsDeleted
                                      select pm;
 
             // Tìm kiếm
@@ -263,16 +264,7 @@ namespace Netflixx.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (!string.IsNullOrEmpty(productionManager.LogoUrl))
-                {
-                    var fileName = Path.GetFileName(productionManager.LogoUrl);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot", "image", "productionlogos", fileName);
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                }
+              
 
               
                 _context.ProductionManagerHistories.Add(new ProductionManagerHistory
@@ -282,10 +274,12 @@ namespace Netflixx.Controllers
                     Action = "Delete",
                     Timestamp = DateTime.Now
                 });
+                productionManager.IsDeleted = true;
+                productionManager.DeletedAt = DateTime.Now;
+                _context.Update(productionManager);
                 await _context.SaveChangesAsync();
-                _context.ProductionManagers.Remove(productionManager);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Xóa công ty sản xuất thành công!";
+                TempData["SuccessMessage"] = "Đã chuyển vào thùng rác!";
+
             }
 
             return RedirectToAction(nameof(Index));
@@ -299,6 +293,7 @@ namespace Netflixx.Controllers
         public async Task<IActionResult> GetAll()
         {
             var list = await _context.ProductionManagers
+                .Where(pm => !pm.IsDeleted)
                 .AsNoTracking()
                 .Select(pm => new
                 {
@@ -335,6 +330,58 @@ namespace Netflixx.Controllers
                 .ToListAsync();
             return View("HistoryAll", list);
         }
+        [HttpGet]
+        public async Task<IActionResult> Trash()
+        {
+            var list = await _context.ProductionManagers
+                .Where(pm => pm.IsDeleted)
+                .OrderByDescending(pm => pm.DeletedAt)
+                .ToListAsync();
+            return View("Trash", list);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var pm = await _context.ProductionManagers.FindAsync(id);
+            if (pm != null)
+            {
+                pm.IsDeleted = false;
+                pm.DeletedAt = null;
+                _context.Update(pm);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã khôi phục thành công!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            var pm = await _context.ProductionManagers
+                .Include(p => p.Films)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (pm != null)
+            {
+                if (!string.IsNullOrEmpty(pm.LogoUrl))
+                {
+                    var fileName = Path.GetFileName(pm.LogoUrl);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fileName);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+                _context.ProductionManagers.Remove(pm);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa vĩnh viễn!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
+
 
     }
 }

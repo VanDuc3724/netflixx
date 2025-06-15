@@ -39,7 +39,12 @@ namespace Netflixx.Repositories
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ProductionManager>()
-                   .ToTable("ProductionManagers");
+                     .ToTable("ProductionManagers");
+            modelBuilder.Entity<ProductionManager>()
+                .Property(p => p.IsDeleted)
+                .HasDefaultValue(false);
+            modelBuilder.Entity<ProductionManager>()
+                .Property(p => p.DeletedAt);
             modelBuilder.Entity<ProductionManagerHistory>()
                    .ToTable("ProductionManagerHistories");
             modelBuilder.Entity<ProductionManagerHistory>()

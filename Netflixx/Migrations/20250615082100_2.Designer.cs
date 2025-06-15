@@ -12,8 +12,8 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250614065201_db1")]
-    partial class db1
+    [Migration("20250615082100_2")]
+    partial class _2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -844,6 +844,9 @@ namespace Netflixx.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -854,6 +857,11 @@ namespace Netflixx.Migrations
                     b.Property<string>("Headquarters")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LogoUrl")
                         .HasMaxLength(300)
