@@ -2,50 +2,528 @@
 @{
     ViewData["Title"] = "Thùng rác";
 }
+
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 }
 
 @await Html.PartialAsync("_ProductionManagerMenu")
+
 <div class="main-content" id="mainContent">
-    <div class="container mt-4">
-        <div class="card bg-dark text-white shadow-lg">
-            <div class="card-header">
-                <h4><i class="fas fa-trash-alt"></i> Thùng rác</h4>
+    <div class="container-fluid px-4 py-3">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-trash-alt me-2 text-warning"></i>
+                            Thùng rác
+                        </h2>
+                        <p class="text-muted mb-0">Quản lý các công ty đã bị xóa</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-badge">
+                            <span class="stat-number">@Model.Count()</span>
+                            <span class="stat-label">Mục đã xóa</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th>Tên công ty</th>
-                            <th>Quốc gia</th>
-                            <th>Ngày xóa</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td>@item.Country</td>
-                                <td>@item.DeletedAt?.ToString("dd/MM/yyyy")</td>
-                                <td>
-                                    <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-undo"></i> Khôi phục</button>
-                                    </form>
-                                    <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn?');">
-                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Xóa vĩnh viễn</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-12">
+                @if (Model.Any())
+                {
+                    <div class="trash-container">
+                        <div class="container-header">
+                            <div class="bulk-actions">
+                                <button class="btn btn-outline-success btn-sm me-2" onclick="selectAll()">
+                                    <i class="fas fa-check-square me-1"></i>Chọn tất cả
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="clearSelection()">
+                                    <i class="fas fa-times me-1"></i>Bỏ chọn
+                                </button>
+                            </div>
+                            <div class="view-options">
+                                <button class="view-btn active" data-view="grid" title="Xem dạng lưới">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                                <button class="view-btn" data-view="list" title="Xem dạng danh sách">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid View -->
+                        <div class="trash-grid active" id="gridView">
+                            @foreach (var item in Model)
+                            {
+                                <div class="trash-item-card" data-id="@item.Id">
+                                    <div class="card-selector">
+                                        <input type="checkbox" class="item-checkbox" value="@item.Id">
+                                    </div>
+                                    
+                                    <div class="item-content">
+                                        <div class="item-header">
+                                            <div class="company-logo">
+                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" 
+                                                     alt="@item.Name" 
+                                                     onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                                            </div>
+                                            <div class="delete-badge">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="item-info">
+                                            <h5 class="company-name">@item.Name</h5>
+                                            <p class="company-country">
+                                                <i class="fas fa-globe me-1"></i>@item.Country
+                                            </p>
+                                            <p class="delete-date">
+                                                <i class="fas fa-calendar-times me-1"></i>
+                                                Đã xóa: @item.DeletedAt?.ToString("dd/MM/yyyy")
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item-actions">
+                                        <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm" title="Khôi phục">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        </form>
+                                        <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                              onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn công ty @item.Name?');">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- List View -->
+                        <div class="trash-list" id="listView">
+                            <div class="list-header">
+                                <div class="list-item header-item">
+                                    <div class="col-select">
+                                        <input type="checkbox" id="selectAllList" onchange="toggleAllList(this)">
+                                    </div>
+                                    <div class="col-company">Công ty</div>
+                                    <div class="col-country">Quốc gia</div>
+                                    <div class="col-date">Ngày xóa</div>
+                                    <div class="col-actions">Thao tác</div>
+                                </div>
+                            </div>
+                            
+                            <div class="list-body">
+                                @foreach (var item in Model)
+                                {
+                                    <div class="list-item" data-id="@item.Id">
+                                        <div class="col-select">
+                                            <input type="checkbox" class="item-checkbox-list" value="@item.Id">
+                                        </div>
+                                        <div class="col-company">
+                                            <div class="company-info">
+                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" 
+                                                     alt="@item.Name" class="company-avatar"
+                                                     onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                                                <span class="company-name">@item.Name</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-country">
+                                            <i class="fas fa-globe me-1 text-muted"></i>@item.Country
+                                        </div>
+                                        <div class="col-date">
+                                            @item.DeletedAt?.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="col-actions">
+                                            <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm me-1" title="Khôi phục">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                                  onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn công ty @item.Name?');">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <h3>Thùng rác trống</h3>
+                        <p>Không có công ty nào bị xóa. Tất cả dữ liệu đều an toàn!</p>
+                        <a asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Page Header */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.75rem;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stat-badge {
+        background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        text-align: center;
+        font-weight: 600;
+        min-width: 100px;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    /* Container */
+    .trash-container {
+        background: linear-gradient(135deg, #2c2c2c 0%, #383838 100%);
+        border-radius: 20px;
+        border: 1px solid #444;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .container-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #444;
+        background: rgba(255, 77, 109, 0.1);
+    }
+
+    .bulk-actions .btn {
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+
+    .view-options {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .view-btn {
+        background: transparent;
+        border: 2px solid #666;
+        color: #ccc;
+        padding: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .view-btn.active,
+    .view-btn:hover {
+        border-color: #ff4d6d;
+        color: #ff4d6d;
+        background: rgba(255, 77, 109, 0.1);
+    }
+
+    /* Grid View */
+    .trash-grid {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        display: none;
+    }
+
+    .trash-grid.active {
+        display: grid;
+    }
+
+    .trash-item-card {
+        background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+        border-radius: 15px;
+        border: 1px solid #555;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .trash-item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        border-color: #ffc107;
+    }
+
+    .card-selector {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+    }
+
+    .card-selector input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #ff4d6d;
+    }
+
+    .item-content {
+        padding: 1.5rem;
+        padding-top: 2.5rem;
+    }
+
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .company-logo {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #666;
+    }
+
+    .company-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+    }
+
+    .delete-badge {
+        background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+        color: #000;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .item-info {
+        margin-bottom: 1rem;
+    }
+
+    .company-name {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .company-country,
+    .delete-date {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #555;
+    }
+
+    .item-actions .btn {
+        border-radius: 8px;
+        flex: 1;
+        transition: all 0.3s ease;
+    }
+
+    .item-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    /* List View */
+    .trash-list {
+        display: none;
+    }
+
+    .trash-list.active {
+        display: block;
+    }
+
+    .list-header {
+        background: rgba(255, 77, 109, 0.1);
+        border-bottom: 2px solid #444;
+    }
+
+    .list-item {
+        display: grid;
+        grid-template-columns: 50px 2fr 1fr 1fr 150px;
+        gap: 1rem;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #333;
+        transition: all 0.3s ease;
+    }
+
+    .list-item:hover:not(.header-item) {
+        background: rgba(255, 77, 109, 0.05);
+    }
+
+    .header-item {
+        font-weight: 600;
+        color: #ff4d6d;
+        background: transparent;
+    }
+
+    .header-item:hover {
+        background: transparent;
+    }
+
+    .company-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .company-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: contain;
+        background: #000;
+        border: 1px solid #666;
+    }
+
+    .col-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .col-actions .btn {
+        border-radius: 6px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #ccc;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .empty-state .btn {
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+    }
+
+    
+</style>
+
 @section Scripts {
     @await Html.PartialAsync("_ProductionManagerMenuScripts")
+    
+    <script>
+        // View toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewBtns = document.querySelectorAll('.view-btn');
+            const gridView = document.getElementById('gridView');
+            const listView = document.getElementById('listView');
+
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const view = this.dataset.view;
+                    
+                    // Update button states
+                    viewBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Toggle views
+                    if (view === 'grid') {
+                        gridView.classList.add('active');
+                        listView.classList.remove('active');
+                    } else {
+                        listView.classList.add('active');
+                        gridView.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Selection functionality
+        function selectAll() {
+            const checkboxes = document.querySelectorAll('.item-checkbox, .item-checkbox-list');
+            checkboxes.forEach(cb => cb.checked = true);
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.item-checkbox, .item-checkbox-list');
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+        function toggleAllList(checkbox) {
+            const checkboxes = document.querySelectorAll('.item-checkbox-list');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+    </script>
 }
