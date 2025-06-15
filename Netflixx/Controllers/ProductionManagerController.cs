@@ -4,6 +4,8 @@ using Netflixx.Repositories;
 using ProductionManagerApp.Models;
 using System;
 using System.IO;
+using System.Linq;
+
 
 
 namespace Netflixx.Controllers
@@ -381,7 +383,55 @@ namespace Netflixx.Controllers
             }
             return RedirectToAction(nameof(Trash));
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RestoreSelected([FromForm] int[] ids)
+        {
+            if (ids != null && ids.Length > 0)
+            {
+                var managers = await _context.ProductionManagers
+                    .Where(pm => ids.Contains(pm.Id))
+                    .ToListAsync();
+                foreach (var pm in managers)
+                {
+                    pm.IsDeleted = false;
+                    pm.DeletedAt = null;
+                    _context.Update(pm);
+                }
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã khôi phục các mục đã chọn!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HardDeleteSelected([FromForm] int[] ids)
+        {
+            if (ids != null && ids.Length > 0)
+            {
+                var managers = await _context.ProductionManagers
+                    .Where(pm => ids.Contains(pm.Id))
+                    .Include(p => p.Films)
+                    .ToListAsync();
+                foreach (var pm in managers)
+                {
+                    if (!string.IsNullOrEmpty(pm.LogoUrl))
+                    {
+                        var fileName = Path.GetFileName(pm.LogoUrl);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fileName);
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+                    _context.ProductionManagers.Remove(pm);
+                }
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa vĩnh viễn các mục đã chọn!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
 
     }
 }

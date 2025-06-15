@@ -47,6 +47,18 @@
                                 <button class="btn btn-outline-secondary btn-sm" onclick="clearSelection()">
                                     <i class="fas fa-times me-1"></i>Bỏ chọn
                                 </button>
+                                <form asp-action="RestoreSelected" method="post" id="restoreSelectedForm" class="d-inline-block ms-2">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-undo me-1"></i>Khôi phục đã chọn
+                                    </button>
+                                </form>
+                                <form asp-action="HardDeleteSelected" method="post" id="deleteSelectedForm" class="d-inline-block ms-2" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn các mục đã chọn?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
+                                    </button>
+                                </form>
                             </div>
                             <div class="view-options">
                                 <button class="view-btn active" data-view="grid" title="Xem dạng lưới">
@@ -525,5 +537,40 @@
             const checkboxes = document.querySelectorAll('.item-checkbox-list');
             checkboxes.forEach(cb => cb.checked = checkbox.checked);
         }
+        function getSelectedIds() {
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked, .item-checkbox-list:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        function addHiddenInputs(form, ids) {
+            form.querySelectorAll('input[name="ids"]').forEach(i => i.remove());
+            ids.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids';
+                input.value = id;
+                form.appendChild(input);
+            });
+        }
+
+        document.getElementById('restoreSelectedForm').addEventListener('submit', function (e) {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn ít nhất một mục.');
+                return;
+            }
+            addHiddenInputs(this, ids);
+        });
+
+        document.getElementById('deleteSelectedForm').addEventListener('submit', function (e) {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn ít nhất một mục.');
+                return;
+            }
+            addHiddenInputs(this, ids);
+        });
     </script>
 }
