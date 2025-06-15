@@ -508,14 +508,14 @@ else
                 font-weight: 900;
             }
 
-        .close {
+        .btn-close {
             color: #fff;
             opacity: 0.8;
             font-size: 1.5rem;
             transition: all 0.3s ease;
         }
 
-            .close:hover {
+            .btn-close:hover {
                 opacity: 1;
                 transform: scale(1.1);
             }
@@ -660,14 +660,12 @@ else
         <form asp-action="Delete" method="post">
             <div class="modal-header">
                 <h5 class="modal-title">@ViewData["Title"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="modal-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <p>Thao tác này không thể hoàn tác!</p>
+                    <p>Bạn chắc chắn muốn xóa chứ!</p>
                 </div>
 
                 <div class="company-modal-info">
@@ -699,7 +697,7 @@ else
                 <button type="submit" class="btn btn-danger">
                     <i class="fas fa-trash-alt"></i> Xác nhận xóa
                 </button>
-                <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Hủy bỏ
                 </button>
             </div>

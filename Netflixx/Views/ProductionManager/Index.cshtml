@@ -591,10 +591,10 @@
 
 <!-- Scripts -->
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         $(document).ready(function () {
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
             var allData = [];
             var filteredData = [];
             var currentPage = 1;
@@ -798,7 +798,7 @@
                 e.preventDefault();
                 var id = $(this).data('id');
                 $('#deleteModalContainer').load('/ProductionManager/Delete/' + id, function () {
-                    $('#deleteModal').modal('show');
+                    deleteModal.show();
                 });
             });
         });
