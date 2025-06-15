@@ -2,82 +2,367 @@
 @{
     ViewData["Title"] = "Chi tiết công ty";
     ViewData["ProductionManagerId"] = Model.Id;
-
 }
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 }
-
 
 @await Html.PartialAsync("_ProductionManagerMenu")
 
 <div class="main-content" id="mainContent">
-<div class="container mt-4">
-    <div class="card profile-card bg-dark text-white shadow-lg">
-        <div class="row g-0">
-            <div class="col-md-4 text-center p-4">
-                <img src="@((!string.IsNullOrEmpty(Model.LogoUrl) ? Model.LogoUrl : "/image/logo/NetflixxLogo.png"))" class="img-fluid rounded mb-3 profile-logo" alt="@Model.Name logo" onerror="this.src='/image/logo/NetflixxLogo.png'" />
-                <h3 class="card-title">@Model.Name</h3>
-                @if (!string.IsNullOrEmpty(Model.Website))
-                {
-                    <p class="mb-0"><a href="@Model.Website" target="_blank" class="link-info text-decoration-none">@Model.Website</a></p>
-                }
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <table class="table table-borderless text-white mb-0">
-                        <tbody>
-                            <tr>
-                                <th style="width:30%;">Quốc gia:</th>
-                                <td>@Model.Country</td>
-                            </tr>
-                            <tr>
-                                <th>Ngày thành lập:</th>
-                                <td>@Model.EstablishedDate?.ToString("dd/MM/yyyy")</td>
-                            </tr>
-                            <tr>
-                                <th>Tên viết tắt:</th>
-                                <td>@Model.Alias</td>
-                            </tr>
-                            <tr>
-                                <th>CEO:</th>
-                                <td>@Model.CEO</td>
-                            </tr>
-                            <tr>
-                                <th>Trụ sở chính:</th>
-                                <td>@Model.Headquarters</td>
-                            </tr>
-                            <tr>
-                                <th>Mô tả:</th>
-                                <td>@Model.Description</td>
-                            </tr>
-                            <tr>
-                                <th>Số phim:</th>
-                                <td>@Model.Films.Count</td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <div class="container-fluid px-4 py-3">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="page-header">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-building me-2 text-primary"></i>
+                            Chi tiết công ty
+                        </h2>
+                        <p class="text-muted mb-0">Thông tin chi tiết về @Model.Name</p>
+                    </div>
+                    <div class="action-buttons">
+                        <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil-square me-1"></i>Chỉnh sửa
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer bg-dark text-center border-0">
-            <a asp-action="Index" class="btn btn-outline-light me-2"><i class="bi bi-arrow-left"></i> Quay lại</a>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-pencil-square"></i> Chỉnh sửa</a>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <!-- Company Logo & Basic Info -->
+            <div class="col-lg-4">
+                <div class="company-card h-100">
+                    <div class="company-logo-section">
+                        <div class="logo-container">
+                            <img src="@((!string.IsNullOrEmpty(Model.LogoUrl) ? Model.LogoUrl : "/image/logo/NetflixxLogo.png"))"
+                                 class="company-logo"
+                                 alt="@Model.Name logo"
+                                 onerror="this.src='/image/logo/NetflixxLogo.png'" />
+                        </div>
+                        <div class="company-name-section">
+                            <h3 class="company-name">@Model.Name</h3>
+                            @if (!string.IsNullOrEmpty(Model.Alias))
+                            {
+                                <span class="company-alias">(@Model.Alias)</span>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Website))
+                            {
+                                <div class="website-link mt-2">
+                                    <a href="@Model.Website" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-external-link-alt me-1"></i>Truy cập website
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats mt-4">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>@Model.Films.Count</h4>
+                                <span>Số phim sản xuất</span>
+                            </div>
+                        </div>
+                        @if (Model.EstablishedDate.HasValue)
+                        {
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>@((DateTime.Now.Year - Model.EstablishedDate.Value.Year))</h4>
+                                    <span>Năm hoạt động</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Information -->
+            <div class="col-lg-8">
+                <div class="info-cards">
+                    <!-- Company Information Card -->
+                    <div class="info-card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Thông tin công ty
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <label class="info-label">
+                                            <i class="fas fa-globe me-2"></i>Quốc gia
+                                        </label>
+                                        <div class="info-value">@Model.Country</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <label class="info-label">
+                                            <i class="fas fa-calendar-day me-2"></i>Ngày thành lập
+                                        </label>
+                                        <div class="info-value">@Model.EstablishedDate?.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <label class="info-label">
+                                            <i class="fas fa-user-tie me-2"></i>CEO
+                                        </label>
+                                        <div class="info-value">@Model.CEO</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <label class="info-label">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Trụ sở chính
+                                        </label>
+                                        <div class="info-value">@Model.Headquarters</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Card -->
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="info-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-align-left me-2"></i>Mô tả
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="description-text">@Model.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</div>
 
 <style>
-    .profile-card {
-        border: 1px solid #333;
+    /* Page Styling */
+    .page-header .page-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.75rem;
     }
 
-    .profile-logo {
-        max-height: 180px;
-        object-fit: contain;
-        background-color: #000;
+    .page-header p {
+        font-size: 0.9rem;
     }
+
+    /* Company Card */
+    .company-card {
+        background: linear-gradient(135deg, #2c2c2c 0%, #383838 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid #444;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .company-logo-section {
+        text-align: center;
+    }
+
+    .logo-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .company-logo {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        border: 3px solid #ff4d6d;
+        padding: 10px;
+        transition: transform 0.3s ease;
+    }
+
+        .company-logo:hover {
+            transform: scale(1.05);
+        }
+
+    .company-name {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .company-alias {
+        color: #ff4d6d;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .website-link .btn {
+        border-radius: 25px;
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+        border-top: 1px solid #444;
+        padding-top: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #333;
+    }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #ff4d6d 0%, #ff6b85 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+
+        .stat-icon i {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+    .stat-content h4 {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-content span {
+        color: #ccc;
+        font-size: 0.9rem;
+    }
+
+    /* Info Cards */
+    .info-card {
+        background: linear-gradient(135deg, #2c2c2c 0%, #383838 100%);
+        border-radius: 15px;
+        border: 1px solid #444;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+        .info-card .card-header {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff6b85 100%);
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .info-card .card-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .info-card .card-body {
+            padding: 1.5rem;
+        }
+
+    /* Info Items */
+    .info-item {
+        margin-bottom: 1rem;
+    }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .info-label {
+        display: block;
+        color: #ff4d6d;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #333;
+    }
+
+    .description-text {
+        color: #ddd;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Action Buttons */
+    .action-buttons .btn {
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #ff4d6d 0%, #ff6b85 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ff3355 0%, #ff5577 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+
+    .btn-outline-secondary {
+        border-color: #666;
+        color: #ccc;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #666;
+            border-color: #666;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+   
 </style>
+
 @await Html.PartialAsync("_ProductionManagerMenuScripts")
