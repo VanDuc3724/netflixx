@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
+using System;
 using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
@@ -25,14 +26,14 @@ namespace Netflixx.Controllers
         // GET: PaymentProvider/Create
         [HttpGet]
         public IActionResult Create()
-        {
+            ViewBag.MethodTypes = Enum.GetValues(typeof(PaymentMethodType));
             return View();
         }
 
         // POST: PaymentProvider/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] PaymentProvidersModel provider)
+        public async Task<IActionResult> Create([Bind("Name,MethodType")] PaymentProvidersModel provider)
         {
             if (ModelState.IsValid)
             {
@@ -40,6 +41,7 @@ namespace Netflixx.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.MethodTypes = Enum.GetValues(typeof(PaymentMethodType));
             return View(provider);
         }
     }

@@ -10,6 +10,17 @@
             <input asp-for="Name" class="form-control bg-dark text-white" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
+        <div class="mb-3">
+            <label asp-for="MethodType" class="form-label text-white"></label>
+            <select asp-for="MethodType" class="form-select bg-dark text-white">
+                <option value="">--Chọn loại--</option>
+                @foreach (var mt in ViewBag.MethodTypes)
+                {
+                    <option value="@mt">@mt</option>
+                }
+            </select>
+            <span asp-validation-for="MethodType" class="text-danger"></span>
+        </div>
         <button type="submit" class="btn btn-danger">Lưu</button>
         <a asp-action="Index" class="btn btn-outline-light ms-2">Hủy</a>
     </form>

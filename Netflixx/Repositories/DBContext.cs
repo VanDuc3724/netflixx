@@ -76,7 +76,12 @@ namespace Netflixx.Repositories
 
             modelBuilder.Entity<UserAccountsModel>()
                 .Property(u => u.Balance)
-                .HasPrecision(18, 2);
+                .HasPrecision(18, 2)
+
+                modelBuilder.Entity<PaymentProvidersModel>()
+                .Property(p => p.MethodType)
+                .HasConversion<string>();
+
 
             // Configure many-to-many relationships
             modelBuilder.Entity<PackageChannelsModel>()
