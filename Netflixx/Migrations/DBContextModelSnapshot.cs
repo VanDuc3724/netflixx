@@ -279,6 +279,48 @@ namespace Netflixx.Migrations
                     b.ToTable("BlogPosts");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.BrandSouModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BrandSous");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.CategorySouModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategorySous");
+                });
+
             modelBuilder.Entity("Netflixx.Models.ChannelSubscriptionsModel", b =>
                 {
                     b.Property<int>("SubscriptionID")
@@ -418,6 +460,10 @@ namespace Netflixx.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PosterPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -440,6 +486,74 @@ namespace Netflixx.Migrations
                     b.HasIndex("ProductionManagerId");
 
                     b.ToTable("Films");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.LoginHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IPAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LoginTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LogoutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LoginHistory");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.OrderSouModel", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<string>("CouponCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("OrderSous");
                 });
 
             modelBuilder.Entity("Netflixx.Models.PackageChannelsModel", b =>
@@ -651,6 +765,36 @@ namespace Netflixx.Migrations
                     b.ToTable("PointsTransactions");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.ProductImageSouModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImageSous");
+                });
+
             modelBuilder.Entity("Netflixx.Models.PromotionChannelsModel", b =>
                 {
                     b.Property<int>("PromotionID")
@@ -762,6 +906,110 @@ namespace Netflixx.Migrations
                     b.ToTable("Promotions");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.SeriesSouModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeriesSous");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.Souvenir.OrderDetailSouModel", b =>
+                {
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
+
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderDetailId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetailSous");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.Souvenir.ProductSouModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("SeriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("SeriesId");
+
+                    b.ToTable("ProductSous");
+                });
+
             modelBuilder.Entity("Netflixx.Models.UserAccountsModel", b =>
                 {
                     b.Property<string>("UserID")
@@ -841,6 +1089,9 @@ namespace Netflixx.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -851,6 +1102,11 @@ namespace Netflixx.Migrations
                     b.Property<string>("Headquarters")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LogoUrl")
                         .HasMaxLength(300)
@@ -1023,6 +1279,17 @@ namespace Netflixx.Migrations
                     b.Navigation("ProductionManager");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.LoginHistory", b =>
+                {
+                    b.HasOne("Netflixx.Models.AppUserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Netflixx.Models.PackageChannelsModel", b =>
                 {
                     b.HasOne("Netflixx.Models.ChannelsModel", "Channel")
@@ -1124,6 +1391,17 @@ namespace Netflixx.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.ProductImageSouModel", b =>
+                {
+                    b.HasOne("Netflixx.Models.Souvenir.ProductSouModel", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Netflixx.Models.PromotionChannelsModel", b =>
                 {
                     b.HasOne("Netflixx.Models.ChannelsModel", "Channel")
@@ -1200,6 +1478,47 @@ namespace Netflixx.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.Souvenir.OrderDetailSouModel", b =>
+                {
+                    b.HasOne("Netflixx.Models.OrderSouModel", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Netflixx.Models.Souvenir.ProductSouModel", "Product")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.Souvenir.ProductSouModel", b =>
+                {
+                    b.HasOne("Netflixx.Models.BrandSouModel", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Netflixx.Models.CategorySouModel", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Netflixx.Models.SeriesSouModel", "Series")
+                        .WithMany("Products")
+                        .HasForeignKey("SeriesId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Series");
+                });
+
             modelBuilder.Entity("Netflixx.Models.UserAccountsModel", b =>
                 {
                     b.HasOne("Netflixx.Models.AppUserModel", "User")
@@ -1268,6 +1587,16 @@ namespace Netflixx.Migrations
                     b.Navigation("PromotionUsages");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.BrandSouModel", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.CategorySouModel", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("Netflixx.Models.ChannelsModel", b =>
                 {
                     b.Navigation("PackageChannels");
@@ -1284,6 +1613,11 @@ namespace Netflixx.Migrations
                     b.Navigation("PromotionFilms");
 
                     b.Navigation("Purchases");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.OrderSouModel", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Netflixx.Models.PackageSubscriptionsModel", b =>
@@ -1330,6 +1664,18 @@ namespace Netflixx.Migrations
                     b.Navigation("PromotionPackages");
 
                     b.Navigation("PromotionUsages");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.SeriesSouModel", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.Souvenir.ProductSouModel", b =>
+                {
+                    b.Navigation("OrderDetails");
+
+                    b.Navigation("ProductImages");
                 });
 
             modelBuilder.Entity("ProductionManagerApp.Models.ProductionManager", b =>

@@ -1,9 +1,7 @@
 ﻿// Controllers/FilmsController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Netflixx.Models; // Ensure this matches your namespace
 using Netflixx.Repositories;
-using System.Diagnostics;
 
 namespace Netflixx.Controllers
 {

@@ -1,7 +1,9 @@
-﻿using Netflixx.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProductionManagerApp.Models;
+
+using Netflixx.Models;
+using Netflixx.Models.Souvenir;
 
 namespace Netflixx.Repositories
 {
@@ -10,6 +12,14 @@ namespace Netflixx.Repositories
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
         }
+
+        public virtual DbSet<BrandSouModel> BrandSous { get; set; }
+        public virtual DbSet<CategorySouModel> CategorySous { get; set; }
+        public virtual DbSet<SeriesSouModel> SeriesSous { get; set; }
+        public virtual DbSet<ProductSouModel> ProductSous { get; set; }
+        public virtual DbSet<ProductImageSouModel> ProductImageSous { get; set; }
+        public virtual DbSet<OrderSouModel> OrderSous { get; set; }
+        public virtual DbSet<OrderDetailSouModel> OrderDetailSous { get; set; }
         public virtual DbSet<BlogPost> BlogPosts { get; set; }
         public virtual DbSet<PaymentProvidersModel> PaymentProviders { get; set; }
         public virtual DbSet<PaymentEnvironmentsModel> PaymentEnvironments { get; set; }
@@ -34,9 +44,9 @@ namespace Netflixx.Repositories
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
         public virtual DbSet<ProductionManagerHistory> ProductionManagerHistories { get; set; }
 
+        public virtual DbSet<LoginHistory> LoginHistory { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ProductionManager>()
                      .ToTable("ProductionManagers");
@@ -58,6 +68,56 @@ namespace Netflixx.Repositories
        .HasForeignKey(f => f.ProductionManagerId)  
        .OnDelete(DeleteBehavior.SetNull);         
 
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ProductSouModel>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderDetailSouModel>()
+                .Property(od => od.UnitPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderDetailSouModel>()
+                .Property(od => od.Subtotal)
+                .HasPrecision(18, 2);
+
+            // Cấu hình quan hệ
+            modelBuilder.Entity<ProductSouModel>()
+                .HasOne(p => p.Brand)
+                .WithMany(b => b.Products)
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ProductSouModel>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ProductSouModel>()
+                .HasOne(p => p.Series)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SeriesId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ProductImageSouModel>()
+                .HasOne(pi => pi.Product)
+                .WithMany(p => p.ProductImages)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderDetailSouModel>()
+                .HasOne(od => od.Product)
+                .WithMany(p => p.OrderDetails)
+                .HasForeignKey(od => od.ProductId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<OrderDetailSouModel>()
+                .HasOne(od => od.Order)
+                .WithMany(o => o.OrderDetails)
+                .HasForeignKey(od => od.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // Configure decimal precision
             modelBuilder.Entity<FilmsModel>()
                 .Property(f => f.Price)
                 .HasPrecision(18, 2);
@@ -164,7 +224,6 @@ namespace Netflixx.Repositories
                 .WithMany(ps => ps.UpgradesFrom)
                 .HasForeignKey(pu => pu.OldSubscriptionID)
                 .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<PackageSubscriptionUpgradesModel>()
                 .HasOne(pu => pu.NewSubscription)
                 .WithMany(ps => ps.UpgradesTo)
@@ -190,6 +249,14 @@ namespace Netflixx.Repositories
 
             modelBuilder.Entity<PackageSubscriptionsModel>()
                 .HasCheckConstraint("CK_PackageSubscriptions_Dates", "EndDate >= StartDate");
+
+
+            modelBuilder.Entity<LoginHistory>()
+               .HasOne(lh => lh.User)
+               .WithMany() // Hoặc .WithMany(u => u.LoginHistories) nếu bạn thêm một ICollection<LoginHistory> vào AppUserModel
+               .HasForeignKey(lh => lh.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

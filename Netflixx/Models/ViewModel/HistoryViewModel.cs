@@ -1,8 +1,4 @@
-﻿using Netflixx.Models;
-using System;
-using System.Collections.Generic;
-
-namespace Netflixx.Models.ViewModel
+﻿namespace Netflixx.Models.ViewModel
 {
     public class HistoryViewModel
     {

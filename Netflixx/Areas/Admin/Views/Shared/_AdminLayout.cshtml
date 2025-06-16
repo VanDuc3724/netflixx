@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Netflixx.Models.AppUserModel> SignInManager
+@inject UserManager<Netflixx.Models.AppUserModel> UserManager
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Trang quản trị Netflixx</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
+    <link rel="stylesheet" href="~/css/netflix-admin.css" />
+    <link rel="stylesheet" href="~/css/userList.css" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/image/logo/NetflixxLogo.png" alt="Logo Netflixx">
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="/Admin/Dashboard" class="sidebar-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/Admin/Films" class="sidebar-item">
+                <i class="fas fa-film"></i>
+                <span>Quản lý phim</span>
+            </a>
+
+            <a href="/Admin/User/Index" class="sidebar-item">
+                <i class="fas fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="/Admin/Transactions" class="sidebar-item">
+                <i class="fas fa-receipt"></i>
+                <span>Giao dịch</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-heading">Báo cáo</div>
+
+            <a href="/Admin/Reports/Revenue" class="sidebar-item">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Báo cáo doanh thu</span>
+            </a>
+
+            <a href="/Admin/Reports/Activity" class="sidebar-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Hoạt động người dùng</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="/Admin/Settings" class="sidebar-item">
+                <i class="fas fa-cog"></i>
+                <span>Cài đặt</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="admin-navbar">
+        <div class="search-wrapper">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" stroke="var(--teal)" stroke-width="1" fill="none" />
+                <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="var(--teal)" stroke-width="1"
+                      stroke-linecap="round" />
+            </svg>
+            <input type="text" placeholder="Tìm kiếm...">
+        </div>
+        <div class="icons-right">
+            <div class="icon-btn" title="Thông báo">
+                <div class="indicator"></div>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14V10a6 6 0 10-12 0v4c0 .386-.149.757-.415 1.035L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            </div>
+            <div class="icon-btn" title="Tin nhắn">
+                <div class="indicator"></div>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                          d="M3 8l7.6 5.07a2 2 0 002.4 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div class="user-avatar">
+                <img src="https://i.pravatar.cc/40" alt="Người dùng">
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script>
+        // Đánh dấu trang hiện tại trên thanh điều hướng
+        $(document).ready(function () {
+            const currentPath = window.location.pathname;
+            $('.sidebar-item').each(function () {
+                if ($(this).attr('href').toLowerCase() === currentPath.toLowerCase()) {
+                    $('.sidebar-item').removeClass('active');
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

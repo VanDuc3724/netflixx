@@ -8,14 +8,6 @@
 
   <ItemGroup>
 
-    <Compile Remove="wwwroot\images\**" />
-    <Content Remove="wwwroot\images\**" />
-    <EmbeddedResource Remove="wwwroot\images\**" />
-    <None Remove="wwwroot\images\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
@@ -34,8 +26,16 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\ShopSouvenir\Models\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Models\Souvenir\" />
+    <Folder Include="wwwroot\css\adminDashboard\" />
     <Folder Include="wwwroot\image\logo\" />
     <Folder Include="wwwroot\image\avatars\" />
+    <Folder Include="wwwroot\image\products\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\js\adminDashboard\" />
   </ItemGroup>
 
 

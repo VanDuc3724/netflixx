@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +6,8 @@ using Netflixx.Models.Binding;
 using Netflixx.Models.ViewModel;
 using Netflixx.Repositories;
 using Netflixx.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Netflixx.Controllers
 {

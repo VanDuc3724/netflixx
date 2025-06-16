@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Netflixx.Repositories;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Models.ViewModel;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Netflixx.Repositories;
 
 namespace Netflixx.Controllers
 {
@@ -69,7 +66,7 @@ namespace Netflixx.Controllers
         public async Task<IActionResult> Profile(bool edit = false)
         {
 
-          
+
 
             var user = await _userManager.GetUserAsync(User);
 
@@ -167,7 +164,7 @@ namespace Netflixx.Controllers
             {
                 var ext = Path.GetExtension(input.AvatarFile.FileName);
                 var fn = $"{user.Id}{ext}";
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","image", "avatars", fn);
+                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "avatars", fn);
                 using var fs = new FileStream(savePath, FileMode.Create);
                 await input.AvatarFile.CopyToAsync(fs);
                 user.AvatarUrl = $"/image/avatars/{fn}";

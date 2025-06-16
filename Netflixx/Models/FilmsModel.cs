@@ -25,7 +25,7 @@ namespace Netflixx.Models
         public decimal? Price { get; set; }
 
         public int? ProductionManagerId { get; set; }
-
+        public string PosterPath { get; set; } // Add this line
 
         public ICollection<PackageFilmsModel> PackageFilms { get; set; }
         public ICollection<PromotionFilmsModel> PromotionFilms { get; set; }
@@ -34,7 +34,6 @@ namespace Netflixx.Models
 
 
         public float Rating { get; set; } = 0.0f; // Giá trị mặc định là 0.0f
-
 
 
         [ForeignKey("ProductionManagerId")]

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Netflixx.Controllers
 {
@@ -138,5 +137,8 @@ namespace Netflixx.Controllers
             }
             return View(film);
         }
+        
+        
+
     }
 }

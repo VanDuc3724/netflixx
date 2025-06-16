@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-namespace Netflixx.Services
+﻿namespace Netflixx.Services
 {
     public class OtpService : IOtpService
     {

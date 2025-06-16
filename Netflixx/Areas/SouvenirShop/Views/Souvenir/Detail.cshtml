@@ -1,0 +1,36 @@
+﻿@model Netflixx.Models.Souvenir.ProductSouModel
+
+@{
+    ViewBag.Title = "Mua sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="buy-container">
+    <div class="product-preview">
+        <img src="@Model.ImageUrl" alt="@Model.Name" />
+    </div>
+
+    <div class="product-details">
+        <h2>@Model.Name</h2>
+        <p>@Model.Description</p>
+        <p class="price">@Model.Price.ToString("N0") ₫</p>
+
+        <form asp-action="Buy" method="post">
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <label>Số lượng:</label>
+            <input type="number" name="Quantity" min="1" value="1" required />
+
+            <label>Họ và tên người nhận:</label>
+            <input type="text" name="FullName" required />
+
+            <label>Địa chỉ giao hàng:</label>
+            <textarea name="Address" required></textarea>
+
+            <label>Số điện thoại:</label>
+            <input type="tel" name="Phone" required />
+
+            <button type="submit">Mua ngay</button>
+        </form>
+    </div>
+</div>

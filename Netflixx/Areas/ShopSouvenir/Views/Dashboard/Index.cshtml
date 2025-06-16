@@ -1,0 +1,913 @@
+﻿@model IEnumerable<Netflixx.Models.DailyRevenueModel>
+@{
+    ViewData["Title"] = "Dashboard Overview - Shop Souvenir";
+    Layout = "_LayoutManager";
+
+    // Đảm bảo các giá trị ViewBag tồn tại
+    var revenueChange = ViewBag.RevenueChange as double? ?? 0;
+    var transactionChange = ViewBag.TransactionChange as double? ?? 0;
+    var avgTransactionChange = ViewBag.AvgTransactionChange as double? ?? 0;
+    var newAccountsChange = ViewBag.NewAccountsChange as double? ?? 0;
+}
+
+<style>
+    :root {
+        --teal: #4ECDB4;
+        --charcoal-dark: #2D2F3B;
+        --light-gray: #F5F6FA;
+        --dark-gray: #333333;
+        --golden-yellow: #F1C40F;
+        --emerald-green: #2ECC71;
+        --alizarin-red: #E74C3C;
+        --white: #FFFFFF;
+    }
+
+    .dashboard {
+        background-color: var(--light-gray);
+        color: var(--dark-gray);
+        min-height: 100vh;
+        margin-left: 150px;
+        padding: 1.5rem;
+        padding-top: 70px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        width: calc(100% - 150px);
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--teal);
+        padding-left: 0;
+    }
+
+    .dashboard-title {
+        color: var(--charcoal-dark);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .dashboard-controls {
+        display: flex;
+        gap: 1rem;
+        position: relative;
+    }
+
+    .dashboard-btn {
+        background-color: var(--teal);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .dashboard-btn:hover {
+            background-color: #3bb9a4;
+        }
+
+    .dashboard-select {
+        background-color: var(--white);
+        color: var(--dark-gray);
+        border: 1px solid var(--teal);
+        padding: 0.5rem;
+        border-radius: 4px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: 120px;
+        justify-content: space-between;
+    }
+
+    .stat-title {
+        color: #757575;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .stat-value {
+        color: var(--dark-gray);
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+
+    .stat-change {
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .stat-change.up {
+            color: var(--emerald-green);
+        }
+
+        .stat-change.down {
+            color: var(--alizarin-red);
+        }
+
+    .chart-container {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        color: var(--charcoal-dark);
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background-color: var(--white);
+    }
+
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--teal);
+            font-weight: 500;
+            border-bottom: 1px solid var(--teal);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .status-completed {
+        background-color: rgba(46, 204, 113, 0.2);
+        color: var(--emerald-green);
+    }
+
+    .status-pending {
+        background-color: rgba(241, 196, 15, 0.2);
+        color: var(--golden-yellow);
+    }
+
+    .status-failed {
+        background-color: rgba(231, 76, 60, 0.2);
+        color: var(--alizarin-red);
+    }
+
+    .section-title {
+        color: var(--charcoal-dark);
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .popular-film {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+        .popular-film:last-child {
+            border-bottom: none;
+        }
+
+    .film-rank {
+        color: #757575;
+        font-weight: 700;
+        width: 2rem;
+        text-align: center;
+    }
+
+    .film-poster {
+        width: 50px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .film-info {
+        flex: 1;
+    }
+
+    .film-title {
+        color: var(--charcoal-dark);
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .film-meta {
+        color: #757575;
+        font-size: 0.8rem;
+    }
+
+    .two-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    #revenue-chart, .chart-canvas {
+        height: 300px;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #eee;
+    }
+
+    .morris-hover {
+        background: var(--white) !important;
+        border: 1px solid var(--teal) !important;
+        color: var(--dark-gray) !important;
+    }
+
+    .chart-container {
+        position: relative;
+        min-height: 300px;
+        margin-bottom: 20px;
+    }
+
+    .export-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        min-width: 150px;
+        overflow: hidden;
+    }
+
+    .export-option {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        background: none;
+        border: none;
+        color: var(--dark-gray);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .export-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .export-option i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+</style>
+
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard - Shop Souvenir</h1>
+        <div class="dashboard-controls">
+            <button class="dashboard-btn" id="export-btn">
+                <i class="fas fa-download"></i> Xuất báo cáo
+            </button>
+            <select class="dashboard-select" id="period-select">
+                <option value="30days" selected="@(ViewBag.SelectedPeriod == "30days")">30 ngày qua</option>
+                <option value="thismonth" selected="@(ViewBag.SelectedPeriod == "thismonth")">Tháng này</option>
+                <option value="lastmonth" selected="@(ViewBag.SelectedPeriod == "lastmonth")">Tháng trước</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Thẻ thống kê -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Tổng doanh thu</div>
+            <div class="stat-value">
+                @((ViewBag.TotalRevenue ?? 0).ToString("N0")) <span>₫</span>
+            </div>
+            <div class="stat-change @(revenueChange >= 0 ? "up" : "down")">
+                <i class="fas fa-arrow-@(revenueChange >= 0 ? "up" : "down")"></i>
+                @Math.Abs(revenueChange).ToString("P1") so với kỳ trước
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Số đơn hàng</div>
+            <div class="stat-value">@(ViewBag.TotalTransactions ?? 0)</div>
+            <div class="stat-change @(transactionChange >= 0 ? "up" : "down")">
+                <i class="fas fa-arrow-@(transactionChange >= 0 ? "up" : "down")"></i>
+                @Math.Abs(transactionChange).ToString("P1") so với kỳ trước
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Trung bình đơn hàng</div>
+            <div class="stat-value">
+                @((ViewBag.AvgTransaction ?? 0).ToString("N0")) <span>₫</span>
+            </div>
+            <div class="stat-change @(avgTransactionChange >= 0 ? "up" : "down")">
+                <i class="fas fa-arrow-@(avgTransactionChange >= 0 ? "up" : "down")"></i>
+                @Math.Abs(avgTransactionChange).ToString("P1") so với kỳ trước
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Khách hàng mới</div>
+            <div class="stat-value">@(ViewBag.NewAccounts ?? 0)</div>
+            <div class="stat-change @(newAccountsChange >= 0 ? "up" : "down")">
+                <i class="fas fa-arrow-@(newAccountsChange >= 0 ? "up" : "down")"></i>
+                @Math.Abs(newAccountsChange).ToString("P1") so với kỳ trước
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ doanh thu -->
+    <div class="chart-container">
+        <h2 class="chart-title">Tổng quan doanh thu</h2>
+        <div id="revenue-chart"></div>
+    </div>
+
+    <!-- Các biểu đồ khác -->
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="chart-container">
+                <h2 class="chart-title">Doanh thu theo tháng</h2>
+                <canvas class="chart-canvas" id="line-chart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="chart-container">
+                <h2 class="chart-title">Doanh thu & Số đơn hàng</h2>
+                <canvas class="chart-canvas" id="salse-revenue"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="chart-container">
+                <h2 class="chart-title">Lợi nhuận tuần này</h2>
+                <canvas class="chart-canvas" id="bar-chart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="chart-container">
+                <h2 class="chart-title">Phân phối danh mục sản phẩm</h2>
+                <canvas class="chart-canvas" id="pie-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bố cục 2 cột -->
+    <div class="two-column">
+        <!-- Giao dịch gần đây -->
+        <div>
+            <h2 class="section-title">Đơn hàng gần đây</h2>
+            @if (ViewBag.RecentTransactions != null && ViewBag.RecentTransactions.Count > 0)
+            {
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Khách hàng</th>
+                            <th>Số tiền</th>
+                            <th>Ngày</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in ViewBag.RecentTransactions)
+                        {
+                            <tr>
+                                <td>@(transaction.CustomerId ?? "Không có")</td> <!-- Hoặc sử dụng transaction.User?.FullName nếu đã load user -->
+                                <td>@transaction.TotalAmount.ToString("N0") ₫</td>
+                                <td>@transaction.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @{
+                                        var statusClass = transaction.Status switch
+                                        {
+                                            "Completed" => "status-completed",
+                                            "Pending" => "status-pending",
+                                            _ => "status-failed"
+                                        };
+                                    }
+                                    <span class="status-badge @statusClass">@transaction.Status</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">Không tìm thấy đơn hàng gần đây</div>
+            }
+        </div>
+
+        <!-- Sản phẩm phổ biến -->
+        <div>
+            <h2 class="section-title">Sản phẩm lưu niệm phổ biến</h2>
+            @if (ViewBag.PopularItems != null && ViewBag.PopularItems.Count > 0)
+            {
+                <div>
+                    @{
+                        int rank = 1;
+                        foreach (var item in ViewBag.PopularItems)
+                        {
+                            <div class="popular-film">
+                                <div class="film-rank">@(rank++)</div>
+                                @if (!string.IsNullOrEmpty(item.Product?.ImageUrl))
+                                {
+                                    <img src="@item.Product.ImageUrl"
+                                         class="film-poster"
+                                         alt="@item.Product.Name"
+                                         onerror="this.src='/images/default-product.jpg'">
+                                }
+                                else
+                                {
+                                    <img src="/images/default-product.jpg" class="film-poster" alt="Không có ảnh">
+                                }
+                                <div class="film-info">
+                                    <div class="film-title">@(item.Product?.Name ?? "Không có tên")</div>
+                                    <div class="film-meta">@item.SaleCount lượt bán</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Không tìm thấy sản phẩm phổ biến</div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        $(document).ready(function() {
+            // Khai báo các biến chart
+            var lineChart, salesRevenueChart, barChart, pieChart;
+            var revenueChart = null;
+            var currentData = [];
+
+            // Hàm khởi tạo revenue chart
+            function initRevenueChart(data) {
+                var chartData = data.map(function(item) {
+                    return {
+                        date: item.date,
+                        value: item.value
+                    };
+                });
+
+                currentData = data;
+
+                if (revenueChart) {
+                    revenueChart.setData(chartData);
+                } else {
+                    revenueChart = new Morris.Line({
+                        element: 'revenue-chart',
+                        data: chartData,
+                        xkey: 'date',
+                        ykeys: ['value'],
+                        labels: ['Doanh thu'],
+                        lineColors: ['#4ECDB4'],
+                        pointFillColors: ['#FFFFFF'],
+                        pointStrokeColors: ['#4ECDB4'],
+                        gridTextColor: '#b3b3b3',
+                        gridStrokeWidth: 0.5,
+                        gridLineColor: '#e0e0e0',
+                        resize: true,
+                        xLabels: 'day',
+                        xLabelFormat: function(dateString) {
+                            var date = new Date(dateString);
+                            return date.getDate() + '/' + (date.getMonth() + 1);
+                        },
+                        hoverCallback: function(index, options, content, row) {
+                            var date = new Date(row.date);
+                            var formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                            return formattedDate + '<br>Doanh thu: ' + row.value.toLocaleString() + ' ₫';
+                        },
+                        yLabelFormat: function(value) {
+                            return value.toLocaleString() + ' ₫';
+                        }
+                    });
+                }
+            }
+
+            // Hàm load chart data
+            function loadChartData() {
+                var period = $('#period-select').val();
+                var url = '@Url.Action("GetRevenueData", "Dashboard", new { area = "Admin" })?period=' + period;
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("Revenue Data:", data); // Debug log
+                        if (data && data.length > 0) {
+                            initRevenueChart(data);
+                        } else {
+                            $('#revenue-chart').html('<div class="alert alert-info">Không có dữ liệu để hiển thị</div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Lỗi khi tải dữ liệu:', error);
+                        $('#revenue-chart').html('<div class="alert alert-danger">Không thể tải dữ liệu biểu đồ: ' + error + '</div>');
+                    }
+                });
+            }
+
+            // Load dữ liệu ban đầu
+            loadChartData();
+            $('#period-select').change(loadChartData);
+
+            // 1. Biểu đồ doanh thu theo tháng
+        // 1. Biểu đồ doanh thu theo tháng
+        $.getJSON('@Url.Action("GetMonthlyRevenue", "Dashboard")', function(data) {
+            console.log("Monthly Revenue Data:", data);
+
+            if (!data || data.length === 0) {
+                $('#line-chart').html('<div class="alert alert-info">Không có dữ liệu doanh thu tháng</div>');
+                return;
+            }
+
+            if (window.lineChart) window.lineChart.destroy();
+
+            const ctx = document.getElementById('line-chart').getContext('2d');
+            window.lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(item => item.Label),
+                    datasets: [{
+                        label: 'Doanh thu (₫)',
+                        data: data.map(item => item.Value),
+                        borderColor: 'rgba(54, 185, 204, 1)',
+                        backgroundColor: 'rgba(54, 185, 204, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Doanh thu: ' + context.raw.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }).fail(function(jqXHR, textStatus, error) {
+            console.error("Error loading monthly revenue:", textStatus, error);
+            $('#line-chart').html('<div class="alert alert-danger">Lỗi khi tải dữ liệu: ' + error + '</div>');
+        });
+
+        // 2. Biểu đồ doanh thu & số đơn hàng
+        $.getJSON('@Url.Action("GetMonthlySales", "Dashboard")', function(data) {
+            console.log("Monthly Sales Data:", data);
+
+            if (!data || data.length === 0) {
+                $('#salse-revenue').html('<div class="alert alert-info">Không có dữ liệu đơn hàng</div>');
+                return;
+            }
+
+            if (window.salesRevenueChart) window.salesRevenueChart.destroy();
+
+            const ctx = document.getElementById('salse-revenue').getContext('2d');
+            window.salesRevenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(item => item.Label),
+                    datasets: [
+                        {
+                            label: 'Số đơn hàng',
+                            data: data.map(item => item.Sales),
+                            borderColor: 'rgba(28, 200, 138, 1)',
+                            backgroundColor: 'rgba(28, 200, 138, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Doanh thu (₫)',
+                            data: data.map(item => item.Revenue),
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            backgroundColor: 'rgba(78, 115, 223, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Số đơn hàng' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Doanh thu (₫)' },
+                            grid: { drawOnChartArea: false },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.datasetIndex === 1) {
+                                        label += context.raw.toLocaleString() + ' ₫';
+                                    } else {
+                                        label += context.raw;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }).fail(function(jqXHR, textStatus, error) {
+            console.error("Error loading monthly sales:", textStatus, error);
+            $('#salse-revenue').html('<div class="alert alert-danger">Lỗi khi tải dữ liệu: ' + error + '</div>');
+        });
+
+            // 3. Biểu đồ lợi nhuận tuần này
+        // 3. Biểu đồ lợi nhuận tuần này - Fixed version
+        $.getJSON('@Url.Action("GetWeeklyProfit", "Dashboard")', function(response) {
+            console.log("Weekly Profit Response:", response);
+
+            // Transform data if needed
+            const data = Array.isArray(response) ? response : [];
+
+            // Sort by day order
+            const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const sortedData = data.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+
+            // Map to Vietnamese day names and extract values
+            const labels = sortedData.map(item => {
+                const dayMap = {
+                    "Sunday": "Chủ Nhật",
+                    "Monday": "Thứ Hai",
+                    "Tuesday": "Thứ Ba",
+                    "Wednesday": "Thứ Tư",
+                    "Thursday": "Thứ Năm",
+                    "Friday": "Thứ Sáu",
+                    "Saturday": "Thứ Bảy"
+                };
+                return dayMap[item.day] || item.day;
+            });
+
+            const profits = sortedData.map(item => item.profit);
+
+            // Destroy previous chart instance if exists
+            if (window.barChart) {
+                window.barChart.destroy();
+            }
+
+            // Get canvas context
+            const ctx = document.getElementById('bar-chart').getContext('2d');
+
+            // Create new chart
+            window.barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lợi nhuận (₫)',
+                        data: profits,
+                        backgroundColor: 'rgba(54, 185, 204, 0.8)',
+                        borderColor: 'rgba(54, 185, 204, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Lợi nhuận: ' + context.raw.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }).fail(function(jqXHR, textStatus, error) {
+            console.error("Error loading weekly profit:", textStatus, error);
+            $('#bar-chart').html('<div class="alert alert-danger">Lỗi khi tải dữ liệu lợi nhuận tuần: ' + error + '</div>');
+        });
+
+                    // 4. Biểu đồ phân phối danh mục sản phẩm
+        $.getJSON('@Url.Action("GetCategoryDistribution", "Dashboard")', function(data) {
+            console.log("Category Distribution Data:", data);
+
+            if (!data || data.length === 0) {
+                $('#pie-chart').html('<div class="alert alert-info">Không có dữ liệu danh mục</div>');
+                return;
+            }
+
+            if (window.pieChart) window.pieChart.destroy();
+
+            const ctx = document.getElementById('pie-chart').getContext('2d');
+            window.pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.map(item => item.Category),
+                    datasets: [{
+                        data: data.map(item => item.Percentage),
+                        backgroundColor: [
+                            'rgba(78, 115, 223, 0.8)',
+                            'rgba(28, 200, 138, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(54, 185, 204, 0.8)',
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(155, 89, 182, 0.8)',
+                            'rgba(52, 152, 219, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / sum) * 100);
+                                    return `${label}: ${percentage}% (${value} sản phẩm)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }).fail(function(jqXHR, textStatus, error) {
+            console.error("Error loading category distribution:", textStatus, error);
+            $('#pie-chart').html('<div class="alert alert-danger">Lỗi khi tải dữ liệu: ' + error + '</div>');
+        });
+
+            // Export report functionality
+            $('#export-btn').click(function() {
+                if (currentData.length === 0) {
+                    alert('Không có dữ liệu để xuất báo cáo');
+                    return;
+                }
+
+                var exportMenu = `
+                    <div class="export-dropdown">
+                        <button class="export-option" data-type="excel"><i class="fas fa-file-excel"></i> Excel</button>
+                        <button class="export-option" data-type="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                        <button class="export-option" data-type="csv"><i class="fas fa-file-csv"></i> CSV</button>
+                    </div>
+                `;
+
+                var $menu = $(exportMenu).css({
+                    position: 'absolute',
+                    top: $('#export-btn').offset().top + $('#export-btn').outerHeight(),
+                    left: $('#export-btn').offset().left - 100,
+                    backgroundColor: 'white',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                    zIndex: 1000,
+                    padding: '10px',
+                    borderRadius: '4px'
+                }).appendTo('body');
+
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.export-dropdown, #export-btn').length) {
+                        $menu.remove();
+                        $(document).off('click');
+                    }
+                });
+
+                $menu.on('click', '.export-option', function() {
+                    var type = $(this).data('type');
+                    var period = $('#period-select').val();
+
+                    $.ajax({
+                        url: '@Url.Action("ExportReport", "Dashboard", new { area = "Admin" })',
+                        type: 'POST',
+                        data: { format: type, period: period },
+                        xhrFields: { responseType: 'blob' },
+                        success: function(blob) {
+                            var url = window.URL.createObjectURL(blob);
+                            var a = document.createElement('a');
+                            a.href = url;
+                            var fileName = 'Bao_cao_doanh_thu_Shop_Souvenir_' + new Date().toISOString().split('T')[0];
+                            if (type === 'excel') fileName += '.xlsx';
+                            else if (type === 'pdf') fileName += '.pdf';
+                            else if (type === 'csv') fileName += '.csv';
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Lỗi khi xuất báo cáo:', error);
+                            alert('Có lỗi xảy ra khi xuất báo cáo: ' + error);
+                        }
+                    });
+
+                    $menu.remove();
+                    $(document).off('click');
+                });
+            });
+        });
+    </script>
+}

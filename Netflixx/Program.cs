@@ -110,9 +110,13 @@ namespace Netflixx
 
             app.MapControllers();
 
-            //app.MapControllerRoute(
-            //    name: "default",
-            //    pattern: "{controller=Login}/{action=Login}/{id?}");
+            
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
 
             app.MapControllerRoute(
                 name: "default",

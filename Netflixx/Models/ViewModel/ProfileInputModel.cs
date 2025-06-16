@@ -1,7 +1,4 @@
 ﻿// Models/ViewModel/ProfileInputModel.cs
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Netflixx.Models.ViewModel

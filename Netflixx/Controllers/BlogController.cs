@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class BlogController : Controller
 {

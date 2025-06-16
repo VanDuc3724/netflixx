@@ -1,0 +1,155 @@
+﻿@using Netflixx.Models.Souvenir
+@model IEnumerable<ProductSouModel>
+
+<div class="hero-poster">
+    <img src="~/image/logo/shop_poster.jpg" alt="Poster" />
+</div>
+
+<div class="container">
+    <!-- Featured Section -->
+    <section class="product-section">
+        <div class="section-title">Nổi bật</div>
+        <div class="products-grid">
+            @foreach (var item in Model.Take(8))
+            {
+                <div class="product-card">
+                    <img src="@Url.Content(item.ImageUrl)" alt="@item.Name" />
+                    <div class="product-info">
+                        <h3>@item.Name</h3>
+                        <p>@item.Description</p>
+                        <div class="price">@item.Price.ToString("N0") ₫</div>
+                        <a href="@Url.Action("Detail", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-detail">Chi Tiết</a>
+                        <a href="@Url.Action("Buy", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-buy">Mua Ngay</a>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Count() > 8)
+        {
+            <div class="text-center mt-3">
+                <button class="btn btn-primary load-more-btn">Xem thêm</button>
+            </div>
+        }
+    </section>
+
+    <!-- New Arrivals Section -->
+    <section class="product-section">
+        <div class="section-title">Mới</div>
+        <div class="products-grid">
+            @foreach (var item in Model.OrderByDescending(p => p.Id).Take(8))
+            {
+                <div class="product-card">
+                    <img src="@Url.Content(item.ImageUrl)" alt="@item.Name" />
+                    <div class="product-info">
+                        <h3>@item.Name</h3>
+                        <p>@item.Description</p>
+                        <div class="price">@item.Price.ToString("N0") ₫</div>
+                        <a href="@Url.Action("Detail", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-detail">Chi Tiết</a>
+                        <a href="@Url.Action("Buy", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-buy">Mua Ngay</a>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Count() > 8)
+        {
+            <div class="text-center mt-3">
+                <button class="btn btn-primary load-more-btn">Xem thêm</button>
+            </div>
+        }
+    </section>
+
+    <!-- Sale Section -->
+    <section class="product-section">
+        <div class="section-title">Giảm giá</div>
+        <div class="products-grid">
+            @foreach (var item in Model.Where(p => p.Price < 100).Take(8)) // Assuming items under $100 are on sale
+            {
+                <div class="product-card">
+                    <div class="ribbon">Sale</div>
+                    <img src="@Url.Content(item.ImageUrl)" alt="@item.Name" />
+                    <div class="product-info">
+                        <h3>@item.Name</h3>
+                        <p>@item.Description</p>
+                        <div class="price">@item.Price.ToString("N0") ₫</div>
+                        <a href="@Url.Action("Detail", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-detail">Chi Tiết</a>
+                        <a href="@Url.Action("Buy", "Souvenir", new { area = "SouvenirShop", id = item.Id })" class="btn btn-buy">Mua Ngay</a>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Where(p => p.Price < 100).Count() > 8)
+        {
+            <div class="text-center mt-3">
+                <button class="btn btn-primary load-more-btn">Xem thêm</button>
+            </div>
+        }
+    </section>
+</div>
+
+<style>
+    .product-card {
+        position: relative;
+    }
+
+    .ribbon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #e63946;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        z-index: 1;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    /* Add your other CSS styles here */
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sections = document.querySelectorAll('.product-section');
+
+        sections.forEach(section => {
+            const productCards = section.querySelectorAll('.product-card');
+            const loadMoreBtn = section.querySelector('.load-more-btn');
+
+            // Skip if no load more button
+            if (!loadMoreBtn) return;
+
+            const initialDisplayCount = 8;
+            const productsPerLoad = 4;
+            let currentDisplayCount = initialDisplayCount;
+
+            // Hide extra products initially
+            for (let i = initialDisplayCount; i < productCards.length; i++) {
+                productCards[i].classList.add('hidden');
+            }
+
+            // Hide button if not needed
+            if (productCards.length <= initialDisplayCount) {
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            // Load more functionality
+            loadMoreBtn.addEventListener('click', function () {
+                for (let i = currentDisplayCount; i < Math.min(currentDisplayCount + productsPerLoad, productCards.length); i++) {
+                    if (productCards[i]) {
+                        productCards[i].classList.remove('hidden');
+                    }
+                }
+                currentDisplayCount += productsPerLoad;
+
+                if (currentDisplayCount >= productCards.length) {
+                    loadMoreBtn.textContent = 'Xem tất cả';
+                    loadMoreBtn.disabled = true;
+                }
+            });
+        });
+    });
+</script>

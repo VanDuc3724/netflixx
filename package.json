@@ -1,0 +1,44 @@
+{
+  "name": "netflixx",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "scss": "sass scss/app.scss wwwroot/css/app.css --style compressed",
+    "scss:watch": "sass --watch scss/app.scss:wwwroot/css/app.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/group1_swp391_se1923ks_netflixx/netflixx.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/group1_swp391_se1923ks_netflixx/netflixx/issues"
+  },
+  "homepage": "https://gitlab.com/group1_swp391_se1923ks_netflixx/netflixx#readme",
+  "devDependencies": {
+    "sass": "^1.89.2"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.6",
+    "braces": "^3.0.3",
+    "chokidar": "^4.0.3",
+    "detect-libc": "^1.0.3",
+    "fill-range": "^7.1.1",
+    "flatpickr": "^4.6.13",
+    "immutable": "^5.1.3",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "jsvectormap": "^1.7.0",
+    "micromatch": "^4.0.8",
+    "node-addon-api": "^7.1.1",
+    "picomatch": "^2.3.1",
+    "readdirp": "^4.1.2",
+    "simplebar": "^6.3.1",
+    "source-map-js": "^1.2.1",
+    "to-regex-range": "^5.0.1"
+  },
+  "description": ""
+}

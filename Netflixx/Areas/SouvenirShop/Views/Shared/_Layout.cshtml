@@ -1,0 +1,87 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Movie Souvenir Shop</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/css/Souvenir.css" />
+
+</head>
+<body>
+    <!-- navbar.html -->
+    <header class="navbar">
+        <div class="topbar">
+            <div class="search-box">
+                <input type="search" placeholder="Tìm sản phẩm...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="logo">
+                <img src="~/image/logo/NetflixxLogo.png" alt="Netflixx Logo">
+                <span>OFFICIAL</span>
+            </div>
+            <div class="top-icons">
+                <div class="icon">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </div>
+                <div class="user-dropdown">
+                    <div class="icon"><i class="fa-solid fa-user-circle"></i></div>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fa-solid fa-user"></i> Tài khoản của tôi</a>
+                        <a href="#"><i class="fa-solid fa-receipt"></i> Đơn hàng</a>
+                        <a href="#"><i class="fa-solid fa-heart"></i> Yêu thích</a>
+                        <a href="#">
+                            <i class="fa-solid fa-shopping-cart "></i> Giỏ hàng</a>
+                            <a href="#"><i class="fa-solid fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar">
+            <ul class="nav-menu">
+                <li><a asp-area="none" asp-controller="Home" asp-action="Index" class="nav-item-backToFilm">Xem Phim</a></li>
+                <li><a href="#">Trang Chủ</a></li>
+                <li>
+                    <a href="#">Hãng Phim <i class="fa-solid fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Disney</a></li>
+                        <li><a href="#">Marvel</a></li>
+                        <li><a href="#">Warner Bros.</a></li>
+                        <li><a href="#">HBO</a></li>
+                        <li><a href="#">Tất Cả Hãng</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Sản Phẩm <i class="fa-solid fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Thời trang & Phụ kiện</a></li>
+                        <li><a href="#">Đồ trang trí</a></li>
+                        <li><a href="#">Đồ sưu tầm</a></li>
+                        <li><a href="#">Đồ chơi</a></li>
+                        <li><a href="#">Tất Cả</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Giới Thiệu</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    @* nội dung ở đây *@
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+    <footer class=" p-3 text-muted">
+        <div class="container">
+            &copy; 2025 - Netflixx - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/js/Souvenir.js"></script>
+
+</body>
+</html>
