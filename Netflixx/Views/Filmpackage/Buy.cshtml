@@ -176,7 +176,7 @@
             <select name="providerId" onchange="this.form.submit()">
                 @foreach (var p in providers)
                 {
-                    <option value="@p.Id" @(p.Id == providerId ? "selected" : "")>@p.Name</option>
+                    <option value="@p.Id" selected="@(p.Id == providerId)">@p.Name</option>
                 }
             </select>
         </form>
@@ -226,11 +226,8 @@
         }
 
         try {
-            const response = await fetch(
+                        const response = await fetch("/Filmpackage/GetPaymentData");
 
-                "https://script.google.com/macros/s/AKfycbyi5nMWfuHp3BigdOV9h0lq97ci0f1YTWOlULUsRgkW8_AT0e34FVu67ao3l00EXOHx/exec"
-
-            );
             const data = await response.json();
             const lastPaid = data.data[data.data.length - 1];
             const lastPrice = parseInt(lastPaid["Giá trị"]);
