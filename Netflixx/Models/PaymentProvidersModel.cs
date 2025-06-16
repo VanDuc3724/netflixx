@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace Netflixx.Models
 {
     public class PaymentProvidersModel
@@ -10,9 +10,7 @@ namespace Netflixx.Models
         [Required(ErrorMessage = "Tên không được để trống.")]
         public string Name { get; set; }
 
-        // Navigation
-        [Required]
-        public PaymentMethodType MethodType { get; set; }
+        // Navigation property
         public ICollection<PaymentTransactionsModel> PaymentTransactions { get; set; }
     }
 }
