@@ -1,9 +1,19 @@
 ﻿@model Netflixx.Models.FilmPackageViewModel
 @using System.Security.Claims
+@using System.Collections.Generic
+
 @{
     ViewData["Title"] = "Thanh toán";
     
     string username = User.Identity.Name;
+    var providers = new List<(int Id, string Name)>
+    {
+        (1, "Ngân hàng VietQR"),
+        (2, "MoMo"),
+        (3, "Thanh toán trực tiếp")
+    };
+
+    int providerId = Model.ProviderId;
 
 
     // Thông tin ngân hàng
@@ -158,12 +168,35 @@
     <div class="package-card @packageClass">
         <span class="package-icon">@packageIcon</span>
         <h1>Gói: @Model.PackageName</h1>
-        <p class="package-price">@Model.PackagePrice.ToString("N0") đ</p>
+        <p class="package-price">@Model.PackagePrice.ToString("N0") đ</p
+             <form method="get" style="margin-bottom:1rem;">
+            <input type="hidden" name="packageId" value="@Model.PackageId" />
+            <input type="hidden" name="packageName" value="@Model.PackageName" />
+            <input type="hidden" name="packagePrice" value="@Model.PackagePrice" />
+            <select name="providerId" onchange="this.form.submit()">
+                @foreach (var p in providers)
+                {
+                    <option value="@p.Id" @(p.Id == providerId ? "selected" : "")>@p.Name</option>
+                }
+            </select>
+        </form>
 
         @if (Model.PackagePrice > 0)
         {
-            <p>Quét mã QR bằng app ngân hàng để thanh toán:</p>
-            <img class="qr-image" src="@qrUrl" alt="QR thanh toán VietQR" />
+            if (providerId == 1)
+            {
+                <p>Quét mã QR bằng app ngân hàng để thanh toán:</p>
+                <img class="qr-image" src="@qrUrl" alt="QR thanh toán VietQR" />
+            }
+            else if (providerId == 2)
+            {
+                <p>Nhấn vào liên kết bên dưới để thanh toán qua MoMo:</p>
+                <a class="back-btn" href="#">Thanh toán MoMo (demo)</a>
+            }
+            else if (providerId == 3)
+            {
+                <p>Vui lòng đến quầy để thanh toán trực tiếp.</p>
+            }
         }
         else
         {
@@ -182,9 +215,15 @@
 </html>
 <script>
     document.getElementById("checkPaymentBtn").addEventListener("click", async function () {
+        const provider = @Model.ProviderId;
         const price = @Model.PackagePrice;
         const content = "@username";
         const resultElement = document.getElementById("paymentResult");
+         if (provider !== 1) {
+            resultElement.style.color = "orange";
+            resultElement.textContent = "⚠️ Chức năng kiểm tra chỉ áp dụng cho chuyển khoản ngân hàng.";
+            return;
+        }
 
         try {
             const response = await fetch(
