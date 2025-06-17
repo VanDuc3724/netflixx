@@ -529,6 +529,42 @@
         font-size: 0.8rem;
         opacity: 0.8;
     }
+    /* View toggle */
+    .view-options {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .view-btn {
+        background: transparent;
+        border: 2px solid #666;
+        color: #ccc;
+        padding: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .view-btn.active,
+        .view-btn:hover {
+            border-color: #ff4d6d;
+            color: #ff4d6d;
+            background: rgba(255, 77, 109, 0.1);
+        }
+
+    .table-view {
+        display: none;
+    }
+
+        .table-view.active {
+            display: block;
+        }
+
 
 </style>
 
@@ -612,7 +648,15 @@
                         <span class="ml-2">mục</span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 text-md-end">
+                    <div class="view-options">
+                        <button class="view-btn active" data-view="grid" title="Xem dạng lưới">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-btn" data-view="list" title="Xem dạng bảng">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -624,6 +668,21 @@
 
             <!-- Cards container -->
             <div class="cards-container" id="cardsContainer" style="display: none;">
+            </div>
+            <!-- Table view -->
+            <div class="table-view table-responsive" id="tableView" style="display: none;">
+                <table class="table table-dark table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Logo</th>
+                            <th>Công ty</th>
+                            <th>Quốc gia</th>
+                            <th>CEO</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
             </div>
 
             <!-- No results message -->
@@ -659,9 +718,17 @@
             var filteredData = [];
             var currentPage = 1;
             var pageSize = 5;
+            var currentView = 'grid';
 
             // Load initial data
             loadData();
+             $('.view-btn').on('click', function () {
+                var view = $(this).data('view');
+                $('.view-btn').removeClass('active');
+                $(this).addClass('active');
+                currentView = view;
+                displayData();
+            });
 
             function loadData() {
                 $('#loadingIndicator').show();
@@ -676,7 +743,7 @@
                         allData = data;
                         filteredData = [...allData];
                         updateTotalCount();
-                        displayCards();
+                        displayData();
                         $('#loadingIndicator').hide();
                     },
                     error: function() {
@@ -689,6 +756,53 @@
             function updateTotalCount() {
                 $('#totalCount').text(filteredData.length);
                 $('#totalCountHeader').text(filteredData.length);
+            }
+            function displayData() {
+                if (currentView === 'grid') {
+                    $('#tableView').hide();
+                    displayCards();
+                    $('#cardsContainer').show();
+                } else {
+                    $('#cardsContainer').hide();
+                    displayTable();
+                    $('#tableView').show();
+                }
+            }
+
+            function displayTable() {
+                var startIndex = (currentPage - 1) * pageSize;
+                var endIndex = startIndex + pageSize;
+                var pageData = filteredData.slice(startIndex, endIndex);
+
+                if (pageData.length === 0) {
+                    $('#tableView').hide();
+                    $('#noResults').show();
+                    $('#paginationContainer').hide();
+                    return;
+                }
+
+                var rows = '';
+                pageData.forEach(function(item) {
+                    var logoSrc = item.logoUrl || '/image/logo/NetflixxLogo.png';
+                    rows += `
+                        <tr>
+                            <td><img src="${logoSrc}" alt="${item.name}" style="width:40px;height:40px;object-fit:contain" onerror="this.src='/image/logo/NetflixxLogo.png'"></td>
+                            <td>${item.name}</td>
+                            <td>${item.country}</td>
+                            <td>${item.ceo || ''}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-primary btn-sm" href="/ProductionManager/Edit/${item.id}" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-info btn-sm" href="/ProductionManager/Details/${item.id}" title="Xem chi tiết"><i class="fas fa-eye"></i></a>
+                                    <a class="btn btn-danger btn-sm delete-link" href="#" data-id="${item.id}" title="Xóa"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+
+                $('#tableBody').html(rows);
+                $('#noResults').hide();
+                updatePagination();
             }
 
             function displayCards() {
@@ -812,8 +926,9 @@
                 var page = parseInt($(this).data('page'));
                 if (page && page !== currentPage) {
                     currentPage = page;
-                    displayCards();
-                    $('html, body').animate({ scrollTop: $('#cardsContainer').offset().top - 100 }, 300);
+                    displayData();
+                    var target = currentView === 'grid' ? '#cardsContainer' : '#tableView';
+                    $('html, body').animate({ scrollTop: $(target).offset().top - 100 }, 300);
                 }
             });
 
@@ -844,14 +959,14 @@
 
                 currentPage = 1;
                 updateTotalCount();
-                displayCards();
+                displayData();
             }
 
             // Page length change
             $('#pageLength').change(function () {
                 pageSize = parseInt($(this).val());
                 currentPage = 1;
-                displayCards();
+                displayData();
             });
 
             // Delete link handler
