@@ -110,6 +110,13 @@ namespace Netflixx.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool existed = await _context.ProductionManagers
+                    .AnyAsync(pm => !pm.IsDeleted && pm.Name.ToLower() == productionManager.Name.ToLower());
+                if (existed)
+                {
+                    ModelState.AddModelError("Name", "Công ty sản xuất đã tồn tại");
+                    return View(productionManager);
+                }
                 productionManager.CreatedAt = DateTime.Now;
                 productionManager.UpdatedAt = DateTime.Now;
                 if (productionManager.LogoFile != null)
