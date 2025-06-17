@@ -359,6 +359,13 @@ namespace Netflixx.Controllers
                 pm.IsDeleted = false;
                 pm.DeletedAt = null;
                 _context.Update(pm);
+                _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                {
+                    ProductionManagerId = pm.Id,
+                    ProductionManagerName = pm.Name,
+                    Action = "Restore",
+                    Timestamp = DateTime.Now
+                });
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Đã khôi phục thành công!";
             }
@@ -383,6 +390,14 @@ namespace Netflixx.Controllers
                         System.IO.File.Delete(filePath);
                     }
                 }
+                _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                {
+                    ProductionManagerId = pm.Id,
+                    ProductionManagerName = pm.Name,
+                    Action = "HardDelete",
+                    Timestamp = DateTime.Now
+                });
+
 
                 _context.ProductionManagers.Remove(pm);
                 await _context.SaveChangesAsync();
@@ -404,6 +419,13 @@ namespace Netflixx.Controllers
                     pm.IsDeleted = false;
                     pm.DeletedAt = null;
                     _context.Update(pm);
+                    _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                    {
+                        ProductionManagerId = pm.Id,
+                        ProductionManagerName = pm.Name,
+                        Action = "Restore",
+                        Timestamp = DateTime.Now
+                    });
                 }
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Đã khôi phục các mục đã chọn!";
@@ -432,6 +454,13 @@ namespace Netflixx.Controllers
                             System.IO.File.Delete(filePath);
                         }
                     }
+                    _context.ProductionManagerHistories.Add(new ProductionManagerHistory
+                    {
+                        ProductionManagerId = pm.Id,
+                        ProductionManagerName = pm.Name,
+                        Action = "HardDelete",
+                        Timestamp = DateTime.Now
+                    });
                     _context.ProductionManagers.Remove(pm);
                 }
                 await _context.SaveChangesAsync();
