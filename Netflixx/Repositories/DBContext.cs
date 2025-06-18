@@ -62,6 +62,9 @@ namespace Netflixx.Repositories
                   .WithMany(p => p.Histories)
                   .HasForeignKey(h => h.ProductionManagerId)
                   .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<ProductionManagerHistory>()
+                  .Property(h => h.Details)
+                  .HasColumnType("nvarchar(max)");
             modelBuilder.Entity<FilmsModel>()
        .HasOne(f => f.ProductionManager)           
        .WithMany(p => p.Films)                     
