@@ -212,7 +212,7 @@
                                     <td>@(item.ProductionManagerName ?? item.ProductionManager?.Name)</td>
                                     <td>@item.Action</td>
                                     <td>
-                                        <a asp-action="HistoryDetails" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                        <a asp-action="HistoryDetails" asp-route-id="@item.Id" asp-route-returnTo="HistoryAll" class="btn btn-sm btn-info">
                                             Xem
                                         </a>
                                     </td>
