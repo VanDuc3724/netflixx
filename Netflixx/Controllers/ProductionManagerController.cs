@@ -365,6 +365,19 @@ namespace Netflixx.Controllers
                 .ToListAsync();
             return View("HistoryAll", list);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> HistoryDetails(int id)
+        {
+            var history = await _context.ProductionManagerHistories
+                .Include(h => h.ProductionManager)
+                .FirstOrDefaultAsync(h => h.Id == id);
+            if (history == null)
+            {
+                return NotFound();
+            }
+            return View("HistoryDetails", history);
+        }
         [HttpGet]
         public async Task<IActionResult> Trash()
         {

@@ -152,7 +152,11 @@
                                 <tr>
                                     <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>@item.Action</td>
-                                    <td>@item.Details</td>
+                                    <td>
+                                        <a asp-action="HistoryDetails" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                            Xem
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
