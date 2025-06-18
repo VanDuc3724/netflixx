@@ -78,19 +78,19 @@
                                     <div class="card-selector">
                                         <input type="checkbox" class="item-checkbox" value="@item.Id">
                                     </div>
-                                    
+
                                     <div class="item-content">
                                         <div class="item-header">
                                             <div class="company-logo">
-                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" 
-                                                     alt="@item.Name" 
+                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))"
+                                                     alt="@item.Name"
                                                      onerror="this.src='/image/logo/NetflixxLogo.png'" />
                                             </div>
                                             <div class="delete-badge">
                                                 <i class="fas fa-trash-alt"></i>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="item-info">
                                             <h5 class="company-name">@item.Name</h5>
                                             <p class="company-country">
@@ -102,16 +102,18 @@
                                             </p>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="item-actions">
-                                        <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
-                                            <button type="submit" class="btn btn-success btn-sm" title="Khôi phục">
-                                                <i class="fas fa-undo me-1"></i>Khôi phục
+                                        <div class="action-buttons">
+                                            <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn-square btn-success" title="Khôi phục">
+                                                    ↻
+                                                </button>
+                                            </form>
+                                            <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn-square btn-danger hard-delete-link" title="Xóa vĩnh viễn">
+                                                ✕
                                             </button>
-                                        </form>
-                                        <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
-                                            <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -129,7 +131,7 @@
                                     <div class="col-actions">Thao tác</div>
                                 </div>
                             </div>
-                            
+
                             <div class="list-body">
                                 @foreach (var item in Model)
                                 {
@@ -139,7 +141,7 @@
                                         </div>
                                         <div class="col-company">
                                             <div class="company-info">
-                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))" 
+                                                <img src="@((!string.IsNullOrEmpty(item.LogoUrl) ? item.LogoUrl : "/image/logo/NetflixxLogo.png"))"
                                                      alt="@item.Name" class="company-avatar"
                                                      onerror="this.src='/image/logo/NetflixxLogo.png'" />
                                                 <span class="company-name">@item.Name</span>
@@ -152,14 +154,16 @@
                                             @item.DeletedAt?.ToString("dd/MM/yyyy")
                                         </div>
                                         <div class="col-actions">
-                                            <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-success btn-sm me-1" title="Khôi phục">
-                                                    <i class="fas fa-undo me-1"></i>Khôi phục
+                                            <div class="action-buttons">
+                                                <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn-square btn-success" title="Khôi phục">
+                                                        ↻
+                                                    </button>
+                                                </form>
+                                                <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn-square btn-danger hard-delete-link" title="Xóa vĩnh viễn">
+                                                    ✕
                                                 </button>
-                                            </form>
-                                            <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
-                                                <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
-                                            </button>
+                                            </div>
                                         </div>
                                     </div>
                                 }
@@ -277,39 +281,39 @@
         align-items: center;
     }
 
-    .bulk-actions .btn {
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 8px 16px;
-        border: none;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-        .bulk-actions .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+        .bulk-actions .btn {
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .bulk-actions .btn:hover::before {
-            left: 100%;
-        }
+            .bulk-actions .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
 
-        .bulk-actions .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
+            .bulk-actions .btn:hover::before {
+                left: 100%;
+            }
+
+            .bulk-actions .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            }
 
     .view-options {
         display: flex;
@@ -331,12 +335,12 @@
         justify-content: center;
     }
 
-    .view-btn.active,
-    .view-btn:hover {
-        border-color: #ff4d6d;
-        color: #ff4d6d;
-        background: rgba(255, 77, 109, 0.1);
-    }
+        .view-btn.active,
+        .view-btn:hover {
+            border-color: #ff4d6d;
+            color: #ff4d6d;
+            background: rgba(255, 77, 109, 0.1);
+        }
 
     /* Grid View */
     .trash-grid {
@@ -347,9 +351,9 @@
         display: none;
     }
 
-    .trash-grid.active {
-        display: grid;
-    }
+        .trash-grid.active {
+            display: grid;
+        }
 
     .trash-item-card {
         background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
@@ -360,11 +364,11 @@
         position: relative;
     }
 
-    .trash-item-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-        border-color: #ffc107;
-    }
+        .trash-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-color: #ffc107;
+        }
 
     .card-selector {
         position: absolute;
@@ -373,11 +377,11 @@
         z-index: 2;
     }
 
-    .card-selector input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        accent-color: #ff4d6d;
-    }
+        .card-selector input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff4d6d;
+        }
 
     .item-content {
         padding: 1.5rem;
@@ -399,12 +403,12 @@
         border: 2px solid #666;
     }
 
-    .company-logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #000;
-    }
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
 
     .delete-badge {
         background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
@@ -441,23 +445,35 @@
         gap: 0.5rem;
         padding-top: 1rem;
         border-top: 1px solid #555;
+        justify-content: center;
     }
 
-    .item-actions .btn {
-        border-radius: 8px;
-        flex: 1;
-        font-weight: 600;
-        padding: 8px 16px;
+    /* CSS cho nút vuông ngang */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-square {
+        width: 45px;
+        height: 45px;
         border: none;
-        position: relative;
-        overflow: hidden;
+        border-radius: 8px;
         display: flex;
         align-items: center;
-        gap: 6px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 18px;
+        color: white;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
     }
 
-        .item-actions .btn::before {
+        .btn-square::before {
             content: '';
             position: absolute;
             top: 0;
@@ -468,23 +484,38 @@
             transition: left 0.5s;
         }
 
-        .item-actions .btn:hover::before {
+        .btn-square:hover::before {
             left: 100%;
         }
 
-        .item-actions .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        .btn-square.btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
         }
+
+            .btn-square.btn-success:hover {
+                background: linear-gradient(135deg, #218838, #1ba085);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            }
+
+        .btn-square.btn-danger {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+        }
+
+            .btn-square.btn-danger:hover {
+                background: linear-gradient(135deg, #c82333, #c0392b);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            }
 
     /* List View */
     .trash-list {
         display: none;
     }
 
-    .trash-list.active {
-        display: block;
-    }
+        .trash-list.active {
+            display: block;
+        }
 
     .list-header {
         background: rgba(255, 77, 109, 0.1);
@@ -501,9 +532,9 @@
         transition: all 0.3s ease;
     }
 
-    .list-item:hover:not(.header-item) {
-        background: rgba(255, 77, 109, 0.05);
-    }
+        .list-item:hover:not(.header-item) {
+            background: rgba(255, 77, 109, 0.05);
+        }
 
     .header-item {
         font-weight: 600;
@@ -511,9 +542,9 @@
         background: transparent;
     }
 
-    .header-item:hover {
-        background: transparent;
-    }
+        .header-item:hover {
+            background: transparent;
+        }
 
     .company-info {
         display: flex;
@@ -532,97 +563,65 @@
 
     .col-actions {
         display: flex;
-        gap: 0.5rem;
-    }
-
-    .col-actions .btn {
-        border-radius: 6px;
-        font-weight: 600;
-        padding: 8px 16px;
-        border: none;
-        position: relative;
-        overflow: hidden;
-        display: flex;
+        justify-content: center;
         align-items: center;
-        gap: 6px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-        .col-actions .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+        .bulk-actions .btn-primary,
+        .item-actions .btn-primary,
+        .col-actions .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
         }
 
-        .col-actions .btn:hover::before {
-            left: 100%;
+            .bulk-actions .btn-primary:hover,
+            .item-actions .btn-primary:hover,
+            .col-actions .btn-primary:hover {
+                background: linear-gradient(135deg, #0056b3, #004085);
+                box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+            }
+
+        .bulk-actions .btn-info,
+        .item-actions .btn-info,
+        .col-actions .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: #fff;
         }
 
-        .col-actions .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            .bulk-actions .btn-info:hover,
+            .item-actions .btn-info:hover,
+            .col-actions .btn-info:hover {
+                background: linear-gradient(135deg, #138496, #0f6674);
+                box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+            }
+
+        .bulk-actions .btn-secondary,
+        .item-actions .btn-secondary,
+        .col-actions .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #545b62);
+            color: #fff;
         }
 
-    .bulk-actions .btn-primary,
-    .item-actions .btn-primary,
-    .col-actions .btn-primary {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: #fff;
-    }
+            .bulk-actions .btn-secondary:hover,
+            .item-actions .btn-secondary:hover,
+            .col-actions .btn-secondary:hover {
+                background: linear-gradient(135deg, #545b62, #3d4043);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            }
 
-        .bulk-actions .btn-primary:hover,
-        .item-actions .btn-primary:hover,
-        .col-actions .btn-primary:hover {
-            background: linear-gradient(135deg, #0056b3, #004085);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        .bulk-actions .btn-danger,
+        .item-actions .btn-danger,
+        .col-actions .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: #fff;
         }
 
-    .bulk-actions .btn-info,
-    .item-actions .btn-info,
-    .col-actions .btn-info {
-        background: linear-gradient(135deg, #17a2b8, #138496);
-        color: #fff;
-    }
-
-        .bulk-actions .btn-info:hover,
-        .item-actions .btn-info:hover,
-        .col-actions .btn-info:hover {
-            background: linear-gradient(135deg, #138496, #0f6674);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-        }
-
-    .bulk-actions .btn-secondary,
-    .item-actions .btn-secondary,
-    .col-actions .btn-secondary {
-        background: linear-gradient(135deg, #6c757d, #545b62);
-        color: #fff;
-    }
-
-        .bulk-actions .btn-secondary:hover,
-        .item-actions .btn-secondary:hover,
-        .col-actions .btn-secondary:hover {
-            background: linear-gradient(135deg, #545b62, #3d4043);
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
-        }
-
-    .bulk-actions .btn-danger,
-    .item-actions .btn-danger,
-    .col-actions .btn-danger {
-        background: linear-gradient(135deg, #dc3545, #c82333);
-        color: #fff;
-    }
-
-        .bulk-actions .btn-danger:hover,
-        .item-actions .btn-danger:hover,
-        .col-actions .btn-danger:hover {
-            background: linear-gradient(135deg, #c82333, #a02129);
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-        }
+            .bulk-actions .btn-danger:hover,
+            .item-actions .btn-danger:hover,
+            .col-actions .btn-danger:hover {
+                background: linear-gradient(135deg, #c82333, #a02129);
+                box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            }
 
     /* Empty State */
     .empty-state {
@@ -651,13 +650,11 @@
         border-radius: 25px;
         padding: 0.75rem 2rem;
     }
-
-    
 </style>
 
 @section Scripts {
     @await Html.PartialAsync("_ProductionManagerMenuScripts")
-    
+
     <script>
         // View toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -668,11 +665,11 @@
             viewBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const view = this.dataset.view;
-                    
+
                     // Update button states
                     viewBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     // Toggle views
                     if (view === 'grid') {
                         gridView.classList.add('active');
@@ -700,6 +697,7 @@
             const checkboxes = document.querySelectorAll('.item-checkbox-list');
             checkboxes.forEach(cb => cb.checked = checkbox.checked);
         }
+
         function getSelectedIds() {
             const checkboxes = document.querySelectorAll('.item-checkbox:checked, .item-checkbox-list:checked');
             return Array.from(checkboxes).map(cb => cb.value);
