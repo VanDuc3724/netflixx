@@ -627,9 +627,12 @@
                     <label>CEO</label>
                     <input type="text" class="form-control" id="searchCEO" placeholder="Tìm theo CEO...">
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-3 d-flex align-items-end flex-column gap-2">
                     <button class="btn btn-primary w-100" id="searchBtn">
                         <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button class="btn btn-secondary w-100" id="clearFilterBtn">
+                        <i class="fas fa-times"></i> Xóa lọc
                     </button>
                 </div>
             </div>
@@ -733,14 +736,44 @@
             var currentPage = 1;
             var pageSize = 5;
             var currentView = 'grid';
+            var filterKey = 'pmFilters';
+
+            function loadFilterState() {
+                var saved = localStorage.getItem(filterKey);
+                if (saved) {
+                    try {
+                        var state = JSON.parse(saved);
+                        $('#searchName').val(state.name || '');
+                        $('#filterCountry').val(state.country || '');
+                        $('#searchCEO').val(state.ceo || '');
+                        $('#pageLength').val(state.pageLength || '5');
+                        currentView = state.view || 'grid';
+                        pageSize = parseInt($('#pageLength').val());
+                        $('.view-btn').removeClass('active');
+                        $('.view-btn[data-view="' + currentView + '"]').addClass('active');
+                    } catch (e) { }
+                }
+            }
+
+            function saveFilterState() {
+                var state = {
+                    name: $('#searchName').val(),
+                    country: $('#filterCountry').val(),
+                    ceo: $('#searchCEO').val(),
+                    pageLength: $('#pageLength').val(),
+                    view: currentView
+                };
+                localStorage.setItem(filterKey, JSON.stringify(state));
+            }
 
             // Load initial data
             loadData();
-             $('.view-btn').on('click', function () {
+            $('.view-btn').on('click', function () {
                 var view = $(this).data('view');
                 $('.view-btn').removeClass('active');
                 $(this).addClass('active');
                 currentView = view;
+                saveFilterState();
                 displayData();
             });
 
@@ -756,8 +789,8 @@
                     success: function(data) {
                         allData = data;
                         filteredData = [...allData];
-                        updateTotalCount();
-                        displayData();
+                        loadFilterState();
+                        performSearch();
                         $('#loadingIndicator').hide();
                     },
                     error: function() {
@@ -987,6 +1020,7 @@
 
                 currentPage = 1;
                 updateTotalCount();
+                saveFilterState();
                 displayData();
             }
 
@@ -994,6 +1028,22 @@
             $('#pageLength').change(function () {
                 pageSize = parseInt($(this).val());
                 currentPage = 1;
+                saveFilterState();
+                displayData();
+            });
+
+            $('#clearFilterBtn').click(function () {
+                localStorage.removeItem(filterKey);
+                $('#searchName').val('');
+                $('#filterCountry').val('');
+                $('#searchCEO').val('');
+                $('#pageLength').val('5');
+                pageSize = 5;
+                currentView = 'grid';
+                $('.view-btn').removeClass('active');
+                $('.view-btn[data-view="grid"]').addClass('active');
+                filteredData = [...allData];
+                updateTotalCount();
                 displayData();
             });
 
