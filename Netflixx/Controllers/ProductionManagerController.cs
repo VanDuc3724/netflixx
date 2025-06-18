@@ -474,41 +474,7 @@ namespace Netflixx.Controllers
             return View("HardDeleteSelected", managers);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> HardDeleteSelected([FromForm] int[] ids)
-        {
-            if (ids != null && ids.Length > 0)
-            {
-                var managers = await _context.ProductionManagers
-                    .Where(pm => ids.Contains(pm.Id))
-                    .Include(p => p.Films)
-                    .ToListAsync();
-                foreach (var pm in managers)
-                {
-                    if (!string.IsNullOrEmpty(pm.LogoUrl))
-                    {
-                        var fileName = Path.GetFileName(pm.LogoUrl);
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", "productionlogos", fileName);
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            System.IO.File.Delete(filePath);
-                        }
-                    }
-                    _context.ProductionManagerHistories.Add(new ProductionManagerHistory
-                    {
-                        ProductionManagerId = pm.Id,
-                        ProductionManagerName = pm.Name,
-                        Action = "HardDelete",
-                        Timestamp = DateTime.Now
-                    });
-                    _context.ProductionManagers.Remove(pm);
-                }
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Đã xóa vĩnh viễn các mục đã chọn!";
-            }
-            return RedirectToAction(nameof(Trash));
-        }
+       
 
     }
 }
