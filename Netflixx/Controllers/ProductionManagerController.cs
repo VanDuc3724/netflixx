@@ -138,6 +138,7 @@ namespace Netflixx.Controllers
                     ProductionManagerId = productionManager.Id,
                     ProductionManagerName = productionManager.Name,
                     Action = "Create",
+                    Details = $"Created {productionManager.Name}",
                     Timestamp = DateTime.Now
                 });
                 await _context.SaveChangesAsync();
@@ -179,6 +180,7 @@ namespace Netflixx.Controllers
             {
                 try
                 {
+                    var original = await _context.ProductionManagers.AsNoTracking().FirstOrDefaultAsync(pm => pm.Id == id);
 
                     if (productionManager.LogoFile != null)
                     {
@@ -204,11 +206,34 @@ namespace Netflixx.Controllers
                     productionManager.UpdatedAt = DateTime.Now;
                     _context.Update(productionManager);
                     await _context.SaveChangesAsync();
+
+                    var changes = new List<string>();
+                    if (original != null)
+                    {
+                        if (original.Name != productionManager.Name)
+                            changes.Add($"Name: '{original.Name}' -> '{productionManager.Name}'");
+                        if (original.Website != productionManager.Website)
+                            changes.Add($"Website: '{original.Website}' -> '{productionManager.Website}'");
+                        if (original.Country != productionManager.Country)
+                            changes.Add($"Country: '{original.Country}' -> '{productionManager.Country}'");
+                        if (original.Alias != productionManager.Alias)
+                            changes.Add($"Alias: '{original.Alias}' -> '{productionManager.Alias}'");
+                        if (original.CEO != productionManager.CEO)
+                            changes.Add($"CEO: '{original.CEO}' -> '{productionManager.CEO}'");
+                        if (original.Headquarters != productionManager.Headquarters)
+                            changes.Add($"Headquarters: '{original.Headquarters}' -> '{productionManager.Headquarters}'");
+                        if (original.Description != productionManager.Description)
+                            changes.Add("Description updated");
+                    }
+
+                    var details = string.Join("; ", changes);
+
                     _context.ProductionManagerHistories.Add(new ProductionManagerHistory
                     {
                         ProductionManagerId = productionManager.Id,
                         ProductionManagerName = productionManager.Name,
                         Action = "Edit",
+                        Details = details,
                         Timestamp = DateTime.Now
                     });
                     await _context.SaveChangesAsync();
@@ -281,6 +306,7 @@ namespace Netflixx.Controllers
                     ProductionManagerId = productionManager.Id,
                     ProductionManagerName = productionManager.Name,
                     Action = "Delete",
+                    Details = "Moved to trash",
                     Timestamp = DateTime.Now
                 });
                 productionManager.IsDeleted = true;
@@ -364,6 +390,7 @@ namespace Netflixx.Controllers
                     ProductionManagerId = pm.Id,
                     ProductionManagerName = pm.Name,
                     Action = "Restore",
+                    Details = "Restored from trash",
                     Timestamp = DateTime.Now
                 });
                 await _context.SaveChangesAsync();
@@ -420,6 +447,7 @@ namespace Netflixx.Controllers
                     ProductionManagerId = pm.Id,
                     ProductionManagerName = pm.Name,
                     Action = "HardDelete",
+                    Details = "Permanent delete",
                     Timestamp = DateTime.Now
                 });
 
@@ -449,6 +477,7 @@ namespace Netflixx.Controllers
                         ProductionManagerId = pm.Id,
                         ProductionManagerName = pm.Name,
                         Action = "Restore",
+                        Details = "Bulk restore",
                         Timestamp = DateTime.Now
                     });
                 }
@@ -484,6 +513,7 @@ namespace Netflixx.Controllers
                         ProductionManagerId = pm.Id,
                         ProductionManagerName = pm.Name,
                         Action = "HardDelete",
+                        Details = "Bulk permanent delete",
                         Timestamp = DateTime.Now
                     });
                     _context.ProductionManagers.Remove(pm);

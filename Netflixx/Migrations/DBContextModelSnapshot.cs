@@ -1142,6 +1142,9 @@ namespace Netflixx.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
