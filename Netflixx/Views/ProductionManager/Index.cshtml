@@ -677,7 +677,10 @@
                             <th>Logo</th>
                             <th>Công ty</th>
                             <th>Quốc gia</th>
+                            <th>Website</th>
+                            <th>Thành lập</th>
                             <th>CEO</th>
+                            <th>Trụ sở</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -784,12 +787,17 @@
                 var rows = '';
                 pageData.forEach(function(item) {
                     var logoSrc = item.logoUrl || '/image/logo/NetflixxLogo.png';
+                    var websiteHtml = item.website ? `<a href="${item.website}" target="_blank">${item.website}</a>` : '';
+
                     rows += `
                         <tr>
                             <td><img src="${logoSrc}" alt="${item.name}" style="width:40px;height:40px;object-fit:contain" onerror="this.src='/image/logo/NetflixxLogo.png'"></td>
                             <td>${item.name}</td>
                             <td>${item.country}</td>
+                            <td>${websiteHtml}</td>
+                            <td>${item.establishedDate || ''}</td>
                             <td>${item.ceo || ''}</td>
+                            <td>${item.headquarters || ''}</td>
                             <td>
                                 <div class="btn-group">
                                     <a class="btn btn-primary btn-sm" href="/ProductionManager/Edit/${item.id}" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
