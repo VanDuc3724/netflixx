@@ -109,7 +109,7 @@
                                                 <i class="fas fa-undo me-1"></i>Khôi phục
                                             </button>
                                         </form>
-                                        <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
+                                        <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
                                             <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
                                         </a>
                                     </div>
@@ -157,7 +157,7 @@
                                                     <i class="fas fa-undo me-1"></i>Khôi phục
                                                 </button>
                                             </form>
-                                            <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
+                                            <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
                                                 <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
                                             </a>
                                         </div>
@@ -183,6 +183,11 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Hard Delete Modal -->
+<div class="modal fade" id="hardDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" id="hardDeleteModalContainer"></div>
 </div>
 
 <style>
@@ -571,6 +576,18 @@
                 return;
             }
             addHiddenInputs(this, ids);
+        });
+
+        // Hard delete link handler
+        $(document).ready(function () {
+            var hardDeleteModal = new bootstrap.Modal(document.getElementById('hardDeleteModal'));
+            $('body').on('click', '.hard-delete-link', function (e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                $('#hardDeleteModalContainer').load(url, function () {
+                    hardDeleteModal.show();
+                });
+            });
         });
     </script>
     @if (TempData["SuccessMessage"] != null)
