@@ -367,7 +367,7 @@ namespace Netflixx.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> HistoryDetails(int id)
+        public async Task<IActionResult> HistoryDetails(int id, string returnTo = null)
         {
             var history = await _context.ProductionManagerHistories
                 .Include(h => h.ProductionManager)
@@ -376,6 +376,7 @@ namespace Netflixx.Controllers
             {
                 return NotFound();
             }
+            ViewBag.ReturnTo = returnTo;
             return View("HistoryDetails", history);
         }
         [HttpGet]

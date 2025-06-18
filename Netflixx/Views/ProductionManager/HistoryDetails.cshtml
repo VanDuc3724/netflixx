@@ -28,7 +28,13 @@
                 </dl>
             </div>
             <div class="card-footer text-center">
-                <a asp-action="History" asp-route-id="@Model.ProductionManagerId" class="btn btn-outline-light">
+                @{
+                    var returnTo = ViewBag.ReturnTo as string;
+                    string href = returnTo == "HistoryAll"
+                        ? Url.Action("HistoryAll")
+                        : Url.Action("History", new { id = Model.ProductionManagerId });
+                }
+                <a href="@href" class="btn btn-outline-light">
                     <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
             </div>
