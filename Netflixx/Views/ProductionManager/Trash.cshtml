@@ -109,9 +109,9 @@
                                                 <i class="fas fa-undo me-1"></i>Khôi phục
                                             </button>
                                         </form>
-                                        <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
+                                        <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
                                             <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             }
@@ -157,9 +157,9 @@
                                                     <i class="fas fa-undo me-1"></i>Khôi phục
                                                 </button>
                                             </form>
-                                            <a asp-action="HardDelete" asp-route-id="@item.Id" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
+                                            <button type="button" data-url="@Url.Action("HardDelete", new { id = item.Id })" class="btn btn-danger btn-sm hard-delete-link" title="Xóa vĩnh viễn">
                                                 <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 }
@@ -741,7 +741,7 @@
             var hardDeleteModal = new bootstrap.Modal(document.getElementById('hardDeleteModal'));
             $('body').on('click', '.hard-delete-link', function (e) {
                 e.preventDefault();
-                var url = $(this).attr('href');
+                var url = $(this).data('url');
                 $('#hardDeleteModalContainer').load(url, function () {
                     hardDeleteModal.show();
                 });
