@@ -41,19 +41,19 @@
                     <div class="trash-container">
                         <div class="container-header">
                             <div class="bulk-actions">
-                                <button class="btn btn-outline-success btn-sm me-2" onclick="selectAll()">
+                                <button class="btn btn-outline-success btn-sm" onclick="selectAll()">
                                     <i class="fas fa-check-square me-1"></i>Chọn tất cả
                                 </button>
                                 <button class="btn btn-outline-secondary btn-sm" onclick="clearSelection()">
                                     <i class="fas fa-times me-1"></i>Bỏ chọn
                                 </button>
-                                <form asp-action="RestoreSelected" method="post" id="restoreSelectedForm" class="d-inline-block ms-2">
+                                <form asp-action="RestoreSelected" method="post" id="restoreSelectedForm" class="d-inline-block">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-success btn-sm">
                                         <i class="fas fa-undo me-1"></i>Khôi phục đã chọn
                                     </button>
                                 </form>
-                                <form asp-action="HardDeleteSelected" method="post" id="deleteSelectedForm" class="d-inline-block ms-2" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn các mục đã chọn?');">
+                                <form asp-action="HardDeleteSelected" method="post" id="deleteSelectedForm" class="d-inline-block" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn các mục đã chọn?');">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-danger btn-sm">
                                         <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
@@ -249,6 +249,13 @@
         padding: 1.5rem;
         border-bottom: 1px solid #444;
         background: rgba(255, 77, 109, 0.1);
+    }
+
+    .bulk-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
     }
 
     .bulk-actions .btn {
