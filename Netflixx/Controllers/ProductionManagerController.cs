@@ -372,6 +372,31 @@ namespace Netflixx.Controllers
             return RedirectToAction(nameof(Trash));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> HardDelete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pm = await _context.ProductionManagers
+                .Include(p => p.Films)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pm == null)
+            {
+                return NotFound();
+            }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("HardDelete", pm);
+            }
+
+            return View("HardDelete", pm);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HardDelete(int id)
