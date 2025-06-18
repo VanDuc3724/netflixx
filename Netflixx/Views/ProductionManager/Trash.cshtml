@@ -106,13 +106,13 @@
                                     <div class="item-actions">
                                         <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
                                             <button type="submit" class="btn btn-success btn-sm" title="Khôi phục">
-                                                <i class="fas fa-undo"></i>
+                                                <i class="fas fa-undo me-1"></i>Khôi phục
                                             </button>
                                         </form>
-                                        <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                        <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline"
                                               onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn công ty @item.Name?');">
                                             <button type="submit" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
-                                                <i class="fas fa-times"></i>
+                                                <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
                                             </button>
                                         </form>
                                     </div>
@@ -157,13 +157,13 @@
                                         <div class="col-actions">
                                             <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
                                                 <button type="submit" class="btn btn-success btn-sm me-1" title="Khôi phục">
-                                                    <i class="fas fa-undo"></i>
+                                                    <i class="fas fa-undo me-1"></i>Khôi phục
                                                 </button>
                                             </form>
-                                            <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                            <form asp-action="HardDelete" asp-route-id="@item.Id" method="post" class="d-inline"
                                                   onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn công ty @item.Name?');">
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Xóa vĩnh viễn">
-                                                    <i class="fas fa-times"></i>
+                                                    <i class="fas fa-times me-1"></i>Xóa vĩnh viễn
                                                 </button>
                                             </form>
                                         </div>
