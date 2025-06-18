@@ -458,6 +458,22 @@ namespace Netflixx.Controllers
             return RedirectToAction(nameof(Trash));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> HardDeleteSelected([FromQuery] int[] ids)
+        {
+            if (ids == null || ids.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Vui lòng chọn ít nhất một mục.";
+                return RedirectToAction(nameof(Trash));
+            }
+
+            var managers = await _context.ProductionManagers
+                .Where(pm => ids.Contains(pm.Id))
+                .ToListAsync();
+
+            return View("HardDeleteSelected", managers);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HardDeleteSelected([FromForm] int[] ids)

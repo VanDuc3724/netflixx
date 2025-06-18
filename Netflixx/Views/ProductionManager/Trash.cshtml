@@ -53,8 +53,7 @@
                                         <i class="fas fa-undo me-1"></i>Khôi phục đã chọn
                                     </button>
                                 </form>
-                                <form asp-action="HardDeleteSelected" method="post" id="deleteSelectedForm" class="d-inline-block" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn các mục đã chọn?');">
-                                    @Html.AntiForgeryToken()
+                                <form asp-action="HardDeleteSelected" method="get" id="deleteSelectedForm" class="d-inline-block">
                                     <button type="submit" class="btn btn-danger btn-sm">
                                         <i class="fas fa-times me-1"></i>Xóa
                                         vĩnh viễn
