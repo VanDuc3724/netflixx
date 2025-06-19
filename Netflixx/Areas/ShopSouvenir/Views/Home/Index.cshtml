@@ -1,0 +1,515 @@
+﻿@model IEnumerable<Netflixx.Models.Souvenir.ProductSouModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>Cửa hàng Quà lưu niệm Phim</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/css/templatemo-villa-agency.css">
+    <link rel="stylesheet" href="~/assets/css/owl.css">
+    <link rel="stylesheet" href="~/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+</head>
+
+<body>
+
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+
+    <div class="sub-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <ul class="info">
+                        <li><i class="fa fa-envelope"></i> info@qualuuniemphim.com</li>
+                        <li><i class="fa fa-map"></i> 123 Đường Phim, Quận 1, TP.HCM</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <ul class="social-links">
+                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <h1>NetflixxSoul</h1>
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="/shopSouvenir/Home" class="active">Trang chủ</a></li>
+                            <li><a href="/shopSouvenir/Product">Sản phẩm</a></li>
+                            <li><a href="categories.html">Danh mục</a></li>
+                            <li><a href="contact.html">Liên hệ</a></li>
+                            <li><a href="#"><i class="fa fa-search"></i> Tìm kiếm</a></li>
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <div class="main-banner">
+        <div class="owl-carousel owl-banner">
+            <div class="item item-1">
+                <div class="header-text">
+                    <span class="category">Bộ sưu tập mới <em>2025</em></span>
+                    <h2>Quà lưu niệm<br>Phim độc quyền</h2>
+                </div>
+            </div>
+            <div class="item item-2">
+                <div class="header-text">
+                    <span class="category">Phiên bản <em>Giới hạn</em></span>
+                    <h2>Sưu tầm<br>Quà lưu niệm phim</h2>
+                </div>
+            </div>
+            <div class="item item-3">
+                <div class="header-text">
+                    <span class="category">Bán chạy <em>Tuần này</em></span>
+                    <h2>Chất lượng cao<br>Đồ sưu tầm phim</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="featured section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="left-image">
+                        <img src="~/assets/images/feture.jpg" alt="Sản phẩm nổi bật">
+                        <a href="product-details.html"><img src="assets/images/featured-icon.png" alt="" style="max-width: 60px; padding: 0px;"></a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="section-heading">
+                        <h6>| Nổi bật</h6>
+                        <h2>Đồ sưu tầm phim cao cấp</h2>
+                    </div>
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Tại sao chọn sản phẩm của chúng tôi?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Chúng tôi cung cấp các sản phẩm <strong>chất lượng cao</strong> được cấp phép chính thức bao gồm móc khóa, cốc và đồ sưu tầm từ các bộ phim yêu thích của bạn. Mỗi món đồ đều được lựa chọn cẩn thận cho fan phim.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Thông tin vận chuyển
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Chúng tôi giao hàng toàn quốc với <strong>đóng gói chắc chắn</strong> để đảm bảo đồ sưu tầm của bạn đến tay trong tình trạng hoàn hảo. Hầu hết đơn hàng được giao trong vòng 1-2 ngày làm việc.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Cam kết chính hãng
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Tất cả sản phẩm của chúng tôi đều <strong>100% chính hãng</strong> và được cấp phép chính thức. Chúng tôi làm việc trực tiếp với các hãng phim và nhà sản xuất được ủy quyền để mang đến cho bạn đồ sưu tầm phim chính hãng.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="info-table">
+                        <ul>
+                            <li>
+                                <img src="assets/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                                <h4>200+<br><span>Sản phẩm có sẵn</span></h4>
+                            </li>
+                            <li>
+                                <img src="assets/images/info-icon-02.png" alt="" style="max-width: 52px;">
+                                <h4>50+<br><span>Dòng phim</span></h4>
+                            </li>
+                            <li>
+                                <img src="assets/images/info-icon-03.png" alt="" style="max-width: 52px;">
+                                <h4>Giao hàng<br><span>Toàn quốc</span></h4>
+                            </li>
+                            <li>
+                                <img src="assets/images/info-icon-04.png" alt="" style="max-width: 52px;">
+                                <h4>Thanh toán<br><span>An toàn</span></h4>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="video section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4">
+                    <div class="section-heading text-center">
+                        <h6>| Bộ sưu tập</h6>
+                        <h2>Khám phá đồ sưu tầm phim độc đáo</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="video-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1">
+                    <div class="video-frame">
+                        <img src="~/assets/images/banner33.jpg" alt="Bộ sưu tập sản phẩm">
+                        <a href="https://youtube.com" target="_blank"><i class="fa fa-play"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fun-facts">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="wrapper">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="counter">
+                                    <h2 class="timer count-title count-number" data-to="5000" data-speed="1000"></h2>
+                                    <p class="count-text ">Khách hàng<br>Hài lòng</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="counter">
+                                    <h2 class="timer count-title count-number" data-to="12" data-speed="1000"></h2>
+                                    <p class="count-text ">Năm<br>Kinh nghiệm</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="counter">
+                                    <h2 class="timer count-title count-number" data-to="50" data-speed="1000"></h2>
+                                    <p class="count-text ">Dòng phim<br>Đa dạng</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section best-deal">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="section-heading">
+                        <h6>| Bán chạy nhất</h6>
+                        <h2>Sản phẩm được yêu thích</h2>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="tabs-content">
+                        <div class="row">
+                            <div class="nav-wrapper ">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="keychains-tab" data-bs-toggle="tab" data-bs-target="#keychains" type="button" role="tab" aria-controls="keychains" aria-selected="true">Móc khóa</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="mugs-tab" data-bs-toggle="tab" data-bs-target="#mugs" type="button" role="tab" aria-controls="mugs" aria-selected="false">Cốc</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="collectibles-tab" data-bs-toggle="tab" data-bs-target="#collectibles" type="button" role="tab" aria-controls="collectibles" aria-selected="false">Đồ sưu tầm</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="keychains" role="tabpanel" aria-labelledby="keychains-tab">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="info-table">
+                                                <ul>
+                                                    <li>Chất liệu <span>Kim loại cao cấp</span></li>
+                                                    <li>Kích thước <span>5-8cm</span></li>
+                                                    <li>Mẫu mã <span>100+</span></li>
+                                                    <li>Bản quyền <span>Chính hãng</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <img src="~/assets/images/keychainimg.jpg" alt="Bộ sưu tập móc khóa">
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <h4>Về móc khóa của chúng tôi</h4>
+                                            <p>
+                                                Móc khóa cao cấp của chúng tôi có hình ảnh biểu tượng và nhân vật từ các bộ phim nổi tiếng. Được làm từ chất liệu bền và thiết kế tỉ mỉ, hoàn hảo để sử dụng hàng ngày hoặc sưu tầm.
+                                                <br><br>Mỗi móc khóa đi kèm túi bảo vệ và được cấp phép chính thức.
+                                            </p>
+                                            <div class="icon-button">
+                                                <a href="products.html"><i class="fa fa-shopping-cart"></i> Xem bộ sưu tập</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="mugs" role="tabpanel" aria-labelledby="mugs-tab">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="info-table">
+                                                <ul>
+                                                    <li>Chất liệu <span>Sứ</span></li>
+                                                    <li>Dung tích <span>300ml-400ml</span></li>
+                                                    <li>Mẫu mã <span>50+</span></li>
+                                                    <li>Máy rửa chén <span>Dùng được</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <img src="~/assets/images/mugdisney.jpg" alt="Bộ sưu tập cốc">
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <h4>Về cốc của chúng tôi</h4>
+                                            <p>Bắt đầu ngày mới cùng nhân vật phim yêu thích! Cốc sứ chất lượng cao của chúng tôi có hình ảnh sống động, bền màu từ các cảnh phim và logo biểu tượng. <br><br>Hoàn hảo cho cà phê, trà hoặc trưng bày trong bộ sưu tập của bạn. Dùng được trong lò vi sóng và máy rửa chén.</p>
+                                            <div class="icon-button">
+                                                <a href="products.html"><i class="fa fa-shopping-cart"></i> Xem bộ sưu tập</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="collectibles" role="tabpanel" aria-labelledby="collectibles-tab">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="info-table">
+                                                <ul>
+                                                    <li>Chất liệu <span>Đa dạng</span></li>
+                                                    <li>Loại <span>Tượng, Mô hình</span></li>
+                                                    <li>Phiên bản giới hạn <span>Có</span></li>
+                                                    <li>Hộp trưng bày <span>Đi kèm</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <img src="~/assets/images/collectible.jpg" alt="Đồ sưu tầm">
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <h4>Về đồ sưu tầm của chúng tôi</h4>
+                                            <p>Bộ sưu tập độc quyền của chúng tôi bao gồm tượng chi tiết, mô hình đạo cụ và các món đồ phiên bản giới hạn từ các bộ phim bom tấn. <br><br>Mỗi sản phẩm được chế tác tỉ mỉ và đi kèm chứng nhận chính hãng. Hoàn hảo cho các nhà sưu tầm và fan hâm mộ.</p>
+                                            <div class="icon-button">
+                                                <a href="products.html"><i class="fa fa-shopping-cart"></i> Xem bộ sưu tập</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="properties section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4">
+                    <div class="section-heading text-center">
+                        <h6>| Mới về</h6>
+                        <h2>Sản phẩm mới nhất</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="item">
+                            <div class="image-container">
+                                <a href="/shopSouvenir/Product/Details/@product.Id">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/assets/images/default-product.jpg" alt="@product.Name">
+                                    }
+                                </a>
+                            </div>
+                            <div class="content-wrapper">
+                                <span class="category">@(product.Category?.Name ?? "Không có danh mục")</span>
+                                <h6>@product.Price.ToString("N0")đ</h6>
+                                <h4><a href="/shopSouvenir/Product/Details/@product.Id">@product.Name</a></h4>
+                                <ul>
+                                    <li>Tồn kho: <span>@product.StockQuantity</span></li>
+                                    @if (product.Brand != null)
+                                    {
+                                        <li>Thương hiệu: <span>@product.Brand.Name</span></li>
+                                    }
+                                    @if (product.Series != null)
+                                    {
+                                        <li>Dòng phim: <span>@product.Series.Name</span></li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="main-button">
+                                <a href="/shopSouvenir/Product/Details/@product.Id">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-button text-center">
+                        <a href="/shopSouvenir/Product">Xem tất cả sản phẩm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4">
+                    <div class="section-heading text-center">
+                        <h6>| Liên hệ</h6>
+                        <h2>Có câu hỏi về sản phẩm?</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div id="map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.126365377995!2d106.7122763152608!3d10.801834461711723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528a459cb43ab%3A0x6c3d29d370b52a7e!2sH%C3%B9ng%20V%C6%B0%C6%A1ng%20Plaza!5e0!3m2!1svi!2s!4v1629987236891!5m2!1svi!2s" width="100%" height="500px" frameborder="0" style="border:0; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);" allowfullscreen=""></iframe>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="item phone">
+                                <img src="assets/images/phone-icon.png" alt="" style="max-width: 52px;">
+                                <h6>0909.123.456<br><span>Số điện thoại</span></h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="item email">
+                                <img src="assets/images/email-icon.png" alt="" style="max-width: 52px;">
+                                <h6>info@qualuuniemphim.com<br><span>Email</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <form id="contact-form" action="" method="post">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="name">Họ và tên</label>
+                                    <input type="name" name="name" id="name" placeholder="Nhập họ tên..." autocomplete="on" required>
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="email">Email</label>
+                                    <input type="text" name="email" id="email" pattern="" placeholder="Nhập email..." required="">
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="subject">Tiêu đề</label>
+                                    <input type="subject" name="subject" id="subject" placeholder="Nhập tiêu đề..." autocomplete="on">
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="message">Nội dung</label>
+                                    <textarea name="message" id="message" placeholder="Nhập nội dung..."></textarea>
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <button type="submit" id="form-submit" class="orange-button">Gửi tin nhắn</button>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="col-lg-8">
+                <p>
+                    Bản quyền © @DateTime.Now.Year Cửa hàng Quà lưu niệm Phim. Đã đăng ký.
+
+                    Thiết kế: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/isotope.min.js"></script>
+    <script src="~/assets/js/owl-carousel.js"></script>
+    <script src="~/assets/js/counter.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+
+</body>
+</html>

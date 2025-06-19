@@ -91,6 +91,12 @@ namespace Netflixx.Controllers
                     _logger.LogInformation($"User {user.UserName} logged in successfully");
                     //TempData["success"] = JsonSerializer.Serialize("Đăng nhập thành công");
 
+                    // Thêm kiểm tra role Admin ở đây
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    }
+
                     // Kiểm tra nếu ReturnUrl là trang Login thì chuyển hướng sang Home
                     if (Url.IsLocalUrl(model.ReturnUrl))
                     {

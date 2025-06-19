@@ -1,4 +1,4 @@
-.main-content {
+﻿.main-content {
     min-height: 100vh;
     background-color: #000;
     color: #fff;
@@ -110,8 +110,8 @@
 
 /* Avatar trigger in navbar */
 .avatar-trigger {
-    width: 40px;
-    height: 40px;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -138,6 +138,41 @@
     border-radius: 8px;
     object-fit: cover;
 }
+
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1300; /* above navbar (which is ~1020) */
+}
+
+.most-popular .item img {
+    display: block; /* removes inline‑img whitespace */
+    width: 100%; /* full card width */
+    height: 350px; /* or whatever fixed height you like */
+    object-fit: cover; /* scale & crop to fill the box */
+    object-position: center; /* center the focal point */
+    border-radius: 8px; /* if you want rounded corners */
+}
+
+.most-popular .item {
+    min-height: 390px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .most-popular .item h4 {
+        margin: .5rem 0;
+        flex-shrink: 0; 
+    }
+
+    .most-popular .item ul {
+        margin-top: auto;
+        padding-left: 0;
+        list-style: none;
+        display: flex;
+        gap: .5rem;
+    }
 
 html, body {
     margin: 0;

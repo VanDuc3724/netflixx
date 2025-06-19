@@ -5,8 +5,8 @@
 
 <style>
     body {
-        background: #000;
-        color: #fff;
+        background: #F5F6FA; /* Light Gray for body background */
+        color: #333333; /* Dark Gray for main text */
         font-family: 'Segoe UI', sans-serif;
         margin: 0;
         padding: 0;
@@ -16,10 +16,13 @@
         max-width: 1200px;
         margin: 2rem auto;
         padding: 1rem;
+        background: #FFFFFF; /* White for card background */
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     h1 {
-        color: #FF4081;
+        color: #2D2F3B; /* Charcoal Dark for headers */
         margin-bottom: 1.5rem;
     }
 
@@ -30,26 +33,26 @@
     }
 
     .table-bordered {
-        border: 1px solid #333;
+        border: 1px solid #E0E0E0;
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #111;
+        background-color: #FFFFFF; /* White */
     }
 
     .table-striped tbody tr:nth-of-type(even) {
-        background-color: #1a1a1a;
+        background-color: #F9F9F9; /* Slightly off-white */
     }
 
     .table th, .table td {
         padding: 0.75rem;
         vertical-align: middle;
-        border: 1px solid #333;
+        border: 1px solid #E0E0E0;
     }
 
     .table th {
-        background-color: #FF4081;
-        color: #fff;
+        background-color: #4ECDB4; /* Teal for header */
+        color: #FFFFFF;
         font-weight: 600;
     }
 
@@ -70,47 +73,58 @@
     }
 
     .btn-primary {
-        color: #fff;
-        background-color: #FF4081;
-        border-color: #FF4081;
+        color: #FFFFFF;
+        background-color: #4ECDB4; /* Teal */
+        border-color: #4ECDB4;
     }
 
         .btn-primary:hover {
-            background-color: #E91E63;
-            border-color: #E91E63;
+            background-color: #3ABBA1;
+            border-color: #3ABBA1;
         }
 
     .btn-info {
-        color: #fff;
-        background-color: #17a2b8;
-        border-color: #17a2b8;
+        color: #FFFFFF;
+        background-color: #2D2F3B; /* Charcoal Dark */
+        border-color: #2D2F3B;
     }
 
         .btn-info:hover {
-            background-color: #138496;
-            border-color: #117a8b;
+            background-color: #1E2029;
+            border-color: #171920;
         }
 
     .btn-warning {
-        color: #212529;
-        background-color: #ffc107;
-        border-color: #ffc107;
+        color: #FFFFFF;
+        background-color: #F1C40F; /* Golden Yellow */
+        border-color: #F1C40F;
     }
 
         .btn-warning:hover {
-            background-color: #e0a800;
-            border-color: #d39e00;
+            background-color: #D9B10D;
+            border-color: #C1A00B;
         }
 
     .btn-danger {
-        color: #fff;
-        background-color: #dc3545;
-        border-color: #dc3545;
+        color: #FFFFFF;
+        background-color: #E74C3C; /* Alizarin Red */
+        border-color: #E74C3C;
     }
 
         .btn-danger:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
+            background-color: #D43A2A;
+            border-color: #C12F20;
+        }
+
+    .btn-success {
+        color: #FFFFFF;
+        background-color: #2ECC71; /* Emerald Green */
+        border-color: #2ECC71;
+    }
+
+        .btn-success:hover {
+            background-color: #25A55A;
+            border-color: #1E8F4D;
         }
 
     .btn-sm {
@@ -142,16 +156,16 @@
 
     .price {
         font-weight: 600;
-        color: #4CAF50;
+        color: #2ECC71; /* Emerald Green */
     }
 
     .stock-low {
-        color: #FF5252;
+        color: #E74C3C; /* Alizarin Red */
         font-weight: 600;
     }
 
     .stock-ok {
-        color: #4CAF50;
+        color: #2ECC71; /* Emerald Green */
     }
 
     .product-image {
@@ -159,54 +173,75 @@
         height: 80px;
         object-fit: cover;
         border-radius: 4px;
-        border: 1px solid #444;
+        border: 1px solid #E0E0E0;
     }
 
     /* DataTables custom style */
     .dataTables_wrapper {
-        color: #fff;
+        color: #333333; /* Dark Gray */
     }
 
     .dataTables_filter input {
-        background-color: #333;
-        color: #fff;
-        border: 1px solid #444;
+        background-color: #FFFFFF;
+        color: #333333;
+        border: 1px solid #E0E0E0;
         padding: 5px;
         border-radius: 4px;
     }
 
     .dataTables_length select {
-        background-color: #333;
-        color: #fff;
-        border: 1px solid #444;
+        background-color: #FFFFFF;
+        color: #333333;
+        border: 1px solid #E0E0E0;
         padding: 5px;
         border-radius: 4px;
     }
 
     .dataTables_info {
-        color: #aaa !important;
+        color: #666666 !important;
     }
 
     .dataTables_paginate .paginate_button {
-        color: #fff !important;
+        color: #333333 !important;
         padding: 5px 10px;
         margin: 0 2px;
-        border: 1px solid #444;
-        background-color: #333;
+        border: 1px solid #E0E0E0;
+        background-color: #FFFFFF;
         border-radius: 4px;
     }
 
         .dataTables_paginate .paginate_button:hover {
-            background-color: #444 !important;
-            color: white !important;
-            border: 1px solid #555;
+            background-color: #F5F6FA !important;
+            color: #333333 !important;
+            border: 1px solid #CCCCCC;
         }
 
         .dataTables_paginate .paginate_button.current {
-            background-color: #FF4081 !important;
+            background-color: #4ECDB4 !important; /* Teal */
             color: white !important;
-            border: 1px solid #FF4081;
+            border: 1px solid #4ECDB4;
         }
+
+    /* Responsive table */
+    table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+    table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+        background-color: #4ECDB4;
+    }
+
+    div.dt-button-collection button.dt-button:active:not(.disabled),
+    div.dt-button-collection button.dt-button.active:not(.disabled) {
+        background-color: #4ECDB4;
+        border-color: #3ABBA1;
+    }
+
+    /* Tùy chỉnh nút export */
+    .dt-buttons .btn {
+        margin-right: 5px;
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    
 </style>
 
 <div class="container">
@@ -219,7 +254,7 @@
     <table id="productsTable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Hình ảnh</th>
+                <th class="text-center">Hình ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Danh mục</th>
                 <th>Thương hiệu</th>
@@ -274,18 +309,69 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Kiểm tra trước khi khởi tạo
-            if(typeof $.fn.DataTable === 'function') {
-                $('#productsTable').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json"
+            $('#productsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json"
+                },
+                "responsive": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 7] }, // Cột hình ảnh và thao tác không sort được
+                    { "className": "dt-center", "targets": [0, 6, 7] }, // Căn giữa các cột
+                    { "className": "dt-right", "targets": [5] } // Căn phải cột giá
+                ],
+                "order": [[1, 'asc']], // Mặc định sort theo tên sản phẩm
+                "dom": '<"row"<"col-md-6"l><"col-md-6"f>><"row"<"col-md-12"B>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+                "buttons": [
+                    {
+                        extend: 'copy',
+                        text: 'Sao chép',
+                        className: 'btn btn-sm btn-secondary'
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'Xuất CSV',
+                        className: 'btn btn-sm btn-info'
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Xuất Excel',
+                        className: 'btn btn-sm btn-success',
+                        title: 'Danh sách sản phẩm'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'Xuất PDF',
+                        className: 'btn btn-sm btn-danger',
+                        title: 'Danh sách sản phẩm',
+                        customize: function (doc) {
+                            doc.content[1].table.widths =
+                                Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: 'In ấn',
+                        className: 'btn btn-sm btn-warning',
+                        title: 'Danh sách sản phẩm',
+                        customize: function (win) {
+                            $(win.document.body).css('font-size', '10pt');
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
                     }
-                });
-            } else {
-                console.error('DataTables không khả dụng. Kiểm tra lại thư viện:');
-                console.log('jQuery:', typeof $);
-                console.log('DataTables:', typeof $.fn.DataTable);
-            }
+                ],
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
+                "autoWidth": true,
+                "initComplete": function() {
+                    // Thêm class cho các input
+                    $('.dataTables_filter input').addClass('form-control form-control-sm');
+                    $('.dataTables_length select').addClass('form-control form-control-sm');
+
+                    // Thêm margin cho các button
+                    $('.dt-buttons button').css('margin-right', '5px');
+                }
+            });
         });
     </script>
 }

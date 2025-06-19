@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Repositories;
+using Netflixx.Models;
+using Netflixx.Models.ViewModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
 {
@@ -20,23 +24,52 @@ namespace Netflixx.Controllers
             return View(await _context.Films.ToListAsync());
         }
 
-        // GET: Films/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
+            var film = await _context.Films
+                                .Include(f => f.Purchases)
+                                .FirstOrDefaultAsync(f => f.Id == id);
+            if (film == null) return NotFound();
+
+            var comments = await _context.Set<FilmComment>()
+                                    .Where(c => c.FilmId == id)
+                                    .OrderBy(c => c.Level)
+                                    .ThenBy(c => c.CreatedAt)
+                                    .ToListAsync();
+
+            var recent = await _context.Films
+                                  .OrderByDescending(f => f.ReleaseDate)
+                                  .Take(5)
+                                  .ToListAsync();
+
+            var vm = new FilmDetailViewModel
             {
-                return NotFound();
-            }
+                Film = film,
+                Comments = comments,
+                RecentFilms = recent
+            };
 
-            var filmsModel = await _context.Films
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return View(vm);
+        }
 
-            if (filmsModel == null)
+        [HttpPost]
+        public async Task<IActionResult> PostComment(FilmDetailViewModel vm)
+        {
+            if (string.IsNullOrWhiteSpace(vm.NewCommentContent))
+                return RedirectToAction(nameof(Details), new { id = vm.Film.Id });
+
+            var comment = new FilmComment
             {
-                return NotFound();
-            }
-
-            return View(filmsModel);
+                FilmId = vm.Film.Id,
+                AuthorName = vm.NewCommentAuthor ?? "Anonymous",
+                Content = vm.NewCommentContent,
+                Level = vm.ReplyToCommentId.HasValue ? 2 : 1,
+                ParentCommentId = vm.ReplyToCommentId
+            };
+            _context.Add(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = vm.Film.Id });
         }
     }
 }

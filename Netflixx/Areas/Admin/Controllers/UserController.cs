@@ -96,6 +96,7 @@ public class UserController : Controller
         var role = await _userManager.GetRolesAsync(user);
         var userView = new UserViewModel
         {
+            Id=user.Id,
             Name = user.FullName,
             Email = user.Email,
             Role = role.FirstOrDefault() ?? "Chưa có vai trò",
@@ -103,6 +104,30 @@ public class UserController : Controller
         return PartialView("_UserDetail", userView);
     }
 
+    [HttpGet]
+
+    public async Task<IActionResult> Detail(string id)
+    {
+        var u = await _userManager.FindByIdAsync(id);
+        if (u == null) return NotFound();
+
+        var roles = await _userManager.GetRolesAsync(u);
+        var allRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+
+        var model = new UserViewModel
+        {
+            Id = u.Id,
+            Name = u.FullName ?? u.UserName,
+            Email = u.Email,
+            PhoneNumber = u.PhoneNumber,
+            dateOfBirth = u.DateOfBirth,
+            Role = roles.FirstOrDefault(),
+            AvailableRoles = allRoles,
+            IsActive = !(u.LockoutEnabled && u.LockoutEnd > DateTime.UtcNow)
+        };
+
+        return View(model);
+    }
 
 
 

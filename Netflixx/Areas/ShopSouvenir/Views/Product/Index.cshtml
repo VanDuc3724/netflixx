@@ -1,0 +1,229 @@
+﻿@model IEnumerable<Netflixx.Models.Souvenir.ProductSouModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>Cửa Hàng Quà Lưu Niệm Phim</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/css/templatemo-villa-agency.css">
+    <link rel="stylesheet" href="~/assets/css/owl.css">
+    <link rel="stylesheet" href="~/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+</head>
+
+<body>
+
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+
+    <div class="sub-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <ul class="info">
+                        <li><i class="fa fa-envelope"></i> info@moviesouvenir.com</li>
+                        <li><i class="fa fa-map"></i> 123 Đường Phim, Hollywood, CA</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <ul class="social-links">
+                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <h1>NetflixxSoul</h1>
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="/shopSouvenir/Home">Trang Chủ</a></li>
+                            <li><a href="/shopSouvenir/Product" class="active">Sản Phẩm</a></li>
+                            <li><a href="property-details.html">Danh Mục</a></li>
+                            <li><a href="contact.html">Liên Hệ</a></li>
+                            <li><a href="#"><i class="fa fa-search"></i> Tìm Kiếm</a></li>
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <div class="page-heading header-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <span class="breadcrumb"><a href="#">Trang Chủ</a> / Sản Phẩm</span>
+                    <h3>Bộ Sưu Tập Quà Lưu Niệm</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section properties">
+        <div class="container">
+            <ul class="properties-filter">
+                <li>
+                    <a class="@(string.IsNullOrEmpty(ViewBag.CurrentCategory) ? "is_active" : "")"
+                       href="@Url.Action("Index", "Product", new { area = "ShopSouvenir", category = "" })">Tất Cả</a>
+                </li>
+                <li>
+                    <a class="@(ViewBag.CurrentCategory == "móc-khóa" ? "is_active" : "")"
+                       href="@Url.Action("Index", "Product", new { area = "ShopSouvenir", category = "móc-khóa" })">Móc Khóa</a>
+                </li>
+                <li>
+                    <a class="@(ViewBag.CurrentCategory == "cốc" ? "is_active" : "")"
+                       href="@Url.Action("Index", "Product", new { area = "ShopSouvenir", category = "cốc" })">Cốc</a>
+                </li>
+                <li>
+                    <a class="@(ViewBag.CurrentCategory == "đồ-sưu-tầm" ? "is_active" : "")"
+                       href="@Url.Action("Index", "Product", new { area = "ShopSouvenir", category = "đồ-sưu-tầm" })">Đồ Sưu Tầm</a>
+                </li>
+            </ul>
+            <div class="row properties-box">
+                @foreach (var product in Model)
+                                {
+                    <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items"
+                         data-category="@product.Category?.Name.ToLower()">
+                    <div class="item">
+                        <a href="@Url.Action("Details", "ProductSou", new { id = product.Id })">
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                        {
+                            <img src="@product.ImageUrl" alt="@product.Name">
+                                                        }
+                                                        else
+                                                        {
+                            <img src="~/assets/images/default-product.jpg" alt="Ảnh sản phẩm mặc định">
+                                                        }
+                        </a>
+                        <span class="category">@product.Category?.Name</span>
+                        <h6>@product.Price.ToString("N0")₫</h6>
+                        <h4><a href="@Url.Action("Details", "ProductSou", new { id = product.Id })">@product.Name</a></h4>
+                        <ul>
+                            <li>Thương hiệu: <span>@product.Brand?.Name</span></li>
+                            <li>Series: <span>@product.Series?.Name</span></li>
+                            <li>Tồn kho: <span>@product.StockQuantity</span></li>
+                        </ul>
+                        <div class="main-button">
+                            <a href="@Url.Action("Details", "ProductSou", new { id = product.Id })">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+                                }
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="pagination">
+                        <li><a href="#">1</a></li>
+                        <li><a class="is_active" href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">>></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="col-lg-12">
+                <p>
+                    Bản quyền © @DateTime.Now.Year Cửa Hàng Quà Lưu Niệm Phim. Mọi quyền được bảo lưu.
+                    Thiết kế: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/isotope.min.js"></script>
+    <script src="~/assets/js/owl-carousel.js"></script>
+    <script src="~/assets/js/counter.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Lấy tất cả sản phẩm
+            var $products = $('.properties-items');
+
+            // Xử lý click filter
+            $('.properties-filter a').click(function(e) {
+                e.preventDefault();
+                var category = $(this).attr('href').split('category=')[1] || '';
+
+                // Lọc sản phẩm
+                        $products.each(function() {
+            var $product = $(this);
+            var productCategory = $product.data('category');
+
+            if (category === '' || productCategory === category) {
+                $product.show();
+            } else {
+                $product.hide();
+            }
+        });
+
+                // Cập nhật active class
+                $('.properties-filter a').removeClass('is_active');
+                $(this).addClass('is_active');
+
+                // Cập nhật URL
+                history.pushState(null, null, $(this).attr('href'));
+            });
+
+            // Filter ban đầu dựa trên URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var initialCategory = urlParams.get('category');
+            if (initialCategory) {
+                $('.properties-filter a').each(function() {
+                    if ($(this).attr('href').includes('category=' + initialCategory)) {
+                        $(this).click();
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

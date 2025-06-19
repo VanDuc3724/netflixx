@@ -12,7 +12,7 @@ namespace Netflixx.Repositories
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
         }
-
+        public virtual DbSet<ContactInfo> ContactInfos { get; set; }
         public virtual DbSet<BrandSouModel> BrandSous { get; set; }
         public virtual DbSet<CategorySouModel> CategorySous { get; set; }
         public virtual DbSet<SeriesSouModel> SeriesSous { get; set; }
@@ -45,6 +45,9 @@ namespace Netflixx.Repositories
         public virtual DbSet<ProductionManagerHistory> ProductionManagerHistories { get; set; }
 
         public virtual DbSet<LoginHistory> LoginHistory { get; set; }
+        public virtual DbSet<FavoriteFilmsModel> FavoriteFilms { get; set; }
+        public virtual DbSet<FilmComment> FilmComments { get; set; }
+        public DbSet<FilmRating> FilmRatings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -83,7 +86,11 @@ namespace Netflixx.Repositories
             modelBuilder.Entity<OrderDetailSouModel>()
                 .Property(od => od.Subtotal)
                 .HasPrecision(18, 2);
-
+            modelBuilder.Entity<BlogPost>()
+                .HasOne(b => b.Author)
+                .WithMany()
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.SetNull);
             // Cấu hình quan hệ
             modelBuilder.Entity<ProductSouModel>()
                 .HasOne(p => p.Brand)
@@ -259,6 +266,18 @@ namespace Netflixx.Repositories
                .WithMany() // Hoặc .WithMany(u => u.LoginHistories) nếu bạn thêm một ICollection<LoginHistory> vào AppUserModel
                .HasForeignKey(lh => lh.UserId)
                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FavoriteFilmsModel>()
+               .HasOne(f => f.User)
+               .WithMany(u => u.FavoriteFilms)
+               .HasForeignKey(f => f.UserID)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FavoriteFilmsModel>()
+    .HasOne(fav => fav.Film)
+    .WithMany(f => f.FavoriteFilms)      
+    .HasForeignKey(fav => fav.FilmID)
+    .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

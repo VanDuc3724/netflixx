@@ -50,17 +50,65 @@ public class DashboardController : Controller
             .Take(5)
             .ToListAsync();
 
-        var popularFilms = await _context.FilmPurchases
-            .Include(p => p.Film)
-            .Where(p => p.PurchaseDate >= currentStartDate && p.PurchaseDate <= currentEndDate)
-            .GroupBy(p => p.Film)
-            .Select(g => new {
-                Film = g.Key,
-                PurchaseCount = g.Count()
-            })
-            .OrderByDescending(x => x.PurchaseCount)
-            .Take(5)
-            .ToListAsync();
+        // Tạo danh sách phim fix cứng
+        var popularFilms = new List<dynamic>
+    {
+        new {
+            Film = new {
+                Id = 1,
+                Title = "The Matrix",
+                Price = 45000,
+                Rating = 8.7m,
+                Genre = "Sci-Fi, Action",
+                FilmURL = "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg"
+            },
+            PurchaseCount = 1
+        },
+        new {
+            Film = new {
+                Id = 2,
+                Title = "The Shawshank Redemption",
+                Price = 100000,
+                Rating = 9.3m,
+                Genre = "Drama",
+                FilmURL = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"
+            },
+            PurchaseCount = 3
+        },
+        new {
+            Film = new {
+                Id = 3,
+                Title = "The Dark Knight",
+                Price = 45000,
+                Rating = 9.0m,
+                Genre = "Action, Crime, Drama",
+                FilmURL = "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg"
+            },
+            PurchaseCount = 1
+        },
+        new {
+            Film = new {
+                Id = 4,
+                Title = "Inception",
+                Price = 45000,
+                Rating = 8.8m,
+                Genre = "Action, Adventure, Sci-Fi",
+                FilmURL = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg"
+            },
+            PurchaseCount = 1
+        },
+        new {
+            Film = new {
+                Id = 5,
+                Title = "The Lord of the Rings: The Fellowship of the Ring",
+                Price = 45000,
+                Rating = 8.8m,
+                Genre = "Adventure, Fantasy",
+                FilmURL = "https://m.media-amazon.com/images/M/MV5BMTY4NjQ5NDc0Nl5BMl5BanBnXkFtZTYwNjk5NDM3._V1_.jpg"
+            },
+            PurchaseCount = 1
+        }
+    };
 
         // Calculate new accounts
         var newAccounts = await _context.Users
@@ -183,3 +231,4 @@ public class DashboardController : Controller
 
     #endregion
 }
+

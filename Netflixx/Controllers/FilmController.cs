@@ -1,17 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
+using Netflixx.Models.ViewModel;
 using Netflixx.Repositories;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
 {
     public class FilmController : Controller
     {
         private readonly DBContext _db;
+        private readonly UserManager<AppUserModel> _userManager;
+        private readonly IRazorViewEngine _viewEngine;
 
-        public FilmController(DBContext db)
+        public FilmController(DBContext db, UserManager<AppUserModel> userManager, IRazorViewEngine viewEngine)
         {
             _db = db;
+            _userManager = userManager;
+            _viewEngine = viewEngine;
         }
 
         public async Task<IActionResult> Index(string searchString, string genreFilter, int? yearFilter)
@@ -63,7 +78,6 @@ namespace Netflixx.Controllers
             return View(films);
         }
 
-
         public async Task<IActionResult> Type(string genreFilter)
         {
             var filmsQuery = _db.Films.AsQueryable();
@@ -84,10 +98,10 @@ namespace Netflixx.Controllers
 
             if (string.IsNullOrEmpty(genreFilter))
             {
-                // Get newest films (5 films) ordered by ReleaseDate
+                // Get newest films (3 films) ordered by ReleaseDate
                 var newestFilms = await filmsQuery
                     .OrderByDescending(f => f.ReleaseDate)
-                    .Take(5)
+                    .Take(3)
                     .ToListAsync();
 
                 // Store in ViewBag to access separately in view
@@ -118,14 +132,103 @@ namespace Netflixx.Controllers
         }
 
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var film = await _db.Films.FirstOrDefaultAsync(f => f.Id == id);
-            if (film == null)
+
+            var user = await _userManager.GetUserAsync(User);
+
+
+
+
+            // if nobody's signed in, use a sample user for testing
+            if (user == null)
             {
-                return NotFound();
+                user = new AppUserModel
+                {
+                    FullName = "Sample User",
+                    Email = "sample@example.com",
+                    PhoneNumber = "000-000-0000",
+                    DateOfBirth = DateTime.Today.AddYears(-30),
+                    Address = "1234 Example St.",
+                    AvatarUrl = "/image/logo/avatar_default.jpg",
+                    FavoriteGenres = "Action,Drama,Documentary"
+                };
             }
-            return View(film);
+
+            var film = await _db.Films
+                                .Include(f => f.Purchases)
+                                .FirstOrDefaultAsync(f => f.Id == id);
+            if (film == null) return NotFound();
+
+            var comments = await _db.Set<FilmComment>()
+                                    .Where(c => c.FilmId == id)
+                                    .OrderBy(c => c.Level)
+                                    .ThenBy(c => c.CreatedAt)
+                                    .ToListAsync();
+
+            var recent = await _db.Films
+                                  .OrderByDescending(f => f.ReleaseDate)
+                                  .Take(5)
+                                  .ToListAsync();
+
+            // pull all 1–10 ratings for this film
+            var allRatings = await _db.FilmRatings
+                                      .Where(r => r.FilmId == id)
+                                      .ToListAsync();
+
+            // raw average on 1–10
+            var rawAvg = allRatings.Any()
+                ? allRatings.Average(r => r.RatingValue)
+                : 0.0;
+
+            // your user’s own rating
+            int userRating = 0;
+            if (User.Identity.IsAuthenticated)
+            {
+                var u = await _userManager.GetUserAsync(User);
+                userRating = allRatings
+                    .FirstOrDefault(r => r.UserId == u.Id)?
+                    .RatingValue ?? 0;
+            }
+
+            var activeTab = Request.Query["tab"].ToString() ?? "info";
+
+            var vm = new FilmDetailViewModel
+            {
+                Film = film,
+                Comments = comments,
+                RecentFilms = recent,
+                ActiveTab = activeTab,
+                AverageRating = rawAvg,
+                RatingCount = allRatings.Count,
+                UserRating = userRating
+            };
+
+            ViewBag.AvatarUrl = user.AvatarUrl;
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostComment(FilmDetailViewModel vm)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (string.IsNullOrWhiteSpace(vm.NewCommentContent))
+                return RedirectToAction(nameof(Detail), new { id = vm.Film.Id });
+
+            var comment = new FilmComment
+            {
+                FilmId = vm.Film.Id,
+                AuthorName = user != null ? user.ToString() : "Anonymous",
+                Content = vm.NewCommentContent,
+                Level = vm.ReplyToCommentId.HasValue ? 2 : 1,
+                ParentCommentId = vm.ReplyToCommentId
+            };
+            _db.Add(comment);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Detail), new { id = vm.Film.Id });
         }
 
         public async Task<IActionResult> DetailSreach(int id)
@@ -137,8 +240,145 @@ namespace Netflixx.Controllers
             }
             return View(film);
         }
-        
-        
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SubmitRating(int FilmId, int RatingValue)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            // add or update
+            var existing = await _db.FilmRatings
+                .FirstOrDefaultAsync(r => r.FilmId == FilmId && r.UserId == user.Id);
+
+            if (existing != null)
+            {
+                existing.RatingValue = RatingValue;
+                existing.RatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                _db.FilmRatings.Add(new FilmRating
+                {
+                    FilmId = FilmId,
+                    UserId = user.Id,
+                    RatingValue = RatingValue,
+                    RatedAt = DateTime.UtcNow
+                });
+            }
+            await _db.SaveChangesAsync();
+
+            // recompute
+            var allRatings = await _db.FilmRatings
+                .Where(r => r.FilmId == FilmId)
+                .ToListAsync();
+
+            var rawAvg = allRatings.Any()
+                ? allRatings.Average(r => r.RatingValue)
+                : 0.0;
+            var ratingCount = allRatings.Count;
+            var userRating2 = existing != null
+                ? existing.RatingValue
+                : RatingValue;
+
+            // if AJAX, render just the form partial and return JSON
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var vm = new FilmDetailViewModel
+                {
+                    FilmId = FilmId,
+                    AverageRating = rawAvg,
+                    RatingCount = ratingCount,
+                    UserRating = userRating2
+                };
+
+                return Json(new
+                {
+                    success = true,
+                    filmId = FilmId,
+                    averageRating = rawAvg,
+                    ratingCount = ratingCount,
+
+                });
+            }
+
+            // fallback for non-AJAX
+            return RedirectToAction(nameof(Detail), new { id = FilmId, tab = "info" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Watch(int filmId, int episode = 1)
+        {
+
+            var user = await _userManager.GetUserAsync(User);
+
+
+
+
+            // if nobody's signed in, use a sample user for testing
+            if (user == null)
+            {
+                user = new AppUserModel
+                {
+                    FullName = "Sample User",
+                    Email = "sample@example.com",
+                    PhoneNumber = "000-000-0000",
+                    DateOfBirth = DateTime.Today.AddYears(-30),
+                    Address = "1234 Example St.",
+                    AvatarUrl = "/image/logo/avatar_default.jpg",
+                    FavoriteGenres = "Action,Drama,Documentary"
+                };
+            }
+            // 1) Load the film
+            var film = await _db.Films.FindAsync(filmId);
+            if (film == null) return NotFound();
+
+            // 2) Load comments and recent films (reuse GET Details logic)
+            var comments = await _db.FilmComments
+                                    .Where(c => c.FilmId == filmId)
+                                    .OrderBy(c => c.Level)
+                                    .ThenBy(c => c.CreatedAt)
+                                    .ToListAsync();
+            var recent = await _db.Films
+                                  .OrderByDescending(f => f.ReleaseDate)
+                                  .Take(5)
+                                  .ToListAsync();
+
+            var allRatings = await _db.FilmRatings.Where(r => r.FilmId == filmId).ToListAsync();
+            double rawAvg = allRatings.Any() ? allRatings.Average(r => r.RatingValue) : 0;
+
+            // 4) Sample episode sources (replace with real URLs/paths)
+            var episodeSources = new List<string>
+        {
+            "/image/trailer/insideout1.mp4",
+            "/image/trailer/insideout2.mp4",
+        };
+
+            // 5) Optional quality variants for the current episode
+            var qualitySources = new Dictionary<string, string>
+            {
+                ["360p"] = episodeSources[episode - 1].Replace(".mp4", "-360p.mp4"),
+                ["720p"] = episodeSources[episode - 1].Replace(".mp4", "-720p.mp4"),
+                ["1080p"] = episodeSources[episode - 1].Replace(".mp4", "-1080p.mp4")
+            };
+
+            // 6) Build ViewModel
+            var vm = new FilmWatchViewModel
+            {
+                Film = film,
+                Comments = comments,
+                RecentFilms = recent,
+                AverageRating = rawAvg,
+                RatingCount = allRatings.Count,
+                EpisodeSources = episodeSources,
+                CurrentEpisode = episode,
+                QualitySources = qualitySources
+            };
+
+            ViewBag.AvatarUrl = user.AvatarUrl;
+
+            return View("WatchScreen", vm);
+        }
     }
 }

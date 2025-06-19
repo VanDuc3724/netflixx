@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Models.ViewModel;
 using Netflixx.Repositories;
+using System.Text.Json;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Netflixx.Controllers
 {
@@ -71,7 +73,7 @@ namespace Netflixx.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (!(user == null))
-                _logger.LogInformation("CurrentUser session JSON: {SessionRaw}", user);
+                _logger.LogInformation("CurrentUser session JSON: {SessionRaw}", user.ToString());
             else
                 _logger.LogInformation("No CurrentUser found in Session");
 
@@ -178,7 +180,21 @@ namespace Netflixx.Controllers
         public async Task<IActionResult> History(string period = null)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction(nameof(Index));
+            //if (user == null) return RedirectToAction(nameof(Index));
+
+            if(user == null)
+            {
+                user = new AppUserModel
+                {
+                    FullName = "Sample User",
+                    Email = "sample@example.com",
+                    PhoneNumber = "000-000-0000",
+                    DateOfBirth = DateTime.Today.AddYears(-30),
+                    Address = "1234 Example St.",
+                    AvatarUrl = "/image/logo/avatar_default.jpg",
+                    FavoriteGenres = "Action,Drama,Documentary"
+                };
+            }
 
             // pull all purchases for this user
             var purchases = await _db.FilmPurchases
@@ -218,9 +234,179 @@ namespace Netflixx.Controllers
                 RecommendedFilms = recs
             };
 
-            ViewBag.AvatarUrl = user.AvatarUrl;
+            ViewBag.AvatarUrl = user.AvatarUrl ?? "/image/logo/avatar_default.jpg";
 
             return View(vm);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> MyList(string search = "", string sortOrder = "")
+        {
+            // 0) Get or fake the user
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                user = new AppUserModel
+                {
+                    FullName = "Sample User",
+                    Email = "sample@example.com",
+                    PhoneNumber = "000-000-0000",
+                    DateOfBirth = DateTime.Today.AddYears(-30),
+                    Address = "1234 Example St.",
+                    AvatarUrl = "/image/logo/avatar_default.jpg",
+                    FavoriteGenres = "Action,Drama,Documentary"
+                };
+            }
+
+            // 1) Load their favorite films
+            var favs = await _db.FavoriteFilms
+                               .Include(ff => ff.Film)
+                               .Where(ff => ff.UserID == user.Id)
+                               .Select(ff => ff.Film)
+                               .ToListAsync();
+
+            // —— LOG #1: right after the first query
+            _logger.LogInformation(
+                "User {UserId} has {Count} favorite films: {Titles}",
+                user.Id,
+                favs.Count,
+                string.Join(", ", favs.Select(f => f.Title))
+            );
+
+            // 2) Build a dictionary: genre -> how many times it appears
+            var genreCounts = favs
+                .GroupBy(f => f.Genre)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            _logger.LogInformation(
+                "System count {genreCounts} genres",
+                genreCounts
+            );
+
+            // 3) Filter & sort “My List”
+            var myListQuery = favs.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(search))
+                myListQuery = myListQuery
+                    .Where(f => f.Title
+                                 .Contains(search, StringComparison.OrdinalIgnoreCase));
+
+            myListQuery = sortOrder switch
+            {
+                "title_asc" => myListQuery.OrderBy(f => f.Title),
+                "title_desc" => myListQuery.OrderByDescending(f => f.Title),
+                _ => myListQuery
+            };
+            var myList = myListQuery.ToList();
+
+            // 4) Pick all other films (exclude favorites)
+            var favIds = new HashSet<int>(favs.Select(f => f.Id));
+            var allOthers = await _db.Films
+                                     .Where(f => !favIds.Contains(f.Id))
+                                     .ToListAsync();
+
+            // ---
+            var scored = allOthers
+            .Select(f => new {
+                Film = f,
+                Score = genreCounts.TryGetValue(f.Genre, out var cnt) ? cnt : 0
+            })
+            .ToList();
+
+            // —— LOG #2: right after you’ve added the Score
+            _logger.LogInformation(
+                "Scored {Count} candidate films: {Details}",
+                scored.Count,
+                string.Join("; ", scored.Select(x => $"{x.Film.Title}={x.Score}"))
+            );
+            // ---
+
+            // 5) Score & pick the top 4 by matching‐genre count
+            var recommendations = allOthers
+                .Select(f => new {
+                    Film = f,
+                    Score = genreCounts.TryGetValue(f.Genre, out var cnt) ? cnt : 0
+                })
+                .OrderByDescending(x => x.Score)  
+                .ThenBy(x => x.Film.Title)         
+                .Take(4)
+                .Select(x => x.Film)
+                .ToList();
+
+            _logger.LogInformation(
+            "Final recommendations (up to 4): {Titles}",
+            string.Join(", ", recommendations.Select(f => f.Title))
+        );
+
+
+            // 6) Build and return your ViewModel
+            var vm = new MyListViewModel
+            {
+                MyList = myList,
+                BasedOnYourList = recommendations,
+                Search = search,
+                SortOrder = sortOrder
+            };
+
+            ViewBag.AvatarUrl = user.AvatarUrl ?? "/image/logo/avatar_default.jpg";
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToList(int filmId)
+        {
+            // 1) get the current user
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["error"] = ("Not logged in!.");
+                return RedirectToAction("Index", "Home");
+            }
+
+            // 2) don’t double‐add the same film
+            var already = await _db.FavoriteFilms
+                                   .AnyAsync(f => f.UserID == user.Id && f.FilmID == filmId);
+            if (!already)
+            {
+                var fav = new FavoriteFilmsModel
+                {
+                    UserID = user.Id,
+                    FilmID = filmId,
+                    AddedAt = DateTime.UtcNow
+                };
+                _db.FavoriteFilms.Add(fav);
+                await _db.SaveChangesAsync();
+                TempData["success"] = ("✅ Added to your list!");
+            }
+            else
+            {
+                TempData["error"] = ("❌ That film is already in your list.");
+            }
+
+            // 3) go back 
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromList(int filmId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var fav = await _db.FavoriteFilms
+                               .Where(f => f.UserID == user.Id && f.FilmID == filmId)
+                               .FirstOrDefaultAsync();
+            if (fav != null)
+            {
+                _db.FavoriteFilms.Remove(fav);
+                await _db.SaveChangesAsync();
+                TempData["error"] = "Removed from your list.";
+            }
+
+            return RedirectToAction(nameof(MyList));
         }
     }
 }

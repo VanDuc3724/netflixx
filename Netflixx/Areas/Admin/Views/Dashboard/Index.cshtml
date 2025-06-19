@@ -433,36 +433,40 @@
         <!-- Phim phổ biến -->
         <div>
             <h2 class="section-title">Phim phổ biến tuần này</h2>
-            @if (ViewBag.PopularFilms != null && ViewBag.PopularFilms.Count > 0)
-            {
-                <div>
-                    @foreach (var film in ViewBag.PopularFilms)
-                    {
-                        <div class="popular-film">
-                            <div class="film-rank">@(ViewBag.PopularFilms.IndexOf(film) + 1)</div>
-                            @if (!string.IsNullOrEmpty(film.Film?.PosterPath))
-                            {
-                                <img src="https://image.tmdb.org/t/p/w500/@film.Film.PosterPath"
-                                     class="film-poster"
-                                     alt="@film.Film.Title"
-                                     onerror="this.src='/images/default-poster.jpg'">
-                            }
-                            else
-                            {
-                                <img src="/images/default-poster.jpg" class="film-poster" alt="Không có poster">
-                            }
-                            <div class="film-info">
-                                <div class="film-title">@(film.Film?.Title ?? "Không có tiêu đề")</div>
-                                <div class="film-meta">@film.PurchaseCount lượt mua</div>
+            <div>
+                @foreach (var item in ViewBag.PopularFilms)
+                {
+                    var film = item.Film;
+                    <div class="popular-film">
+                        <div class="film-rank">@(ViewBag.PopularFilms.IndexOf(item) + 1)</div>
+                        @if (!string.IsNullOrEmpty(film.FilmURL))
+                        {
+                            <img src="@film.FilmURL"
+                                 class="film-poster"
+                                 alt="@film.Title"
+                                 onerror="handleImageError(this, '@film.Title')">
+                        }
+                        else
+                        {
+                            <div class="film-poster no-poster">
+                                <span>@film.Title.Substring(0, 1)</span>
                             </div>
+                        }
+                        <div class="film-info">
+                            <div class="film-title">@film.Title</div>
+                            <div class="film-meta">
+                                <span>@item.PurchaseCount lượt mua</span>
+                                <span> • @film.Price.ToString("N0") ₫</span>
+                                @if (film.Rating > 0)
+                                {
+                                    <span> • @film.Rating.ToString("0.0") ★</span>
+                                }
+                            </div>
+                            <div class="film-genre">@film.Genre</div>
                         </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="alert alert-info">Không tìm thấy phim phổ biến</div>
-            }
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -521,6 +525,17 @@
                     });
                 }
             }
+
+                    function handleImageError(img, title) {
+            // Tạo placeholder với chữ cái đầu tiên của tiêu đề
+            const placeholder = document.createElement('div');
+            placeholder.className = 'film-poster no-poster';
+            const firstLetter = title?.length > 0 ? title[0].toUpperCase() : 'N';
+            placeholder.innerHTML = `<span>${firstLetter}</span>`;
+
+            // Thay thế img bằng placeholder
+            img.parentNode.replaceChild(placeholder, img);
+        }
 
             function loadChartData() {
                 var period = $('#period-select').val();
@@ -588,7 +603,7 @@
                 $menu.on('click', '.export-option', function() {
                     var type = $(this).data('type');
                     var period = $('#period-select').val();
-                    
+
                     // Gửi yêu cầu xuất báo cáo đến server
                     $.ajax({
                         url: '@Url.Action("ExportReport", "Dashboard", new { area = "Admin" })',
@@ -605,7 +620,7 @@
                             var url = window.URL.createObjectURL(blob);
                             var a = document.createElement('a');
                             a.href = url;
-                            
+
                             // Đặt tên file dựa trên loại file
                             var fileName = 'Bao_cao_doanh_thu_' + new Date().toISOString().split('T')[0];
                             if (type === 'excel') {
@@ -618,7 +633,7 @@
                                 fileName += '.csv';
                                 a.download = fileName;
                             }
-                            
+
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);

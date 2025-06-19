@@ -72,6 +72,14 @@ namespace Netflixx.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            // Kiểm tra xem mật khẩu mới có trùng với mật khẩu hiện tại không
+            var isSamePassword = await _userManager.CheckPasswordAsync(user, model.NewPassword);
+            if (isSamePassword)
+            {
+                ModelState.AddModelError(string.Empty, "Mật khẩu mới không được trùng với mật khẩu hiện tại");
+                return View(model);
+            }
+
             // Tạo token reset password (vì không cần mật khẩu cũ)
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);

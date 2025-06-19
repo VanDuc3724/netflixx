@@ -5,6 +5,9 @@ using System.Data;
 
 //[Authorize(Roles = "Admin")]
 [Area("Admin")]
+
+//[Authorize(Roles = "Admin")]
+//7b1ff5751807e23d2b85cb2fc4b4366db72fcb63
 public class RolesController : Controller
 {
 

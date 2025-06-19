@@ -1,0 +1,392 @@
+﻿@model Netflixx.Models.ViewModel.FilmWatchViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUserModel> _userManager
+
+@{
+    ViewData["Title"] = $"Watch: {Model.Film.Title} - Ep {Model.CurrentEpisode}";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+
+<style>
+    body {
+        background: #121212;
+        color: #eee;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+        background: #1e1e1e;
+        border: 1px solid #333;
+    }
+
+    .episode-btn {
+        margin-right: .5rem;
+    }
+
+    .quality-select .btn {
+        margin-right: .5rem;
+        margin-bottom: .5rem;
+    }
+
+    .details-box {
+        height: 314px;
+        overflow-y: auto;
+    }
+
+    .recent-card img {
+        height: 155px;
+        object-fit: cover;
+    }
+
+    .reply {
+        margin-left: 2rem;
+    }
+
+    .trailer-video {
+        max-height: 450px; /* match your poster height */
+        object-fit: contain; /* letter‑box or fill behavior */
+    }
+
+    .star-rating {
+        font-size: 1.5rem;
+        unicode-bidi: bidi-override;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #555;
+            cursor: pointer;
+            padding: 0 2px;
+        }
+
+        .star-rating input:checked ~ label {
+            color: gold;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: gold;
+        }
+
+    .fa-star.checked,
+    .fa-star-half-o.checked {
+        color: orange;
+        text-shadow: 0 0 3px #fff;
+    }
+
+    .watch-screen.lights-off::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 1000;
+        pointer-events: none;
+    }
+
+    /* Make the video container float above the overlay */
+    .watch-screen.lights-off .video-container {
+        position: relative;
+        z-index: 1001;
+    }
+
+    /* Dim and disable interaction on all non-video parts */
+    .watch-screen.lights-off .non-video {
+        opacity: 0.2;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+    /* Avatar trigger in navbar */
+    .avatar-trigger {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #121212;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="/image/logo/NetflixxLogo.png"
+                     alt="Netflixx Logo"
+                     style="height:40px;" />
+            </a>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Index">Search</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Type">Films</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Filmpackage" asp-action="Index">Film Package</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Blog" asp-action="Index">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" asp-area="ShopSouvenir" asp-controller="Home" asp-action="Index">Souvenir</a></li>
+                <li class="nav-item"><a class="nav-link" asp-area="ProductionManager" asp-controller="ProductionManager" asp-action="Index">List Company</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Series</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+            </ul>
+            <span class="navbar-text me-3"><i class="fa fa-bell"></i></span>
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle p-0" role="button"
+                   id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="@ViewBag.AvatarUrl"
+                         class="avatar-trigger"
+                         alt="User avatar" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="avatarDropdown">
+                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Profile</a></li>
+                    <li><a class="dropdown-item" asp-controller="Home" asp-action="History">History</a></li>
+                    <li><a class="dropdown-item" asp-controller="Home" asp-action="MyList">My List</a></li>
+                    <li><button class="dropdown-item" type="button">Settings</button></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li>
+                        <form asp-controller="Logout" asp-action="Logout" method="post" class="m-0">
+                            <button type="submit" class="dropdown-item">Sign out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container-fluid py-4" style="margin-top:70px;">
+    <div id="watchWrapper" class="watch-screen">
+
+    <!-- VIDEO + SELECTORS -->
+    <div class="row mb-4">
+        <div class="col-1"></div>
+        <div class="col-10">
+                <div class="video-container">
+            <div class="ratio ratio-16x9">
+                <video id="player"
+                       class="w-100 h-100"
+                       controls
+                       preload="metadata"
+                       poster="@Model.Film.PosterPath"
+                       src="@Model.EpisodeSources[Model.CurrentEpisode - 1]">
+                    Your browser does not support video playback.
+                </video>
+            </div>
+            </div>
+
+            <!-- quality buttons -->
+                <div class="video-container">
+                    <div class="d-flex align-items-center mt-2">
+
+                        <!-- Quality buttons grouped together -->
+                        <div class="btn-group btn-group-sm">
+                            @foreach (var kv in Model.QualitySources)
+                            {
+                                <button type="button"
+                                        class="btn btn-outline-light"
+                                        onclick="switchQuality('@kv.Value')">
+                                    @kv.Key
+                                </button>
+                            }
+                        </div>
+
+                        <!-- Turn‑off‑lights button, same btn‑sm size, with FontAwesome icon -->
+                        <button id="toggleLights"
+                                type="button"
+                                class="btn btn-sm btn-outline-light ms-2">
+                            <i class="fa fa-lightbulb-o"></i>
+                            <span class="d-none d-sm-inline">Toggle Lights</span>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Episode Selector Card (matches poster styling) -->
+                <div class="video-container">
+                <div class="card mb-3 episode-card" style="height: 314px; overflow-y: auto;">
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-light">Episodes</h5>
+                        <div class="d-flex flex-wrap">
+                            @for (int i = 1; i <= Model.EpisodeSources.Count; i++)
+                            {
+                                var cls = i == Model.CurrentEpisode
+                                ? "btn btn-sm btn-danger episode-btn me-2 mb-2"
+                                : "btn btn-sm btn-outline-light episode-btn me-2 mb-2";
+                                <a class="@cls"
+                                   asp-action="Watch"
+                                   asp-route-filmId="@Model.Film.Id"
+                                   asp-route-episode="@i">
+                                    Ep @i
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+    <!-- INFO & DESCRIPTION (single row, two columns) -->
+        <div class="non-video">
+    <div class="row mb-4">
+        <div class="col-md-1"></div>
+        <!-- col 2: poster -->
+        <div class="col-md-2 mb-4" style="max-height: 300px">
+            <div class="card p-3 text-center">
+                <img src="@Model.Film.PosterPath"
+                     class="img-fluid mb-3"
+                     style="height: 250px" />
+            </div>
+        </div>
+
+        <!-- col 10: title/description/stars -->
+        <div class="col-md-8 mb-4">
+            <h3>@Model.Film.Title</h3>
+            <p class="small text-muted">
+                @Model.Film.Genre • @Model.Film.ReleaseDate?.Year
+            </p>
+            <p>@Model.Film.Description</p>
+            <hr class="border-secondary" />
+            <p>
+                @* reuse your average‑stars snippet *@
+                @{
+                    var avg = Math.Round(Model.AverageRating, MidpointRounding.AwayFromZero);
+                    var full = (int)Math.Floor(avg);
+                    var half = (avg - full) == 0.5;
+                    var empty = 10 - full - (half ? 1 : 0);
+                }
+                @for (int s = 0; s < full; s++)
+                {
+                    <span class="fa fa-star checked"></span>
+                }
+                @if (half)
+                {
+                    <span class="fa fa-star-half-o checked"></span>
+                }
+                @for (int s = 0; s < empty; s++)
+                {
+                    <span class="fa fa-star"></span>
+                }
+                <span class="ms-2">@Model.AverageRating.ToString()/10 <small>(@Model.RatingCount ratings)</small></span>
+            </p>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <!-- COMMENTS (new row) -->
+    <div class="row">
+        <div class="col-md-1"><!-- spacer if you want --></div>
+
+        <div class="col-md-10">
+            <div class="card p-3">
+                <h5>Comments</h5>
+
+                @* -------- NEW COMMENT (top‑level) -------- *@
+                <form asp-action="PostComment" method="post" class="mb-4">
+                    <input type="hidden" name="Film.Id" value="@Model.Film.Id" />
+                    <input type="hidden" name="ReplyToCommentId" value="" />
+
+                    <textarea name="NewCommentContent"
+                              class="form-control mb-2"
+                              rows="3"
+                              placeholder="Write a new comment…"></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        Post Comment
+                    </button>
+                </form>
+
+                @* -------- EXISTING COMMENTS & REPLIES -------- *@
+                @foreach (var c in Model.Comments.Where(c => c.Level == 1))
+                {
+                    <div class="mb-4">
+                        <div>
+                            <strong>@c.AuthorName</strong>
+                            <span class="text-muted small">@c.CreatedAt</span>
+                        </div>
+                        <p>@c.Content</p>
+
+                        @* Always‑visible reply box for this comment *@
+                        <form asp-action="PostComment" method="post" class="mb-3 ps-4">
+                            <input type="hidden" name="Film.Id" value="@Model.Film.Id" />
+                            <input type="hidden" name="ReplyToCommentId" value="@c.Id" />
+
+                            <div class="input-group input-group-sm">
+                                <input type="text"
+                                       name="NewCommentContent"
+                                       class="form-control"
+                                       placeholder="Reply to @c.AuthorName…" />
+                                <button type="submit" class="btn btn-outline-light">
+                                    Reply
+                                </button>
+                            </div>
+                        </form>
+
+                        @* Render replies *@
+                        @foreach (var r in Model.Comments.Where(r => r.ParentCommentId == c.Id))
+                        {
+                            <div class="reply mt-2 p-2 border-start border-secondary">
+                                <strong>@r.AuthorName</strong>
+                                <span class="text-muted small">@r.CreatedAt</span>
+                                <p>@r.Content</p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        <div class="col-md-1"><!-- spacer --></div>
+    </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+        function switchQuality(url) {
+            window.location.reload();
+      // const player = document.getElementById('player');
+      // console.log('Switching to:', url);
+
+      // 1) Set the new src on the <video> itself
+      // player.src = url;
+
+      // 2) .load() so the browser picks up the new source
+      // player.load();
+
+      // 3) Auto‑play if you want
+      // player.play().catch(e => {
+      //   console.warn('Auto‑play prevented:', e);
+      // });
+    }
+</script>
+
+<script>
+    document.getElementById('toggleLights')
+      .addEventListener('click', () => {
+        const wrapper = document.getElementById('watchWrapper');
+        const isOff = wrapper.classList.toggle('lights-off');
+        document.getElementById('toggleLights').innerText =
+          isOff ? '💡 Turn On Lights' : '🕯️ Turn Off Lights';
+      });
+</script>

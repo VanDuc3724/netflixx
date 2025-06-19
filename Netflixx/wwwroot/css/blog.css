@@ -1,0 +1,1001 @@
+﻿/* ===== Blog Components ===== */
+/* Blog Cards */
+.netflix-card {
+    background-color: #181818;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: none;
+}
+
+.card-thumbnail {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: #181818;
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    padding: 15px;
+    color: white;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.netflix-card:hover .card-overlay {
+    opacity: 1;
+}
+
+/* Blog Detail Page */
+.blog-detail-container {
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.blog-banner {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.banner-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
+    padding: 100px 0 50px;
+}
+
+/* Content Styles */
+.blog-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #e5e5e5;
+}
+
+    .blog-content h2,
+    .blog-content h3,
+    .blog-content h4 {
+        color: #e50914;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .blog-content p {
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+    }
+
+/* Blog Text Content */
+.blog-text-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: #e5e5e5;
+}
+
+.blog-text-content br {
+    line-height: 2;
+}
+
+/* Blog Views */
+.blog-page-container {
+    padding-top: 15px;
+}
+
+.blog-index-container {
+    padding-top: 15px;
+}
+
+.blog-header-section {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+}
+
+.blog-form-container {
+    padding-top: 15px;
+}
+
+.blog-form-header {
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.blog-detail-container {
+    padding-top: 0;
+}
+
+    .blog-detail-container .blog-banner {
+        margin-top: 0;
+    }
+
+.blog-delete-container {
+    padding-top: 15px;
+}
+
+.navbar-safe-spacing {
+    padding-top: 15px;
+}
+
+.blog-action-buttons {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+.blog-card-header {
+    margin-top: 10px;
+}
+
+/* Edit/Delete Page Styles */
+.blog-content-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #222;
+    border-radius: 5px;
+    border: 1px solid #333;
+    line-height: 1.6;
+    color: #e5e5e5;
+}
+
+/* ===== Filter Controls ===== */
+.blog-filter-section {
+    background-color: #181818;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+    .blog-filter-section .form-label {
+        color: #fff;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .blog-filter-section .form-select,
+    .blog-filter-section .form-control {
+        background-color: #222;
+        border-color: #444;
+        color: #fff;
+    }
+
+        .blog-filter-section .form-select:focus,
+        .blog-filter-section .form-control:focus {
+            background-color: #222;
+            border-color: #e50914;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
+        }
+
+        .blog-filter-section .form-select option {
+            background-color: #222;
+            color: #fff;
+        }
+
+/* ===== Results Summary ===== */
+.results-summary {
+    background-color: #111;
+    padding: 15px 20px;
+    border-radius: 6px;
+    border-left: 4px solid #e50914;
+    margin-bottom: 25px;
+}
+
+    .results-summary .text-muted {
+        color: #ccc !important;
+        font-size: 0.95rem;
+    }
+
+/* ===== Quick Jump Form ===== */
+.quick-jump-form {
+    background-color: #181818;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .quick-jump-form .form-control {
+        background-color: #222;
+        border-color: #444;
+        color: #fff;
+        text-align: center;
+    }
+
+        .quick-jump-form .form-control:focus {
+            background-color: #222;
+            border-color: #e50914;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
+        }
+
+/* ===== No Results Alert ===== */
+.alert-info {
+    background-color: #1a1a1a;
+    border-color: #e50914;
+    color: #fff;
+}
+
+    .alert-info .alert-heading {
+        color: #e50914;
+    }
+
+/* ===== TOAST UI EDITOR - NETFLIX DARK THEME (FULL) ===== */
+/* Wrapper chính */
+#editor .toastui-editor-defaultUI {
+    border: 1px solid #333 !important;
+    background-color: #181818 !important;
+}
+
+#editor .toastui-editor-defaultUI-toolbar {
+    background-color: #222222;
+    border-bottom: 1px solid #ebedf2;
+    border-radius: 3px 3px 0 0;
+    display: -ms-flexbox;
+    display: flex;
+    height: 45px;
+    padding: 0 25px;
+}
+
+/* Nội dung editor */
+#editor .toastui-editor-contents p {
+    color: #fff;
+    margin: 10px 0;
+}
+
+#editor .toastui-editor-md-container,
+#editor .toastui-editor-md-preview,
+#editor .toastui-editor-ww-container {
+    background-color: #181818 !important;
+    color: #e5e5e5 !important;
+}
+
+/* Thanh công cụ */
+#editor .toastui-editor-toolbar {
+    background-color: #222 !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+    /* Nút công cụ */
+    #editor .toastui-editor-toolbar button {
+        color: black !important;
+        background-color: white !important;
+    }
+
+        #editor .toastui-editor-toolbar button:hover {
+            color: #e50914 !important;
+            background-color: #333 !important;
+        }
+
+/* Thanh chuyển đổi chế độ */
+#editor .toastui-editor-mode-switch {
+    background-color: #222 !important;
+    border-top: 1px solid #333 !important;
+}
+
+    #editor .toastui-editor-mode-switch .tab-item {
+        color: #999 !important;
+    }
+
+        #editor .toastui-editor-mode-switch .tab-item.active {
+            color: #e50914 !important;
+            border-bottom: 2px solid #e50914 !important;
+        }
+
+.ProseMirror {
+    overflow-X: hidden;
+    color: white;
+    font-family: Open Sans, Helvetica Neue, Helvetica, Arial, 나눔바른고딕, Nanum Barun Gothic, 맑은고딕, Malgun Gothic, sans-serif;
+    font-size: 13px;
+    height: calc(100% - 36px);
+    overflow-y: auto;
+}
+/* Thanh trạng thái */
+#editor .toastui-editor-status {
+    background-color: #222 !important;
+    border-top: 1px solid #333 !important;
+    color: #999 !important;
+}
+
+/* Đường phân cách */
+#editor .toastui-editor-toolbar-divider {
+    background-color: white !important;
+}
+
+/* Dropdown menu */
+#editor .toastui-editor-dropdown-toolbar {
+    background-color: #222 !important;
+    border: 1px solid #333 !important;
+}
+
+#editor .toastui-editor-dropdown-item {
+    color: #e5e5e5 !important;
+}
+
+    #editor .toastui-editor-dropdown-item:hover {
+        background-color: #333 !important;
+        color: #e50914 !important;
+    }
+
+/* Nội dung bài viết */
+#editor .toastui-editor-contents h1,
+#editor .toastui-editor-contents h2,
+#editor .toastui-editor-contents h3,
+#editor .toastui-editor-contents h4,
+#editor .toastui-editor-contents h5,
+#editor .toastui-editor-contents h6 {
+    color: #e50914 !important;
+    border-bottom-color: #444 !important;
+}
+
+#editor .toastui-editor-contents a {
+    color: #e50914 !important;
+}
+
+#editor .toastui-editor-contents blockquote {
+    border-left: 3px solid #e50914 !important;
+    background-color: rgba(229, 9, 20, 0.1) !important;
+    color: #e5e5e5 !important;
+}
+
+#editor .toastui-editor-contents code {
+    background-color: #222 !important;
+    color: #e5e5e5 !important;
+}
+
+#editor .toastui-editor-contents pre {
+    background-color: #222 !important;
+    border: 1px solid #333 !important;
+}
+
+/* Popup */
+#editor .toastui-editor-popup {
+    background-color: #222 !important;
+    border: 1px solid #333 !important;
+    color: #e5e5e5 !important;
+}
+
+#editor .toastui-editor-popup-body input {
+    background-color: #222 !important;
+    color: #e5e5e5 !important;
+    border: 1px solid #444 !important;
+}
+
+/* Nút trong popup */
+#editor .toastui-editor-ok-button {
+    background-color: #e50914 !important;
+    color: white !important;
+}
+
+/* Scrollbar */
+#editor .toastui-editor-contents::-webkit-scrollbar {
+    width: 8px;
+}
+
+#editor .toastui-editor-contents::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.form-select:focus,
+#editor .toastui-editor-contents::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.toastui-editor-popup-add-table .toastui-editor-table-description {
+    color: white;
+    margin: 5px 0 0;
+    text-align: center;
+}
+
+.toastui-editor-contents table td, .toastui-editor-contents table th {
+    border: 1px solid white;
+    height: 32px;
+    padding: 5px 14px 5px 12px;
+}
+
+.toastui-editor-popup-body label {
+    color: #fff;
+    display: block;
+    font-weight: 600;
+    margin: 20px 0 5px;
+}
+
+.toastui-editor-popup-add-image .toastui-editor-tabs .tab-item {
+    border-bottom: 1px solid #dadde6;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    width: 60px;
+}
+
+
+/* ===== New Minimalist Blog Styles ===== */
+.blog-index-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-filter-section {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px;
+}
+
+    .blog-filter-section .row {
+        gap: 10px;
+    }
+
+    .blog-filter-section .form-control,
+    .blog-filter-section .form-select {
+        background-color: #222 !important;
+        border: 1px solid #333 !important;
+        border-radius: 20px !important;
+        padding: 8px 15px !important;
+    }
+
+.results-summary {
+    background-color: transparent !important;
+    border-left: none !important;
+    padding: 0 0 15px 0 !important;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #333;
+}
+
+.netflix-card {
+    background-color: transparent !important;
+    border: none !important;
+    transition: none !important;
+}
+
+.card-thumbnail {
+    border-radius: 8px;
+    height: 250px;
+    margin-bottom: 10px;
+}
+
+.card-overlay {
+/*    display: none !important;*/
+}
+
+.netflix-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.blog-post-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.blog-post-meta {
+    font-size: 0.8rem;
+    color: #777;
+    display: flex;
+    gap: 10px;
+}
+
+.blog-post-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+    .blog-post-actions .btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+.pagination {
+    margin-top: 30px;
+}
+
+.quick-jump-form {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .blog-filter-section .row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .blog-filter-section .col-md-3,
+    .blog-filter-section .col-md-2 {
+        width: 100%;
+    }
+
+    .card-thumbnail {
+        height: 180px;
+    }
+}
+
+/* ===== Updated Pagination Styles ===== */
+.simple-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 5px;
+}
+
+    .simple-pagination .page-item {
+        margin: 0;
+    }
+
+    .simple-pagination .page-link {
+        color: #fff;
+        background-color: transparent;
+        border: 1px solid #333;
+        border-radius: 4px;
+        padding: 5px 12px;
+        min-width: 36px;
+        text-align: center;
+        transition: all 0.2s ease;
+    }
+
+        .simple-pagination .page-link:hover {
+            background-color: #e50914;
+            border-color: #e50914;
+        }
+
+    .simple-pagination .page-item.active .page-link {
+        background-color: #e50914;
+        border-color: #e50914;
+        color: #fff;
+    }
+
+    .simple-pagination .page-item.disabled .page-link {
+        color: #666;
+        border-color: #333;
+        background-color: transparent;
+    }
+
+.page-info {
+    text-align: center;
+    color: #777;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+/* ===== Pagination Styles ===== */
+.pagination {
+    --bs-pagination-bg: #181818;
+    --bs-pagination-border-color: #333;
+    --bs-pagination-color: #fff;
+    --bs-pagination-hover-color: #fff;
+    --bs-pagination-hover-bg: #e50914;
+    --bs-pagination-hover-border-color: #e50914;
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-active-bg: #e50914;
+    --bs-pagination-active-border-color: #e50914;
+    --bs-pagination-disabled-color: #666;
+    --bs-pagination-disabled-bg: #222;
+    --bs-pagination-disabled-border-color: #333;
+}
+
+    .pagination .page-link {
+        background-color: #181818;
+        border-color: #333;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .pagination .page-link:hover {
+            background-color: #e50914;
+            border-color: #e50914;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .pagination .page-item.active .page-link {
+        background-color: #e50914;
+        border-color: #e50914;
+        color: #fff;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        background-color: #222;
+        border-color: #333;
+        color: #666;
+    }
+
+/* ===== Loading State ===== */
+.pagination-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+    .pagination-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e50914;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ===== Enhanced Form Buttons ===== */
+.blog-filter-section .btn {
+    transition: all 0.3s ease;
+}
+
+    .blog-filter-section .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+.blog-filter-section .btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+}
+
+/* ===== Improved Typography ===== */
+.blog-header-section h2 {
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+    .post-meta .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+/* ===== Card Styles ===== */
+.netflix-card {
+    background-color: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+    position: relative;
+}
+
+.card-thumbnail {
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    padding: 15px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.netflix-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.netflix-card:hover .card-thumbnail {
+    transform: scale(1.05);
+}
+
+/* Card Content Styles */
+.blog-post-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.blog-post-meta {
+    font-size: 0.8rem;
+    color: #ccc;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.blog-post-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.netflix-card:hover .blog-post-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Action Buttons */
+.btn-card-action {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.btn-view {
+    background-color: #e50914;
+    color: white;
+    border: none;
+}
+
+    .btn-view:hover {
+        background-color: #f40612;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+    }
+
+.btn-edit {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+    .btn-edit:hover {
+        background-color: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+    }
+
+.btn-delete {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+    .btn-delete:hover {
+        background-color: rgba(255, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+
+/* Publish Button */
+.btn-publish {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+    .btn-publish:hover {
+        background-color: rgba(76, 175, 80, 0.2);
+        transform: translateY(-2px);
+        color: #4CAF50;
+    }
+
+.btn-draft {
+    background-color: rgba(255, 193, 7, 0.1); /* Màu vàng nhạt */
+    color: #ffc107; /* Màu vàng chính */
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 50%;
+}
+
+    .btn-draft:hover {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+/* Grid Layout */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .card-thumbnail {
+        height: 200px;
+    }
+}
+/* Thêm vào cuối file */
+
+/* Film title in card */
+.blog-film-title {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Compact filter section */
+.blog-filter-section {
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+    .blog-filter-section .form-label {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        color: #aaa;
+    }
+
+/* Reset button */
+.btn-outline-secondary {
+    border-color: #444;
+    color: #fff;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #333;
+        color: #fff;
+    }
+
+/* Responsive adjustments for filter */
+@media (max-width: 768px) {
+    .blog-filter-section .col-md-4,
+    .blog-filter-section .col-md-2 {
+        width: 100%;
+    }
+
+    .blog-filter-section .d-flex {
+        width: 100%;
+    }
+}
+/* Toast UI Editor Toolbar Active State */
+.toastui-editor-toolbar button.active {
+    background-color: #e50914 !important;
+    color: white !important;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+}
+
+    .toastui-editor-toolbar button.active:hover {
+        background-color: #f40612 !important;
+    }
+
+    .toastui-editor-toolbar button.active i {
+        color: white !important;
+    }
+/* ===== Image Styles in Blog Content ===== */
+.blog-text-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments for images */
+@media (max-width: 768px) {
+    .blog-text-content img {
+        margin: 1rem auto;
+    }
+}
+/* ===== Enhanced Pagination ===== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+.pagination-info {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin: 0 15px;
+}
+
+.page-jump-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 15px;
+}
+
+.page-jump-input {
+    width: 60px;
+    background-color: #222;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.page-jump-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .page-jump-button:hover {
+        background-color: #e50914;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-wrap: wrap;
+    }
+
+    .page-jump-form {
+        margin: 10px 0;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+}
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+

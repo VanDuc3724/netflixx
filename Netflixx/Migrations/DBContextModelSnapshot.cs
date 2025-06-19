@@ -261,10 +261,14 @@ namespace Netflixx.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("FilmId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("LastUpdated")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -387,6 +391,39 @@ namespace Netflixx.Migrations
                     b.ToTable("Channels");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.ContactInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BusinessHours")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MapEmbedUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactInfos");
+                });
+
             modelBuilder.Entity("Netflixx.Models.DailyRevenueModel", b =>
                 {
                     b.Property<DateTime>("RevenueDate")
@@ -401,6 +438,68 @@ namespace Netflixx.Migrations
                     b.HasKey("RevenueDate");
 
                     b.ToTable("DailyRevenue");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.FavoriteFilmsModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FilmID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("FavoriteFilms");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.FilmComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FilmId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmId");
+
+                    b.ToTable("FilmComments");
                 });
 
             modelBuilder.Entity("Netflixx.Models.FilmPurchasesModel", b =>
@@ -441,6 +540,36 @@ namespace Netflixx.Migrations
                     b.ToTable("FilmPurchases");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.FilmRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FilmId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FilmRatings");
+                });
+
             modelBuilder.Entity("Netflixx.Models.FilmsModel", b =>
                 {
                     b.Property<int>("Id")
@@ -461,7 +590,6 @@ namespace Netflixx.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PosterPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Price")
@@ -471,7 +599,7 @@ namespace Netflixx.Migrations
                     b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Rating")
+                    b.Property<float?>("Rating")
                         .HasColumnType("real");
 
                     b.Property<DateTime?>("ReleaseDate")
@@ -479,6 +607,9 @@ namespace Netflixx.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrailerURL")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1217,11 +1348,14 @@ namespace Netflixx.Migrations
                 {
                     b.HasOne("Netflixx.Models.AppUserModel", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Netflixx.Models.FilmsModel", "Film")
                         .WithMany()
-                        .HasForeignKey("FilmId");
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
 
@@ -1247,6 +1381,36 @@ namespace Netflixx.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Netflixx.Models.FavoriteFilmsModel", b =>
+                {
+                    b.HasOne("Netflixx.Models.FilmsModel", "Film")
+                        .WithMany("FavoriteFilms")
+                        .HasForeignKey("FilmID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Netflixx.Models.AppUserModel", "User")
+                        .WithMany("FavoriteFilms")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.FilmComment", b =>
+                {
+                    b.HasOne("Netflixx.Models.FilmsModel", "Film")
+                        .WithMany()
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+                });
+
             modelBuilder.Entity("Netflixx.Models.FilmPurchasesModel", b =>
                 {
                     b.HasOne("Netflixx.Models.FilmsModel", "Film")
@@ -1268,6 +1432,25 @@ namespace Netflixx.Migrations
                     b.Navigation("Film");
 
                     b.Navigation("PaymentTransaction");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Netflixx.Models.FilmRating", b =>
+                {
+                    b.HasOne("Netflixx.Models.FilmsModel", "Film")
+                        .WithMany()
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Netflixx.Models.AppUserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
 
                     b.Navigation("User");
                 });
@@ -1577,6 +1760,8 @@ namespace Netflixx.Migrations
 
                     b.Navigation("ChannelSubscriptions");
 
+                    b.Navigation("FavoriteFilms");
+
                     b.Navigation("FilmPurchases");
 
                     b.Navigation("PackageSubscriptionUpgrades");
@@ -1611,6 +1796,8 @@ namespace Netflixx.Migrations
 
             modelBuilder.Entity("Netflixx.Models.FilmsModel", b =>
                 {
+                    b.Navigation("FavoriteFilms");
+
                     b.Navigation("PackageFilms");
 
                     b.Navigation("PromotionFilms");

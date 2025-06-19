@@ -1,4 +1,5 @@
-﻿@model UserViewModel
+﻿@using Netflixx.Models
+@model UserViewModel
 
 <style>
     .user-detail-container {
@@ -337,4 +338,9 @@
             và giàu cảm xúc để truyền tải tới cộng đồng.
         </p>
     </div>
+    <form  asp-area="admin" asp-controller="user" asp-action="Detail"  method="get">
+
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="submit"value="update" /> 
+    </form>
 </div>

@@ -105,8 +105,11 @@
     <div class="header">
         <h2>@ViewData["Title"]</h2>
     </div>
+   
+    
+     <form asp-area="Admin" asp-controller="Roles" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
 
-    <form asp-action="Create" method="post">
         <div class="form-group">
             <label for="roleName" class="form-label">Role Name</label>
             <input type="text" id="roleName" name="roleName" class="form-control" placeholder="Enter role name" required />
@@ -116,7 +119,7 @@
             <button type="submit" class="btn-primary">Create Role</button>
             <a asp-action="Index" class="btn-secondary">Back to List</a>
         </div>
-    </form>
+    </form> 
 
     @if (!ViewData.ModelState.IsValid)
     {

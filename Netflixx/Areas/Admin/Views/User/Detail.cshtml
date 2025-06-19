@@ -100,6 +100,72 @@
     </div>
 </div>
 
-@section Scripts {
+
     <script src="~/js/User.js"></script>
-}
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("userForm");
+        const saveBtn = document.getElementById("saveBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const roleInput = document.getElementById("SelectedRole");
+
+        // Lưu lại giá trị ban đầu
+        const originalValues = {};
+        Array.from(form.elements).forEach(input => {
+            if (input.name && input.type !== "hidden" && input.type !== "submit" && input.type !== "button") {
+                originalValues[input.name] = input.value;
+            }
+        });
+
+        // Gán sự kiện cho input/textarea/select để kiểm tra thay đổi
+        form.addEventListener("input", () => {
+            toggleActionButtons();
+        });
+
+        // Riêng radio button cần lắng nghe sự kiện change
+        const radios = form.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+            radio.addEventListener("change", toggleActionButtons);
+        });
+
+        // Nếu chọn vai trò mới
+        window.selectRole = function (role) {
+            document.getElementById("dropdownRoleButton").innerText = role;
+            roleInput.value = role;
+            toggleActionButtons();
+        };
+
+        // Kiểm tra có thay đổi so với ban đầu không
+        function toggleActionButtons() {
+            let hasChanged = false;
+
+            Array.from(form.elements).forEach(input => {
+                if (!input.name || input.type === "submit" || input.type === "button") return;
+
+                if (input.type === "radio") {
+                    if (input.checked && originalValues[input.name] !== input.value) {
+                        hasChanged = true;
+                    }
+                } else {
+                    if (originalValues[input.name] !== undefined && originalValues[input.name] !== input.value) {
+                        hasChanged = true;
+                    }
+                }
+            });
+
+            if (hasChanged) {
+                saveBtn.classList.remove("d-none");
+                cancelBtn.classList.remove("d-none");
+            } else {
+                saveBtn.classList.add("d-none");
+                cancelBtn.classList.add("d-none");
+            }
+        }
+
+        // Xử lý khi bấm nút "Hủy" → reload lại trang
+        cancelBtn.addEventListener("click", function () {
+            location.reload();
+        });
+    });
+
+    </script>

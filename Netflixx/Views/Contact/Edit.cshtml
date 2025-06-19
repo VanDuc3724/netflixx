@@ -1,0 +1,74 @@
+﻿@model Netflixx.Models.ContactInfo
+
+@{
+    ViewData["Title"] = "Edit Contact Information";
+}
+
+<div class="contact-container">
+    <div class="contact-banner">
+        <div class="banner-overlay">
+            <div class="container">
+                <h1 class="banner-title">Edit Contact Information</h1>
+                <p class="banner-subtitle">Update Netflixx contact details</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container contact-content">
+        <form asp-action="Edit">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="BusinessHours" class="form-label"></label>
+                        <input asp-for="BusinessHours" class="form-control" />
+                        <span asp-validation-for="BusinessHours" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="MapEmbedUrl" class="form-label"></label>
+                        <textarea asp-for="MapEmbedUrl" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="MapEmbedUrl" class="text-danger"></span>
+                        <small class="form-text text-muted">Paste Google Maps embed URL here</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="map-preview mb-4">
+                        <h4>Map Preview</h4>
+                        <div class="map-container">
+                            <iframe src="@Model.MapEmbedUrl"
+                                    width="100%"
+                                    height="400"
+                                    style="border:0;"
+                                    allowfullscreen=""
+                                    loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-danger btn-lg">Save Changes</button>
+                <a asp-action="Index" class="btn btn-outline-light btn-lg ms-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

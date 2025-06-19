@@ -16,7 +16,7 @@ namespace Netflixx.Models
         public string? FilmURL { get; set; }
 
         [Required(ErrorMessage = "Vui lòng không để trống thể loại.")]
-        public string Genre { get; set; }
+        public string? Genre { get; set; }
 
         [Column("Description")] // Sửa lại chính tả nếu database đã có trường "Decription"
         public string? Description { get; set; }
@@ -24,19 +24,25 @@ namespace Netflixx.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Price { get; set; }
 
+        public string? PosterPath { get; set; } // Add this line
+
         public int? ProductionManagerId { get; set; }
-        public string PosterPath { get; set; } // Add this line
 
         public ICollection<PackageFilmsModel> PackageFilms { get; set; }
         public ICollection<PromotionFilmsModel> PromotionFilms { get; set; }
 
         public ICollection<FilmPurchasesModel> Purchases { get; set; }
 
+        public ICollection<FavoriteFilmsModel> FavoriteFilms { get; set; }
+      = new List<FavoriteFilmsModel>();
 
-        public float Rating { get; set; } = 0.0f; // Giá trị mặc định là 0.0f
+
+        public float? Rating { get; set; } = 0.0f; // Giá trị mặc định là 0.0f
 
 
         [ForeignKey("ProductionManagerId")]
         public virtual ProductionManager ProductionManager { get; set; }
+
+        public string? TrailerURL { get; set; }
     }
 }

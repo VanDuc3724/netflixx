@@ -30,6 +30,8 @@ namespace Netflixx.Models
 
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
 
+        public virtual ICollection<FavoriteFilmsModel>? FavoriteFilms { get; set; }
+
 
     }
 }
