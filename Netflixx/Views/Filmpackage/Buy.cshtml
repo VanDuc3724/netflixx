@@ -1,4 +1,4 @@
-﻿@model Netflixx.Models.FilmPackageViewModel
+﻿@model Netflixx.Models.PackagesModel
 @using System.Security.Claims
 @{
     ViewData["Title"] = "Thanh toán";
@@ -6,7 +6,7 @@
     string username = User.Identity.Name;
 
 
-    string packageClass = Model.PackageName switch
+    string packageClass = Model.Name switch
     {
         "Free" => "free",
         "Standard" => "standard",
@@ -15,7 +15,7 @@
     };
 
     // Icon đại diện cho gói
-    string packageIcon = Model.PackageName switch
+    string packageIcon = Model.Name switch
     {
         "Free" => "🆓",
         "Standard" => "⭐",
@@ -143,15 +143,15 @@
 <body>
     <div class="package-card @packageClass">
         <span class="package-icon">@packageIcon</span>
-        <h1>Gói: @Model.PackageName</h1>
-        <p class="package-price">@Model.PackagePrice.ToString("N0") đ</p>
+        <h1>Gói: @Model.Name</h1>
+        <p class="package-price">@Model.Price.ToString("N0") đ</p>
 
-        @if (Model.PackagePrice > 0)
+        @if (Model.Price > 0)
         {
             <a asp-controller="Payment" asp-action="CreatePaymentUrlVnpay"
                asp-route-OrderType="filmpackage"
-               asp-route-Amount="@Model.PackagePrice"
-               asp-route-OrderDescription="Thanh toán gói @Model.PackageName"
+               asp-route-Amount="@Model.Price"
+               asp-route-OrderDescription="Thanh toán gói @Model.Name"
                asp-route-Name="@username" class="check-payment-btn">Thanh toán qua VNPay</a>
         }
         else
