@@ -4,13 +4,15 @@ using Netflixx.Models;
 using Netflixx.Repositories;
 using System.Threading.Tasks;
 
-public class PackagesController : Controller
+namespace Netflixx.Controllers
 {
-    private readonly DBContext _context;
-    public PackagesController(DBContext context)
+    public class PackagesController : Controller
     {
-        _context = context;
-    }
+        private readonly DBContext _context;
+        public PackagesController(DBContext context)
+        {
+            _context = context;
+        }
 
     public async Task<IActionResult> Index()
     {
@@ -48,4 +50,5 @@ public class PackagesController : Controller
         }
         return RedirectToAction(nameof(Index));
     }
+}
 }
