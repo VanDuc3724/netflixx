@@ -24,13 +24,13 @@ namespace Netflixx.Controllers
             return View();
         }
 
-        public IActionResult Buy(string packageId, string packageName, int packagePrice)
+        public IActionResult Buy(int packageId, string packageName, decimal packagePrice)
         {
-            var model = new FilmPackageViewModel
+            var model = new PackagesModel
             {
-                PackageId = packageId,
-                PackageName = packageName,
-                PackagePrice = packagePrice
+                Id = packageId,
+                Name = packageName,
+                Price = packagePrice
             };
 
             return View(model);
