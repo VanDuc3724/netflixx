@@ -11,7 +11,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" placeholder="Giá VNĐ" />
+        <input asp-for="Price" class="form-control" placeholder="Giá VNĐ" type="number" step="0.01" min="0" />
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="mb-3">
