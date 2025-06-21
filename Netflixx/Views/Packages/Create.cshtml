@@ -1,26 +1,33 @@
-﻿@model Netflixx.Models.PackagesModel
+@model Netflixx.Models.PackagesModel
 @{
     ViewData["Title"] = "Create Package";
 }
-<h2>Tạo gói mới</h2>
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" placeholder="Nhập tên gói" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" placeholder="Giá VNĐ" type="number" step="0.01" min="0" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" placeholder="Mô tả ngắn"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Tạo</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+
+@await Html.PartialAsync("_PackagesMenu")
+
+<div class="main-content" id="mainContent">
+    <h2>Tạo gói mới</h2>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên gói" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" placeholder="Giá VNĐ" type="number" step="0.01" min="0" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" placeholder="Mô tả ngắn"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Tạo</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+
+@await Html.PartialAsync("_PackagesMenuScripts")
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
