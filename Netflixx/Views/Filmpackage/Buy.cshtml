@@ -6,20 +6,6 @@
     string username = User.Identity.Name;
 
 
-    // Thông tin ngân hàng
-    string bankId = "970454";
-    string accountNo = "9021625262901";
-    string template = "compact";
-    string amount = Model.PackagePrice.ToString();
-    string description = $"{username}";
-    string accountName = "NGO VAN DUC";
-
-    // Tạo link QR thanh toán
-    string qrUrl = $"https://img.vietqr.io/image/{bankId}-{accountNo}-{template}.png" +
-                   $"?amount={amount}" +
-                   $"&addInfo={Uri.EscapeDataString(description)}" +
-                   $"&accountName={Uri.EscapeDataString(accountName)}";
-
     string packageClass = Model.PackageName switch
     {
         "Free" => "free",
@@ -162,52 +148,19 @@
 
         @if (Model.PackagePrice > 0)
         {
-            <p>Quét mã QR bằng app ngân hàng để thanh toán:</p>
-            <img class="qr-image" src="@qrUrl" alt="QR thanh toán VietQR" />
+            <a asp-controller="Payment" asp-action="CreatePaymentUrlVnpay"
+               asp-route-OrderType="filmpackage"
+               asp-route-Amount="@Model.PackagePrice"
+               asp-route-OrderDescription="Thanh toán gói @Model.PackageName"
+               asp-route-Name="@username" class="check-payment-btn">Thanh toán qua VNPay</a>
         }
         else
         {
             <p class="free-package-message">Đây là gói miễn phí. Bạn có thể sử dụng ngay.</p>
         }
 
-
         <a asp-action="Index" asp-controller="Filmpackage" class="back-btn">Quay lại</a>
-        <button id="checkPaymentBtn" class="check-payment-btn">✅ Tôi đã thanh toán</button>
-
-        <div id="paymentResult" style="margin-top: 1rem; font-weight: bold;"></div>
-
 
     </div>
 </body>
 </html>
-<script>
-    document.getElementById("checkPaymentBtn").addEventListener("click", async function () {
-        const price = @Model.PackagePrice;
-        const content = "@username";
-        const resultElement = document.getElementById("paymentResult");
-
-        try {
-            const response = await fetch(
-
-                "https://script.google.com/macros/s/AKfycbyi5nMWfuHp3BigdOV9h0lq97ci0f1YTWOlULUsRgkW8_AT0e34FVu67ao3l00EXOHx/exec"
-
-            );
-            const data = await response.json();
-            const lastPaid = data.data[data.data.length - 1];
-            const lastPrice = parseInt(lastPaid["Giá trị"]);
-            const lastContent = lastPaid["Mô tả"];
-
-            if (lastPrice == price && lastContent.includes(content)) {
-                resultElement.style.color = "lime";
-                resultElement.textContent = "✅ Thanh toán thành công!";
-            } else {
-                resultElement.style.color = "orange";
-                resultElement.textContent = "⚠️ Chưa nhận được thanh toán. Vui lòng thử lại sau vài phút.";
-            }
-        } catch (e) {
-            console.error("Lỗi", e);
-            resultElement.style.color = "red";
-            resultElement.textContent = "❌ Đã xảy ra lỗi khi kiểm tra thanh toán.";
-        }
-    });
-</script>
