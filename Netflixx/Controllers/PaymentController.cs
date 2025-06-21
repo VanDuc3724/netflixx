@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Netflixx.Models.Vnpay;
+using Netflixx.Models;
+using Netflixx.Repositories;
 using Netflixx.Services.Vnpay;
 
 namespace Netflixx.Controllers
@@ -11,10 +14,14 @@ namespace Netflixx.Controllers
             return View();
         }
         private readonly IVnPayService _vnPayService;
-        public PaymentController(IVnPayService vnPayService)
+        private readonly DBContext _context;
+        private readonly UserManager<AppUserModel> _userManager;
+        public PaymentController(IVnPayService vnPayService, DBContext context, UserManager<AppUserModel> userManager)
         {
 
             _vnPayService = vnPayService;
+            _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult CreatePaymentUrlVnpay(PaymentInformationModel model)
@@ -24,9 +31,24 @@ namespace Netflixx.Controllers
             return Redirect(url);
         }
         [HttpGet]
-        public IActionResult PaymentCallbackVnpay()
+        public async Task<IActionResult> PaymentCallbackVnpay()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
+
+            var transaction = new PaymentTransactionsModel
+            {
+                UserID = _userManager.GetUserId(User),
+                ProviderID = 1,
+                EnvironmentID = 1,
+                TransactionDate = DateTime.UtcNow,
+                Amount = decimal.TryParse(Request.Query["vnp_Amount"], out var amt) ? amt / 100 : 0,
+                Currency = Request.Query["vnp_CurrCode"],
+                Status = response.Success ? "Success" : "Fail",
+                ExternalTransactionRef = response.TransactionId
+            };
+
+            _context.PaymentTransactions.Add(transaction);
+            await _context.SaveChangesAsync();
 
             return Json(response);
         }
