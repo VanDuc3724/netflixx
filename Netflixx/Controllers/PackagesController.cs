@@ -32,7 +32,6 @@ namespace Netflixx.Controllers
 
         // POST: Packages/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PackagesModel package)
         {
             if (ModelState.IsValid)
@@ -62,7 +61,6 @@ namespace Netflixx.Controllers
 
         // POST: Packages/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PackagesModel package)
         {
             if (id != package.Id)
@@ -113,7 +111,6 @@ namespace Netflixx.Controllers
 
         // POST: Packages/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var package = await _context.Packages.FindAsync(id);

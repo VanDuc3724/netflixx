@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Netflixx.Models
 {
@@ -10,6 +11,9 @@ namespace Netflixx.Models
         [Required(ErrorMessage = "Tên không được để trống.")]
         public string Name { get; set; }
         public string? Description { get; set; }
+
+        [Precision(18, 2)]
+        public decimal Price { get; set; }
 
         // Navigation properties
         public ICollection<PackageChannelsModel> PackageChannels { get; set; }
