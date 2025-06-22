@@ -23,6 +23,8 @@ namespace Netflixx
 
             builder.Services.AddSingleton<IOtpGenerator, SecureOtpGenerator>();
 
+            builder.Services.AddHttpClient<IGoogleTransactionService, GoogleTransactionService>();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
