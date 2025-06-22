@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
-using Netflixx.Models.Momo;
 using Netflixx.Repositories;
+
 using Netflixx.Services;
-using Netflixx.Services.Momo;
 
 
 namespace Netflixx
@@ -15,9 +14,7 @@ namespace Netflixx
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Connect MoMo API
-            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
-            builder.Services.AddScoped<IMomoService, MomoService>();
+
             // Đăng ký OtpService
             builder.Services.AddSingleton<IOtpService, OtpService>();
 
