@@ -28,6 +28,7 @@ namespace Netflixx.Models
         public string Currency { get; set; }
         public string Status { get; set; }
         public string ExternalTransactionRef { get; set; }
+        public string SecretToken { get; set; }  // tên cột tùy ý
 
         public ICollection<FilmPurchasesModel> FilmPurchases { get; set; }
 

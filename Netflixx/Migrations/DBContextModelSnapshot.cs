@@ -839,6 +839,10 @@ namespace Netflixx.Migrations
                     b.Property<int>("ProviderID")
                         .HasColumnType("int");
 
+                    b.Property<string>("SecretToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

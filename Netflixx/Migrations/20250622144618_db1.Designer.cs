@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250619071036_db1")]
+    [Migration("20250622144618_db1")]
     partial class db1
     {
         /// <inheritdoc />
@@ -841,6 +841,10 @@ namespace Netflixx.Migrations
 
                     b.Property<int>("ProviderID")
                         .HasColumnType("int");
+
+                    b.Property<string>("SecretToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
