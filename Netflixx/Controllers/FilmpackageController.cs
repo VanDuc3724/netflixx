@@ -1,19 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
-using Netflixx.Repositories;
-
 
 namespace Netflixx.Controllers
 {
     public class FilmpackageController : Controller
     {
-        private readonly DBContext _context;
-        public FilmpackageController(DBContext context)
-        {
-            _context = context;
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -24,24 +15,16 @@ namespace Netflixx.Controllers
             return View();
         }
 
-        public IActionResult Buy(int packageId, string packageName, decimal packagePrice)
+        public IActionResult Buy(string packageId, string packageName, int packagePrice)
         {
-            var model = new PackagesModel
+            var model = new FilmPackageViewModel
             {
-                Id = packageId,
-                Name = packageName,
-                Price = packagePrice
+                PackageId = packageId,
+                PackageName = packageName,
+                PackagePrice = packagePrice
             };
 
             return View(model);
-        }
-
-        public async Task<IActionResult> GetPackages()
-        {
-            var packages = await _context.Packages
-                .Select(p => new { id = p.Id, name = p.Name, price = p.Price, description = p.Description })
-                .ToListAsync();
-            return Json(packages);
         }
 
     }

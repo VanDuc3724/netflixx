@@ -361,9 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# Allow package management views
-!Netflixx/Areas/Admin/Views/Packages/
-!Netflixx/Areas/Admin/Views/Packages/**
-!Netflixx/Views/Packages/
-!Netflixx/Views/Packages/**
