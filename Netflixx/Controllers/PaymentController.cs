@@ -4,6 +4,7 @@ using Netflixx.Models.Vnpay;
 using Netflixx.Models;
 using Netflixx.Repositories;
 using Netflixx.Services.Vnpay;
+using System.Text.Json;
 
 namespace Netflixx.Controllers
 {
@@ -11,7 +12,12 @@ namespace Netflixx.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            PaymentResponseModel? result = null;
+            if (TempData["PaymentResult"] is string json)
+            {
+                result = JsonSerializer.Deserialize<PaymentResponseModel>(json);
+            }
+            return View(result);
         }
         private readonly IVnPayService _vnPayService;
         private readonly DBContext _context;
@@ -50,7 +56,17 @@ namespace Netflixx.Controllers
             _context.PaymentTransactions.Add(transaction);
             await _context.SaveChangesAsync();
 
-            return Json(response);
+            TempData["PaymentResult"] = JsonSerializer.Serialize(response);
+            if (response.Success)
+            {
+                TempData["success"] = JsonSerializer.Serialize("Thanh toán thành công");
+            }
+            else
+            {
+                TempData["error"] = JsonSerializer.Serialize("Thanh toán thất bại");
+            }
+
+            return RedirectToAction("Index");
         }
 
 
