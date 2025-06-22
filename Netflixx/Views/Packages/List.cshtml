@@ -24,9 +24,9 @@
                 <td>@item.Description</td>
                 <td>@string.Format("{0:C}", item.Price)</td>
                 <td>
-                    <form asp-action="Buy" method="post" class="d-inline">
+                    <form asp-action="CreatePaymentMomo" method="post" asp-controller="Payment">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Buy</button>
+                        <button type="submit" class="btn btn-danger">Pay with MoMo</button>
                     </form>
                 </td>
             </tr>
