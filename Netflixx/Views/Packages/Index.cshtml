@@ -25,6 +25,7 @@
                     <td>@item.Price.ToString("N0") đ</td>
                     <td>@item.Description</td>
                     <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary me-2">Sửa</a>
                         <form asp-action="Delete" method="post" asp-route-id="@item.Id" style="display:inline">
                             <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                         </form>
