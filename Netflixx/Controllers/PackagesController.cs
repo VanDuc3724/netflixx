@@ -25,7 +25,6 @@ namespace Netflixx.Controllers
         }
 
         // GET: Packages/Create
-        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
             return View();
@@ -34,7 +33,6 @@ namespace Netflixx.Controllers
         // POST: Packages/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(PackagesModel package)
         {
             if (ModelState.IsValid)
@@ -47,7 +45,6 @@ namespace Netflixx.Controllers
         }
 
         // GET: Packages/Edit/5
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -66,7 +63,6 @@ namespace Netflixx.Controllers
         // POST: Packages/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, PackagesModel package)
         {
             if (id != package.Id)
@@ -98,7 +94,6 @@ namespace Netflixx.Controllers
         }
 
         // GET: Packages/Delete/5
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -119,7 +114,6 @@ namespace Netflixx.Controllers
         // POST: Packages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var package = await _context.Packages.FindAsync(id);
