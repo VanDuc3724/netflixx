@@ -40,6 +40,7 @@ namespace Netflixx.Repositories
         public virtual DbSet<PackageSubscriptionUpgradesModel> PackageSubscriptionUpgrades { get; set; }
         public virtual DbSet<UserAccountsModel> UserAccounts { get; set; }
         public virtual DbSet<PointsTransactionsModel> PointsTransactions { get; set; }
+        public virtual DbSet<GoogleTransactionModel> GoogleTransactions { get; set; }
         public virtual DbSet<DailyRevenueModel> DailyRevenue { get; set; }
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
         public virtual DbSet<ProductionManagerHistory> ProductionManagerHistories { get; set; }
@@ -146,6 +147,10 @@ namespace Netflixx.Repositories
 
             modelBuilder.Entity<UserAccountsModel>()
                 .Property(u => u.Balance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<GoogleTransactionModel>()
+                .Property(g => g.Amount)
                 .HasPrecision(18, 2);
 
             // Configure many-to-many relationships
