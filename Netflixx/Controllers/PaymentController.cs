@@ -24,7 +24,6 @@ namespace Netflixx.Controllers
         }
         [HttpPost]
         [Authorize]
-        [Route("CreatePaymentUrl")]
         public async Task<IActionResult> CreatePaymentUrl(int id)
         {
             var package = await _context.Packages.FindAsync(id);
