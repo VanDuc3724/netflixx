@@ -29,7 +29,8 @@ namespace Netflixx.Services.Momo
                 $"&orderInfo={model.OrderInformation}" +
                 $"&returnUrl={_options.Value.ReturnUrl}" +
                 $"&notifyUrl={_options.Value.NotifyUrl}" +
-                $"&extraData=";
+                $"&extraData=" +
+                $"&requestType={_options.Value.RequestType}";
 
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
 
