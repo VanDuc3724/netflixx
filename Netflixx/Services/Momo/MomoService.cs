@@ -1,9 +1,11 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 using Netflixx.Models;
 using Netflixx.Models.Momo;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace Netflixx.Services.Momo
 {
@@ -14,7 +16,7 @@ namespace Netflixx.Services.Momo
         {
             _options = options;
         }
-        public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(OrderInfoModel model)
+        public async Task<MomoCreatePaymentResponseModel> CreatePaymentMomo(OrderInfoModel model)
         {
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
             model.OrderInformation = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInformation;
