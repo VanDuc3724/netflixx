@@ -57,6 +57,8 @@ namespace Netflixx
                 // Cookie tạm thời (cho phiên làm việc) nếu RememberMe = false
                 options.ExpireTimeSpan = TimeSpan.FromDays(30); // Thời gian tồn tại khi RememberMe = true
                 options.SlidingExpiration = true; // Reset thời gian tồn tại khi user hoạt động
+                // Đặt đường dẫn trang đăng nhập mặc định
+                options.LoginPath = "/Login/Login";
             });
 
 
