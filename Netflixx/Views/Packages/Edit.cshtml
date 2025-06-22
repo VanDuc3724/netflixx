@@ -20,6 +20,11 @@
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
         <button type="submit" class="btn btn-danger">Save</button>
         <a asp-action="Index" class="btn btn-outline-light">Back to List</a>
     </form>
