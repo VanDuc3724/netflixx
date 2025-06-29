@@ -34,9 +34,8 @@ namespace Netflixx.Models
 
         public string? PosterPath { get; set; }
 
-        [Required(ErrorMessage = "Quản lý sản xuất là bắt buộc")]
         [Display(Name = "Quản lý sản xuất")]
-        public int ProductionManagerId { get; set; }  // Bắt buộc (không nullable)
+        public int? ProductionManagerId { get; set; }
 
         [ForeignKey("ProductionManagerId")]  // Áp dụng vào Navigation Property
         public virtual ProductionManager? ProductionManager { get; set; }

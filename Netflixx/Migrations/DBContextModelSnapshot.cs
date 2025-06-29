@@ -622,7 +622,7 @@ namespace Netflixx.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductionManagerId")
+                    b.Property<int?>("ProductionManagerId")
                         .HasColumnType("int");
 
                     b.Property<float?>("Rating")
@@ -1493,7 +1493,7 @@ namespace Netflixx.Migrations
                         .WithMany("Films")
                         .HasForeignKey("ProductionManagerId")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .IsRequired(false);
 
                     b.Navigation("ProductionManager");
                 });
