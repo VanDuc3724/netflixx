@@ -531,7 +531,7 @@ namespace Netflixx.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     PosterPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductionManagerId = table.Column<int>(type: "int", nullable: false),
+                    ProductionManagerId = table.Column<int>(type: "int", nullable: true),
                     TrailerURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<float>(type: "real", nullable: true),
                     Duration = table.Column<int>(type: "int", nullable: true),

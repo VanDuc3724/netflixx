@@ -232,7 +232,7 @@ namespace Netflixx.Controllers
                 }
 
                 // 2. Kiểm tra ProductionManagerId (bắt buộc)
-                if (film.ProductionManagerId <= 0)
+                if (!film.ProductionManagerId.HasValue || film.ProductionManagerId <= 0)
                 {
                     ModelState.AddModelError("ProductionManagerId", "Vui lòng chọn quản lý sản xuất");
                 }
@@ -377,7 +377,7 @@ namespace Netflixx.Controllers
                 film.FilmURL = updatedFilm.FilmURL;
 
                 // Chỉ cập nhật ProductionManagerId nếu có giá trị hợp lệ
-                if (updatedFilm.ProductionManagerId > 0)
+                if (updatedFilm.ProductionManagerId.HasValue && updatedFilm.ProductionManagerId > 0)
                 {
                     film.ProductionManagerId = updatedFilm.ProductionManagerId;
                 }
