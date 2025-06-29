@@ -80,7 +80,7 @@
                 <div class="card bg-dark text-light">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="@(ViewBag.FeaturedFilm.FilmURL ?? "https://via.placeholder.com/300x450")" 
+                            <img src="@(ViewBag.FeaturedFilm.PosterPath ?? "https://via.placeholder.com/300x450")" 
                                  class="img-fluid rounded-start" 
                                  alt="@ViewBag.FeaturedFilm.Title"
                                  style="height: 100%; object-fit: cover;">
@@ -113,7 +113,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card h-100" style="background-color: #1f1f1f">
                         <a asp-action="Detail" asp-route-id="@film.Id">
-                            <img src="@(film.FilmURL ?? "https://via.placeholder.com/300x450")"
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
                                  class="card-img-top"
                                  alt="@film.Title"
                                  style="height: 500px; object-fit: cover;">
@@ -148,7 +148,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card h-100" style="background-color: #1f1f1f">
                         <a asp-action="Detail" asp-route-id="@film.Id">
-                            <img src="@(film.FilmURL ?? "https://via.placeholder.com/300x450")"
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
                                  class="card-img-top"
                                  alt="@film.Title"
                                  style="height: 500px; object-fit: cover;">
@@ -186,7 +186,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card h-100" style="background-color: #1f1f1f">
                         <a asp-action="Detail" asp-route-id="@film.Id">
-                            <img src="@(film.FilmURL ?? "https://via.placeholder.com/300x450")"
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
                                  class="card-img-top"
                                  alt="@film.Title"
                                  style="height: 500px; object-fit: cover;">

@@ -1,0 +1,1201 @@
+﻿@using Netflixx.Models
+@model IEnumerable<FilmsModel>
+
+@{
+    ViewData["Title"] = "Tìm Kiếm Phim";
+    bool isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+    if (isAjax)
+    {
+        Layout = null;
+    }
+}
+
+@if (!isAjax)
+{
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>@ViewData["Title"]</title>
+        <!-- Chỉ sử dụng Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+        <link rel="stylesheet" href="/css/filmmanager.css" />
+        <link rel="stylesheet" href="~/css/film.css" />
+
+        <style>
+            /* Sửa lỗi modal bị che */
+            .modal {
+                z-index: 1200; /* Cao hơn navbar (1100) */
+            }
+
+            .modal-dialog {
+                margin-top: 80px; /* Tạo khoảng cách với navbar */
+            }
+
+            /* Đảm bảo modal backdrop che phủ đúng */
+            .modal-backdrop {
+                z-index: 1100; /* Thấp hơn modal nhưng cao hơn các phần tử khác */
+            }
+
+            body {
+                background-color: #1f1f1f;
+                color: #fff;
+                transition: margin-left 0.3s;
+                overflow-x: hidden;
+            }
+
+            .navbar {
+                z-index: 1100;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                height: calc(100vh - 70px);
+                width: 230px;
+                background-color: #2c2c2c;
+                overflow-y: auto;
+                transition: transform 0.3s ease;
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                border-right: 1px solid #444;
+            }
+
+                .sidebar.collapsed {
+                    transform: translateX(-100%);
+                }
+
+                .sidebar a {
+                    display: block;
+                    padding: 15px 20px;
+                    color: #fff;
+                    text-decoration: none;
+                    white-space: nowrap;
+                }
+
+                    .sidebar a:hover {
+                        background-color: #ff4d6d;
+                    }
+
+            .main-content {
+                margin-left: 230px;
+                padding: 100px 20px 20px;
+                transition: margin-left 0.3s ease;
+            }
+
+                .main-content.expanded {
+                    margin-left: 0;
+                }
+
+            .toggle-btn,
+            .show-sidebar-btn {
+                position: fixed;
+                top: 75px;
+                z-index: 1200;
+                background-color: #ff4d6d;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+
+            .toggle-btn {
+                left: 10px;
+            }
+
+            .show-sidebar-btn {
+                left: 10px;
+                display: none;
+            }
+
+            .sidebar.collapsed ~ .show-sidebar-btn {
+                display: block;
+            }
+
+            .card {
+                background-color: #2c2c2c;
+                border: 1px solid #444;
+                margin-bottom: 20px;
+            }
+
+            .card-header {
+                background-color: #ff4d6d;
+                color: #fff;
+            }
+
+            .filter-card .card-header {
+                background-color: #ff4d6d;
+            }
+
+            .btn-primary {
+                background-color: #ff4d6d;
+                border: none;
+            }
+
+            .btn-success {
+                background-color: #28a745;
+                border: none;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-danger {
+                background-color: #dc3545;
+                border: none;
+            }
+
+            /* Pagination Styling */
+            .pagination-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 30px;
+                gap: 20px;
+            }
+
+            .pagination {
+                display: flex;
+                gap: 5px;
+            }
+
+                .pagination .page-item .page-link {
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+                    border: 1px solid #555;
+                    color: #fff;
+                    transition: all 0.3s ease;
+                    text-decoration: none;
+                }
+
+                    .pagination .page-item .page-link:hover {
+                        background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+                        border-color: #ff4d6d;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+                    }
+
+                .pagination .page-item.active .page-link {
+                    background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+                    border-color: #ff4d6d;
+                    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+                }
+
+            .pagination-info {
+                color: #b0b0b0;
+                font-weight: 500;
+            }
+
+            .modal-content {
+                background-color: #2c2c2c;
+                color: #fff;
+            }
+
+            .badge-primary {
+                background-color: #ff4d6d;
+            }
+
+            .badge-success {
+                background-color: #28a745;
+            }
+
+            .badge-warning {
+                background-color: #ffc107;
+                color: #000;
+            }
+
+            .badge-secondary {
+                background-color: #6c757d;
+            }
+
+            .form-control {
+                background-color: #3c3c3c;
+                border: 1px solid #555;
+                color: #fff;
+            }
+
+                .form-control:focus {
+                    background-color: #3c3c3c;
+                    border-color: #ff4d6d;
+                    color: #fff;
+                    box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+                }
+
+            /* ===== Header style from Trash page ===== */
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .page-title {
+                color: #fff;
+                font-weight: 600;
+                font-size: 1.75rem;
+            }
+
+            .header-stats {
+                display: flex;
+                gap: 1rem;
+            }
+
+            .stat-badge {
+                background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+                color: #000;
+                padding: 0.5rem 1rem;
+                border-radius: 25px;
+                text-align: center;
+                font-weight: 600;
+                min-width: 100px;
+            }
+
+            .stat-number {
+                display: block;
+                font-size: 1.5rem;
+                line-height: 1;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+                opacity: 0.8;
+            }
+
+            /* Custom styles for film list */
+            .film-list-card-header {
+                position: relative;
+                padding: 1rem;
+                background-color: #ff4d6d;
+                color: #fff;
+            }
+
+            .dataTables_wrapper .top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .dataTables_wrapper .bottom {
+                display: flex;
+                justify-content: flex-start;
+                margin-top: 1rem;
+            }
+
+            .modal-body {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+
+            .price-column {
+                text-align: right;
+                white-space: nowrap;
+            }
+
+            .film-list-btn-primary {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            .film-list-btn-secondary {
+                background-color: #6c757d;
+                color: #fff;
+            }
+
+            .film-list-btn-danger {
+                background-color: #dc3545;
+                color: #fff;
+            }
+
+            .film-list-btn-info {
+                background-color: #17a2b8;
+                color: #fff;
+            }
+
+            .table-dark {
+                background-color: #2c2c2c;
+                color: #fff;
+            }
+
+                .table-dark th,
+                .table-dark td,
+                .table-dark thead th {
+                    border-color: #444;
+                }
+
+                .table-dark.table-striped tbody tr:nth-of-type(odd) {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+
+            .bg-success {
+                background-color: #28a745 !important;
+            }
+
+            .bg-primary {
+                background-color: #007bff !important;
+            }
+
+            .bg-warning {
+                background-color: #ffc107 !important;
+                color: #212529 !important;
+            }
+
+            .bg-danger {
+                background-color: #dc3545 !important;
+            }
+
+            /* Màu sắc cho các badge */
+            .film-list-badge-success {
+                background-color: #28a745 !important; /* Xanh lá - Tạo mới */
+                color: white !important;
+            }
+
+            .film-list-badge-warning {
+                background-color: #ffc107 !important; /* Vàng - Chỉnh sửa */
+                color: #212529 !important;
+            }
+
+            .film-list-badge-danger {
+                background-color: #dc3545 !important; /* Đỏ - Xóa */
+                color: white !important;
+            }
+
+            .film-list-badge-info {
+                background-color: #17a2b8 !important; /* Xanh dương - Khôi phục */
+                color: white !important;
+            }
+
+            .film-list-badge-secondary {
+                background-color: #6c757d !important; /* Xám - Mặc định */
+                color: white !important;
+            }
+
+            .form-group{
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Thêm thanh navbar giống Homepage -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/image/logo/NetflixxLogo.png"
+                         alt="Netflixx Logo"
+                         style="height:40px;" />
+                </a>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Index">Sreach</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Type">Films</a></li>
+                    <li class="nav-item"><a class="nav-link active" asp-controller="FilmController1" asp-action="Search">Film Manager</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Series</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+                </ul>
+                <span class="navbar-text me-3">Noti</span>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle p-0" href="#" role="button"
+                       id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="@ViewBag.AvatarUrl"
+                             class="avatar-trigger"
+                             alt="User avatar" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="avatarDropdown">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Profile</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="History">History</a></li>
+                        <li><button class="dropdown-item" type="button">Settings</button></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="dropdown-item">Sign out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="filmListSidebar">
+            <div>
+                <a class="d-flex align-items-center justify-content-center gap-1 text-decoration-none py-3">
+                    <strong>MENU</strong>
+                </a>
+                <a asp-action="Search"><i class="fas fa-filter me-2"></i> Tìm kiếm & Lọc</a>
+                <a asp-action="Create"><i class="fas fa-plus me-2"></i> Thêm phim mới</a>
+                <a asp-action="History" class="active"><i class="fas fa-history me-2"></i> Lịch sử chỉnh sửa</a>
+                <a asp-action="Trash"><i class="fas fa-trash-alt me-2"></i> Thùng rác</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Toggle Buttons -->
+        <button id="filmListToggleSidebar" class="toggle-btn">
+            <i class="fas fa-angle-double-left"></i>
+        </button>
+        <button id="filmListShowSidebar" class="show-sidebar-btn">
+            <i class="fas fa-angle-double-right"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="main-content" id="filmListMainContent">
+            <!-- Header Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="page-header">
+                        <div class="header-content">
+                            <h2 class="page-title mb-0">
+                                <i class="fas fa-search me-2 text-warning"></i>
+                                Tìm Kiếm Phim
+                            </h2>
+                            <p class="text-muted mb-0">Tìm kiếm và lọc các bộ phim trong hệ thống</p>
+                        </div>
+                        <div class="header-stats">
+                            <div class="stat-badge">
+                                <span class="stat-number">@Model.Count()</span>
+                                <span class="stat-label">Kết quả</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Card -->
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong><i class="fas fa-filter"></i> Tìm kiếm & Lọc</strong>
+                </div>
+
+                <div class="card-body">
+                    <!-- Search Form -->
+                    <form method="get" asp-action="Search" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label">Tên phim</label>
+                                    <input type="text" name="searchTerm" class="form-control"
+                                           value="@Context.Request.Query["searchTerm"]" placeholder="Nhập tên phim...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label">Thể loại</label>
+                                    <select name="genre" class="form-select">
+                                        <option value="">Tất cả thể loại</option>
+                                        @foreach (var genre in ViewBag.AvailableGenres)
+                                        {
+                                            <option value="@genre" selected="@(Context.Request.Query["genre"] == genre)">@genre</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label">Năm phát hành</label>
+                                    <select name="year" class="form-select">
+                                        <option value="">Tất cả các năm</option>
+                                        @foreach (var year in ViewBag.AvailableYears)
+                                        {
+                                            <option value="@year" selected="@(Context.Request.Query["year"] == year.ToString())">@year</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-1"></i> Tìm kiếm
+                                </button>
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <a href="@Url.Action("Search")" class="btn btn-secondary w-100">
+                                    <i class="fas fa-times me-1"></i> Xóa
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-info alert-dismissible fade show">
+                            @ViewBag.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <!-- Film list -->
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th width="3%">STT</th>
+                                    <th width="20%">Tên phim</th>
+                                    <th width="15%">Thể loại</th>
+                                    <th width="10%" class="price-column">Giá (VNĐ)</th>
+                                    <th width="14%">Ngày phát hành</th>
+                                    <th width="10%">Trạng thái</th>
+                                    <th width="8%">Độ tuổi</th>
+                                    <th width="10%">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int counter = 1;
+                                }
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Genre</td>
+                                        <td class="price-column">@(item.Price != null ? item.Price.Value.ToString("N0") : "0")</td>
+                                        <td>@(item.ReleaseDate?.ToString("dd/MM/yyyy") ?? "Chưa có thông tin")</td>
+                                        <td>
+                                            <span class="badge @(item.Status == "Active" ? "bg-success" : item.Status == "Upcoming" ? "bg-warning" : "bg-secondary")">
+                                                @item.GetStatusText()
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge @(item.RatingValue == "P" ? "bg-success" : item.RatingValue == "C13" ? "bg-primary" : item.RatingValue == "C16" ? "bg-warning" : "bg-danger")">
+                                                @item.GetRatingText()
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button class="btn btn-primary" title="Chỉnh sửa"
+                                                        onclick="showEditModal(
+                    '@item.Id',
+                    '@Html.Raw(item.Title.Replace("'", "\\'"))',
+                    '@item.Genre',
+                    '@item.Duration',
+                    '@item.ReleaseDate?.ToString("yyyy-MM-dd")',
+                    '@item.Status',
+                    '@item.RatingValue',
+                    '@Html.Raw(item.Director?.Replace("'", "\\'") ?? "")',
+                    '@item.PosterPath',
+                    '@Html.Raw(item.Actors?.Replace("'", "\\'") ?? "")',
+                    '@Html.Raw(item.Description?.Replace("'", "\\'") ?? "")',
+                    '@item.TrailerURL',
+                    '@(item.Price?.ToString() ?? "0")',
+                    '@item.FilmURL',
+                    '@item.ProductionManagerId')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-info" title="Xem chi tiết"
+                                                        onclick="showDetailModal(
+                                                                                            '@item.Id',
+                                                                                            '@Html.Raw(item.Title.Replace("'", "\\'"))',
+                                                                                            '@item.ReleaseDate?.ToString("dd/MM/yyyy")',
+                                                                                            '@item.Genre',
+                                                                                            '@Html.Raw(item.Description?.Replace("'", "\\'") ?? "")',
+                                                                                            '@(item.Price?.ToString() ?? "0")',
+                                                                                            '@item.FilmURL',
+                                                                                            '@item.PosterPath',
+                                                                                            '@item.Duration',
+                                                                                            '@Html.Raw(item.Director?.Replace("'", "\\'") ?? "")',
+                                                                                            '@Html.Raw(item.Actors?.Replace("'", "\\'") ?? "")',
+                                                                                            '@item.Rating',
+                                                                                            '@item.RatingValue')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger" title="Xóa"
+                                                        onclick="confirmDelete(@item.Id, '@Html.Raw(item.Title.Replace("'", "\\'"))')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header film-list-card-header">
+                        <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Chi tiết phim</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-dark">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img id="detailImg" src="" alt="Ảnh phim" class="img-fluid rounded mb-3" style="max-height:400px;width:100%;object-fit:cover;">
+                                <div class="text-center">
+                                    <span class="badge me-2" id="detailRatingValue"></span>
+                                    <span class="badge bg-info text-dark" id="detailRating"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h4 class="text-white mb-3" id="detailTitle"></h4>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-tag me-2"></i>Thể loại:</strong> <span id="detailGenre"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-clock me-2"></i>Thời lượng:</strong> <span id="detailDuration"></span> phút</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-calendar-alt me-2"></i>Ngày phát hành:</strong> <span id="detailRelease"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-user-tie me-2"></i>Đạo diễn:</strong> <span id="detailDirector"></span></p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-money-bill-wave me-2"></i>Giá:</strong> <span id="detailPrice"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>
+                                            <strong><i class="fas fa-link me-2"></i>URL phim:</strong>
+                                            <a id="detailFilmURL" href="#" target="_blank" class="text-decoration-none">Xem liên kết</a>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <h5><i class="fas fa-users me-2"></i>Diễn viên</h5>
+                                    <p id="detailActors" class="ps-4"></p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <h5><i class="fas fa-align-left me-2"></i>Nội dung</h5>
+                                    <p id="detailDescription" class="ps-4"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-dark">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header film-list-card-header">
+                        <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Chỉnh sửa phim: <span id="editModalTitle"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="editForm" method="post" asp-controller="FilmController1" asp-action="Edit">
+                        @Html.AntiForgeryToken()
+                        <div class="modal-body bg-dark">
+                            <input type="hidden" id="editId" name="Id" />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Tên phim</label>
+                                        <input id="editTitle" name="Title" class="form-control" required />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Thể loại</label>
+                                        <input id="editGenre" name="Genre" class="form-control" required />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Thời lượng (phút)</label>
+                                        <input id="editDuration" name="Duration" type="number" class="form-control" required min="1" />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Ngày phát hành</label>
+                                        <input id="editReleaseDate" name="ReleaseDate" type="date" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select id="editStatus" name="Status" class="form-select" required>
+                                            <option value="Active">Đang chiếu</option>
+                                            <option value="Upcoming">Sắp chiếu</option>
+                                            <option value="Inactive">Ngừng chiếu</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Độ tuổi</label>
+                                        <select id="editRatingValue" name="RatingValue" class="form-select" required>
+                                            <option value="P">P - Mọi lứa tuổi</option>
+                                            <option value="C13">C13 - Trên 13 tuổi</option>
+                                            <option value="C16">C16 - Trên 16 tuổi</option>
+                                            <option value="C18">C18 - Trên 18 tuổi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Giá (VNĐ)</label>
+                                        <input id="editPrice" name="Price" type="number" step="0.01" class="form-control" min="0" />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">URL phim</label>
+                                        <input id="editFilmURL" name="FilmURL" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Quản lý sản xuất <span class="text-danger">*</span></label>
+                                    <select id="editProductionManagerId" name="ProductionManagerId" class="form-select" required>
+                                        <option value="">-- Chọn quản lý sản xuất --</option>
+                                        @if (ViewBag.ProductionManagers != null)
+                                        {
+                                            foreach (var manager in ViewBag.ProductionManagers)
+                                            {
+                                                <option value="@manager.Id">@manager.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="" disabled>Không có quản lý nào</option>
+                                        }
+                                    </select>
+                                    <span class="text-danger field-validation-valid" data-valmsg-for="ProductionManagerId" data-valmsg-replace="true"></span>
+                                    @if (ViewBag.ProductionManagers == null || !((IEnumerable<dynamic>)ViewBag.ProductionManagers).Any())
+                                    {
+                                        <small class="text-warning">Vui lòng thêm quản lý sản xuất trước khi chỉnh sửa phim</small>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Đạo diễn</label>
+                                <input id="editDirector" name="Director" class="form-control" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Diễn viên (cách nhau bằng dấu phẩy)</label>
+                                <input id="editActors" name="Actors" class="form-control" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Mô tả</label>
+                                <textarea id="editDescription" name="Description" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Poster URL</label>
+                                        <input id="editPosterPath" name="PosterPath" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Trailer URL</label>
+                                        <input id="editTrailerUrl" name="TrailerUrl" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-dark">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Hủy</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header film-list-card-header">
+                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-dark">
+                        <p>Bạn chắc chắn muốn xóa phim: <strong id="filmTitleToDelete" class="text-warning"></strong>?</p>
+                        <p class="text-info"><i class="fas fa-info-circle me-2"></i>Phim sẽ được chuyển vào thùng rác và có thể khôi phục sau.</p>
+                    </div>
+                    <div class="modal-footer bg-dark">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Hủy</button>
+                        <form id="deleteForm" method="post" asp-action="Delete">
+                            <input type="hidden" id="filmIdToDelete" name="id" />
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1"></i>Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Xử lý sidebar
+                $('#filmListToggleSidebar').click(function () {
+                    $('#filmListSidebar').addClass('collapsed');
+                    $('#filmListMainContent').addClass('expanded');
+                    $('#filmListShowSidebar').show();
+                    $(this).hide();
+                });
+
+                $('#filmListShowSidebar').click(function () {
+                    $('#filmListSidebar').removeClass('collapsed');
+                    $('#filmListMainContent').removeClass('expanded');
+                    $('#filmListShowSidebar').hide();
+                    $('#filmListToggleSidebar').show();
+                });
+
+                // Ẩn nút show sidebar ban đầu
+                $('#filmListShowSidebar').hide();
+
+
+                // Xử lý clear filter
+                    document.getElementById('clearFilters').addEventListener('click', function(e) {
+                e.preventDefault(); // Ngăn không submit form
+
+                // Xóa tất cả giá trị filter
+                document.querySelector('input[name="searchTerm"]').value = '';
+                document.querySelector('select[name="genre"]').selectedIndex = 0;
+                document.querySelector('select[name="year"]').selectedIndex = 0;
+
+                // Xây dựng URL mới không có các tham số filter
+                var baseUrl = window.location.pathname;
+                window.location.href = baseUrl;
+            });
+            });
+
+                           // Thay thế cả hai khởi tạo DataTable bằng đoạn code này
+            var table = $('#dataTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 15, 20],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json",
+                    "lengthMenu": "Xem _MENU_ mục",
+                    "paginate": {
+                        "previous": "Trước",
+                        "next": "Tiếp"
+                    }
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": [7] }
+                ],
+                "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                "info": false, // Dòng này sẽ ẩn thông tin "Đang xem..."
+                "initComplete": function() {
+                    $('.dataTables_filter input').addClass('form-control').attr('placeholder', 'Tìm kiếm...');
+                    $('.dataTables_length').prependTo('#dataTable_wrapper .top');
+                }
+            });
+
+            // Các hàm xử lý modal giữ nguyên
+            function showDetailModal(id, title, releaseDate, genre, description, price, filmURL, img, duration, director, actors, rating, ratingValue) {
+                $('#detailTitle').text(title);
+                $('#detailRelease').text(releaseDate || 'N/A');
+                $('#detailGenre').text(genre || 'N/A');
+                $('#detailDuration').text(duration || 'N/A');
+                $('#detailDirector').text(director || 'N/A');
+                $('#detailDescription').text(description || 'Không có mô tả');
+
+                // Format giá tiền với đơn vị VND
+                const priceValue = parseFloat(price);
+                $('#detailPrice').text(!isNaN(priceValue) ?
+                    priceValue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'N/A');
+
+                $('#detailFilmURL').attr('href', filmURL || '#');
+                $('#detailActors').text(actors || 'N/A');
+                $('#detailImg').attr('src', img || 'https://via.placeholder.com/300x450?text=No+Poster');
+                $('#detailRating').text(rating ? rating + '/10' : 'N/A');
+
+                var ratingValueBadge = $('#detailRatingValue');
+                ratingValueBadge.removeClass().addClass('badge');
+                if (ratingValue === 'P') {
+                    ratingValueBadge.addClass('bg-success').text('P - Mọi lứa tuổi');
+                } else if (ratingValue === 'C13') {
+                    ratingValueBadge.addClass('bg-primary').text('C13 - Trên 13 tuổi');
+                } else if (ratingValue === 'C16') {
+                    ratingValueBadge.addClass('bg-warning').text('C16 - Trên 16 tuổi');
+                } else if (ratingValue === 'C18') {
+                    ratingValueBadge.addClass('bg-danger').text('C18 - Trên 18 tuổi');
+                } else {
+                    ratingValueBadge.addClass('bg-secondary').text('N/A');
+                }
+
+                var detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+                detailModal.show();
+            }
+
+                       function showEditModal(id, title, genre, duration, releaseDate, status, ratingValue, director, PosterPath, actors, description, trailerUrl, price, filmURL, productionManagerId) {
+                $('#editId').val(id);
+                $('#editTitle').val(title || '');
+                $('#editGenre').val(genre || '');
+                $('#editDuration').val(duration || '');
+                $('#editReleaseDate').val(releaseDate || '');
+                $('#editStatus').val(status || 'Active');
+                $('#editRatingValue').val(ratingValue || 'P');
+                $('#editDirector').val(director || '');
+                $('#editPosterPath').val(PosterPath || '');
+                $('#editActors').val(actors || '');
+                $('#editDescription').val(description || '');
+                $('#editTrailerUrl').val(trailerUrl || '');
+                $('#editProductionManagerId').val(productionManagerId || '');
+
+                // Xử lý giá tiền
+                const priceValue = parseFloat(price);
+                $('#editPrice').val(!isNaN(priceValue) ? priceValue : '0');
+
+                $('#editFilmURL').val(filmURL || '');
+                $('#editModalTitle').text(title || 'Chỉnh sửa phim');
+
+                var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show();
+            }
+
+            // Xử lý submit form edit
+            $('#editForm').submit(function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Cập nhật phim thành công!');
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        } else {
+                            if (response.errors) {
+                                let errorMessages = '';
+                                for (const [key, value] of Object.entries(response.errors)) {
+                                    errorMessages += `${value.join(', ')}\n`;
+                                }
+                                alert('Lỗi validation:\n' + errorMessages);
+                            } else {
+                                alert('Có lỗi xảy ra khi cập nhật phim: ' + (response.message || ''));
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Có lỗi xảy ra khi gửi yêu cầu: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            function confirmDelete(id, title) {
+                $('#filmIdToDelete').val(id);
+                $('#filmTitleToDelete').text(title);
+                $('#deleteForm').attr('action', '/FilmController1/Delete/' + id);
+
+                var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            }
+
+            // Xử lý submit form delete
+            $('#deleteForm').submit(function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Xóa phim thành công!');
+                            $('#deleteModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert('Có lỗi xảy ra khi xóa phim: ' + (response.message || ''));
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Có lỗi xảy ra khi gửi yêu cầu xóa: ' + xhr.responseText);
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>
+}
+else
+{
+    <style>
+        .modal-content {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+            border: 1px solid #404040;
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px 16px 0 0;
+            padding: 20px 25px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-close {
+            color: #fff;
+            opacity: 0.8;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+            .btn-close:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-control {
+            background-color: #3c3c3c;
+            border: 1px solid #555;
+            color: #fff;
+        }
+
+            .form-control:focus {
+                background-color: #3c3c3c;
+                border-color: #ff4d6d;
+                color: #fff;
+                box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+            }
+
+        .modal-footer {
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 16px 16px;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+            .modal-footer .btn {
+                padding: 12px 30px;
+                border-radius: 10px;
+                font-weight: 600;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+                .modal-footer .btn::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                    transition: left 0.5s;
+                }
+
+                .modal-footer .btn:hover::before {
+                    left: 100%;
+                }
+
+            .modal-footer .btn-primary {
+                background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+                color: #fff;
+                box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            }
+
+                .modal-footer .btn-primary:hover {
+                    background: linear-gradient(135deg, #e63946, #ff4d6d);
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(255, 77, 109, 0.5);
+                }
+
+            .modal-footer .btn-secondary {
+                background: linear-gradient(135deg, #6c757d, #545b62);
+                color: #fff;
+                box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            }
+
+                .modal-footer .btn-secondary:hover {
+                    background: linear-gradient(135deg, #545b62, #3d4043);
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+                }
+    </style>
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"><i class="fas fa-search me-2"></i> Tìm Kiếm Phim</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Nội dung modal tìm kiếm phim -->
+            <form method="get" asp-action="Search" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Tên phim</label>
+                            <input type="text" name="searchTerm" class="form-control"
+                                   value="@Context.Request.Query["searchTerm"]" placeholder="Nhập tên phim...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Thể loại</label>
+                            <select name="genre" class="form-select">
+                                <option value="">Tất cả thể loại</option>
+                                @foreach (var genre in ViewBag.AvailableGenres)
+                                {
+                                    <option value="@genre" selected="@(Context.Request.Query["genre"] == genre)">@genre</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Năm phát hành</label>
+                            <select name="year" class="form-select">
+                                <option value="">Tất cả các năm</option>
+                                @foreach (var year in ViewBag.AvailableYears)
+                                {
+                                    <option value="@year" selected="@(Context.Request.Query["year"] == year.ToString())">@year</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Đóng</button>
+        </div>
+    </div>
+}

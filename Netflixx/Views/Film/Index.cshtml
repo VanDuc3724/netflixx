@@ -12,7 +12,7 @@
     <h1 class="mb-4" style="text-align: center; color: #ff4d6d;">DANH SÁCH PHIM</h1>
 
 <!-- Search and Filter Section -->
-<div class="card mb-4">
+<div class=" mb-4">
         <div class="card-body" style="background-color: #1f1f1f">
         <form method="get" class="row g-3">
             <div class="col-md-4">
@@ -57,7 +57,7 @@
             <div class="col-md-3 mb-3">
                 <div class="card h-100" style="background-color: #1f1f1f">
                 <a asp-action="Detail" asp-route-id="@film.Id">
-                    <img src="@(film.FilmURL ?? "https://via.placeholder.com/300x450")"
+                    <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
                          class="card-img-top"
                          alt="@film.Title"
                          style="height: 450px; object-fit: cover;">
