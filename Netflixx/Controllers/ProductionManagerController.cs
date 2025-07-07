@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Netflixx.Repositories;
 using ProductionManagerApp.Models;
 using System;
@@ -9,6 +11,7 @@ using System.Linq;
 
 
 namespace Netflixx.Controllers
+[Authorize(Roles = "Manager")]
 {
     public class ProductionManagerController : Controller
     {
@@ -17,6 +20,18 @@ namespace Netflixx.Controllers
         public ProductionManagerController(DBContext context)
         {
             _context = context;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+            SetManagerNavbar();
+        }
+
+        private void SetManagerNavbar()
+        {
+            ViewBag.UseManagerNavbar = true;
+            ViewBag.ActivePage = "Production";
         }
 
         // GET: ProductionManager
