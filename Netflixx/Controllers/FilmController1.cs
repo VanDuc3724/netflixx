@@ -8,6 +8,7 @@ using Netflixx.Models;
 using Netflixx.Repositories;
 using ProductionManagerApp.Models;
 using System;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public class FilmController1 : Controller
     {
         private readonly DBContext _context;
@@ -32,6 +33,17 @@ namespace Netflixx.Controllers
         }
 
         // Danh sách phim chính
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+            SetManagerNavbar();
+        }
+
+        private void SetManagerNavbar()
+        {
+            ViewBag.UseManagerNavbar = true;
+            ViewBag.ActivePage = "Film";
+        }
         public async Task<IActionResult> Index(string searchTerm, string genre, string status, string rating, int? year, string duration, string price)
         {
             // Lấy dữ liệu filter từ database
