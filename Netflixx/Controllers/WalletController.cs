@@ -62,12 +62,28 @@ namespace Netflixx.Controllers
                 _db.UserAccounts.Add(account);
             }
             account.Balance += amount;
+
+            var paymentTransaction = new PaymentTransactionsModel
+            {
+                UserID = user.Id,
+                ProviderID = 1,
+                EnvironmentID = 1,
+                TransactionDate = DateTime.UtcNow,
+                Amount = amount,
+                Currency = "VND",
+                Status = "Success",
+                ExternalTransactionRef = Request.Query["vnp_TransactionNo"]
+            };
+
+            _db.PaymentTransactions.Add(paymentTransaction);
+            _db.SaveChanges();
+
             _db.PointsTransactions.Add(new PointsTransactionsModel
             {
                 UserID = user.Id,
                 PointsChange = (int)amount,
                 Reason = "VNPay recharge",
-                RelatedTransactionID = null,
+                RelatedTransactionID = paymentTransaction.TransactionID,
                 TransactionDate = DateTime.UtcNow
             });
             _db.SaveChanges();
