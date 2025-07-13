@@ -62,6 +62,7 @@ namespace Netflixx.Controllers
                 _db.UserAccounts.Add(account);
             }
             account.Balance += amount;
+            account.PointsBalance += (int)amount;
 
             var paymentTransaction = new PaymentTransactionsModel
             {
