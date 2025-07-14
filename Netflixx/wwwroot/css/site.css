@@ -107,7 +107,20 @@ body {
     cursor: pointer;
     transition: color 0.3s ease;
 }
+.coins-display {
+    color: #ffdd57;
+    font-weight: 500;
+}
 
+    .coins-display i {
+        margin-right: 4px;
+    }
+
+    .coins-display .btn {
+        padding: 0.1rem 0.5rem;
+        font-size: 0.8rem;
+        margin-left: 4px;
+    }
     .navbar-text:hover {
         color: #e50914 !important;
     }

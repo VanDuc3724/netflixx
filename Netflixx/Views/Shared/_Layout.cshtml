@@ -1,4 +1,21 @@
-﻿﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Models
+@using Netflixx.Repositories
+@inject UserManager<AppUserModel> UserManager
+@inject DBContext DBContext
+@{
+    int coins = 0;
+    var user = await UserManager.GetUserAsync(User);
+    if (user != null)
+    {
+        var account = await DBContext.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
+        if (account != null)
+        {
+            coins = account.PointsBalance;
+        }
+    }
+}﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
