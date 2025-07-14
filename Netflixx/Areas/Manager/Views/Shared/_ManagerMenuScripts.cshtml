@@ -1,0 +1,20 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggle = document.getElementById('toggleSidebar');
+        var show = document.getElementById('showSidebar');
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+                if (show) show.style.display = 'block';
+            });
+        }
+        if (show) {
+            show.addEventListener('click', function () {
+                document.getElementById('sidebar').classList.remove('collapsed');
+                document.getElementById('mainContent').classList.remove('expanded');
+                show.style.display = 'none';
+            });
+        }
+    });
+</script>
