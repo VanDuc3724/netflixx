@@ -316,7 +316,43 @@
 </head>
 <body>
     <!-- Thêm thanh navbar giống Homepage -->
-    @await Html.PartialAsync("_HomeMenu")
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="/image/logo/NetflixxLogo.png"
+                     alt="Netflixx Logo"
+                     style="height:40px;" />
+            </a>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Index">Sreach</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Film" asp-action="Type">Films</a></li>
+                <li class="nav-item"><a class="nav-link active" asp-controller="FilmController1" asp-action="Search">Film Manager</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Series</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+            </ul>
+            <span class="navbar-text me-3">Noti</span>
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle p-0" href="#" role="button"
+                   id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="@ViewBag.AvatarUrl"
+                         class="avatar-trigger"
+                         alt="User avatar" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="avatarDropdown">
+                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Profile</a></li>
+                    <li><a class="dropdown-item" asp-controller="Home" asp-action="History">History</a></li>
+                    <li><button class="dropdown-item" type="button">Settings</button></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                            <button type="submit" class="dropdown-item">Sign out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <!-- Sidebar -->
     <div class="sidebar" id="filmListSidebar">
         <div>
