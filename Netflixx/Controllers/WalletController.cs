@@ -49,6 +49,11 @@ namespace Netflixx.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
+            if (!_vnPayService.ValidateResponse(Request.Query) || Request.Query["vnp_ResponseCode"] != "00")
+            {
+                TempData["error"] = "Payment validation failed";
+                return RedirectToAction("Deposit");
+            }
             if (!decimal.TryParse(Request.Query["vnp_Amount"], out var vnpAmount))
             {
                 TempData["error"] = "Payment error";
