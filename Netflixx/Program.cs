@@ -23,8 +23,6 @@ namespace Netflixx
 
             builder.Services.AddSingleton<IOtpGenerator, SecureOtpGenerator>();
 
-            builder.Services.AddSingleton<IVNPayService, VNPayService>();
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
