@@ -251,7 +251,7 @@
     }
 </style>
 
-@await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenu.cshtml")
+@await Html.PartialAsync("_ProductionManagerMenu")
 
 <div class="main-content" id="mainContent">
     <div class="container-fluid px-4 py-3">
@@ -521,7 +521,7 @@
     });
 </script>
 
-@await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenuScripts.cshtml")
+@await Html.PartialAsync("_ProductionManagerMenuScripts")
 
 @section Scripts {
     @{
