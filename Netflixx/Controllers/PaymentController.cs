@@ -78,13 +78,47 @@ namespace Netflixx.Controllers
                         _context.UserAccounts.Add(account);
                     }
                     account.PointsBalance += coins;
+
+                    // Ensure provider and environment records exist
+                    var provider = await _context.PaymentProviders.FirstOrDefaultAsync(p => p.Name == "VNPAY");
+                    if (provider == null)
+                    {
+                        provider = new PaymentProvidersModel { Name = "VNPAY" };
+                        _context.PaymentProviders.Add(provider);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    var environment = await _context.PaymentEnvironments.FirstOrDefaultAsync(e => e.Name == "VNPAY Sandbox");
+                    if (environment == null)
+                    {
+                        environment = new PaymentEnvironmentsModel { Name = "VNPAY Sandbox" };
+                        _context.PaymentEnvironments.Add(environment);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    var paymentTransaction = new PaymentTransactionsModel
+                    {
+                        UserID = user.Id,
+                        ProviderID = provider.ProviderID,
+                        EnvironmentID = environment.EnvironmentID,
+                        TransactionDate = DateTime.UtcNow,
+                        Amount = coins,
+                        Currency = "VND",
+                        Status = "Success",
+                        ExternalTransactionRef = response.PaymentId
+                    };
+                    _context.PaymentTransactions.Add(paymentTransaction);
+                    await _context.SaveChangesAsync();
+
                     _context.PointsTransactions.Add(new PointsTransactionsModel
                     {
                         UserID = user.Id,
                         TransactionDate = DateTime.UtcNow,
                         PointsChange = coins,
-                        Reason = "Recharge via VNPAY"
+                        Reason = "Recharge via VNPAY",
+                        RelatedTransactionID = paymentTransaction.TransactionID
                     });
+
                     await _context.SaveChangesAsync();
                 }
             }
