@@ -65,6 +65,14 @@ namespace Netflixx.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null && long.TryParse(amountStr, out var amount))
                 {
+                    // Prevent double credit if this transaction was already processed
+                    var existingTransaction = await _context.PaymentTransactions
+                        .FirstOrDefaultAsync(pt => pt.ExternalTransactionRef == response.PaymentId);
+                    if (existingTransaction != null)
+                    {
+                        return View("RechargeResult", true);
+                    }
+
                     var coins = (int)(amount / 100);
                     var account = await _context.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
                     if (account == null)
