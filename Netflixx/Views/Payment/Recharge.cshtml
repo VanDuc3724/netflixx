@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Recharge";
+}
+<h2>Recharge Coins</h2>
+<form asp-action="Recharge" method="post">
+    <div class="mb-3">
+        <label for="amount" class="form-label">Amount (VND)</label>
+        <input type="number" class="form-control" id="amount" name="amount" required min="1" />
+    </div>
+    <button type="submit" class="btn btn-primary">Pay with VNPAY</button>
+</form>

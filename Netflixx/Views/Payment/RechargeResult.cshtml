@@ -1,0 +1,13 @@
+@model bool
+@{
+    ViewData["Title"] = "Recharge Result";
+}
+@if (Model)
+{
+    <div class="alert alert-success">Recharge successful!</div>
+}
+else
+{
+    <div class="alert alert-danger">Recharge failed!</div>
+}
+<a asp-action="Recharge" class="btn btn-secondary">Back</a>
