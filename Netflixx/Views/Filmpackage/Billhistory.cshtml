@@ -1,9 +1,16 @@
+@model IEnumerable<Netflixx.Models.PointsTransactionsModel>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch sử thanh toán</title>
+    @{
+        var transactions = Model?.ToList() ?? new List<Netflixx.Models.PointsTransactionsModel>();
+        var totalTrans = transactions.Count;
+        var pointsReceived = transactions.Where(t => t.PointsChange > 0).Sum(t => t.PointsChange);
+        var pointsSpent = transactions.Where(t => t.PointsChange < 0).Sum(t => t.PointsChange);
+    }
     <style>
         * {
             margin: 0;
@@ -200,70 +207,45 @@
         <div class="stats-overview">
             <div class="stat-card">
                 <h3>Tổng giao dịch</h3>
-                <div class="value">5</div>
+                <div class="value">@totalTrans</div>
             </div>
             <div class="stat-card">
                 <h3>Điểm nhận được</h3>
-                <div class="value">+350</div>
+                <div class="value">@((pointsReceived > 0 ? "+" : "") + pointsReceived)</div>
             </div>
             <div class="stat-card">
                 <h3>Điểm đã sử dụng</h3>
-                <div class="value">-200</div>
+                <div class="value">@pointsSpent</div>
             </div>
         </div>
 
-        <!-- Sample transactions -->
-        <div class="transaction-card">
-            <div class="transaction-header">
-                <div class="transaction-date">15/07/2025 14:30</div>
-                <div class="transaction-change positive">+100 điểm</div>
+        @if (transactions.Any())
+        {
+            @foreach (var item in transactions)
+            {
+                var cls = item.PointsChange > 0 ? "positive" : item.PointsChange < 0 ? "negative" : "neutral";
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <div class="transaction-date">@item.TransactionDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        <div class="transaction-change @cls">
+                            @((item.PointsChange > 0 ? "+" : "") + item.PointsChange + " điểm")
+                        </div>
+                    </div>
+                    <div class="transaction-reason">
+                        @item.Reason
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-transactions">
+                <h3>Không có giao dịch</h3>
+                <p>Bạn chưa thực hiện giao dịch nào.</p>
             </div>
-            <div class="transaction-reason">
-                Nạp tiền vào tài khoản - Gói Tiêu Chuẩn
-            </div>
-        </div>
+        }
 
-        <div class="transaction-card">
-            <div class="transaction-header">
-                <div class="transaction-date">14/07/2025 09:15</div>
-                <div class="transaction-change negative">-50 điểm</div>
-            </div>
-            <div class="transaction-reason">
-                Xem phim premium - "The Dark Knight"
-            </div>
-        </div>
-
-        <div class="transaction-card">
-            <div class="transaction-header">
-                <div class="transaction-date">13/07/2025 20:45</div>
-                <div class="transaction-change positive">+200 điểm</div>
-            </div>
-            <div class="transaction-reason">
-                Nạp tiền vào tài khoản - Gói Cao Cấp
-            </div>
-        </div>
-
-        <div class="transaction-card">
-            <div class="transaction-header">
-                <div class="transaction-date">12/07/2025 16:20</div>
-                <div class="transaction-change negative">-30 điểm</div>
-            </div>
-            <div class="transaction-reason">
-                Xem phim - "Avengers: Endgame"
-            </div>
-        </div>
-
-        <div class="transaction-card">
-            <div class="transaction-header">
-                <div class="transaction-date">11/07/2025 11:00</div>
-                <div class="transaction-change positive">+50 điểm</div>
-            </div>
-            <div class="transaction-reason">
-                Bonus đăng ký thành viên mới
-            </div>
-        </div>
-
-        <a href="#" class="back-button">← Quay lại</a>
+        <a asp-action="Index" class="back-button">← Quay lại</a>
     </div>
 
     <script>
