@@ -580,7 +580,7 @@
 </style>
 
 
-@await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenu.cshtml")
+@await Html.PartialAsync("_ProductionManagerMenu")
 
 
 <!-- Nội dung chính -->
@@ -1057,7 +1057,7 @@
             });
         });
     </script>
-    @await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenuScripts.cshtml")
+    @await Html.PartialAsync("_ProductionManagerMenuScripts")
     @if (TempData["SuccessMessage"] != null)
     {
         <script>

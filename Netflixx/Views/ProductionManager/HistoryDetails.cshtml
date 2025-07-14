@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 }
 
-@await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenu.cshtml")
+@await Html.PartialAsync("_ProductionManagerMenu")
 
 <div class="main-content" id="mainContent">
     <div class="container mt-4">
@@ -43,5 +43,5 @@
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenuScripts.cshtml")
+    @await Html.PartialAsync("_ProductionManagerMenuScripts")
 }
