@@ -20,6 +20,10 @@ namespace Netflixx.Services.Vnpay
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
+            if (string.IsNullOrWhiteSpace(urlCallBack))
+            {
+                urlCallBack = $"{context.Request.Scheme}://{context.Request.Host}/Payment/PaymentCallbackVnpay";
+            }
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
