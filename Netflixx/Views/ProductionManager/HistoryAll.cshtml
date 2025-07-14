@@ -184,7 +184,7 @@
     }
 </style>
 
-@await Html.PartialAsync("_ProductionManagerMenu")
+@await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenu.cshtml")
 
 <div class="main-content" id="mainContent">
     <div class="container-fluid px-4 py-3">
@@ -282,7 +282,7 @@
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ProductionManagerMenuScripts")
+    @await Html.PartialAsync("~/Areas/Manager/Views/Shared/_ManagerMenuScripts.cshtml")
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
