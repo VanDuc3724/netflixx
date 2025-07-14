@@ -55,6 +55,13 @@
                     <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
                 </ul>
                 <span class="navbar-text me-3"><i class="fa fa-bell"></i></span>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <span class="navbar-text coins-display me-3">
+                        <i class="fas fa-coins"></i> @coins
+                        <a asp-controller="Payment" asp-action="Recharge" class="btn btn-warning btn-sm">Nạp</a>
+                    </span>
+                }
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle p-0" role="button"
                        id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
