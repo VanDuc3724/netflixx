@@ -203,6 +203,12 @@
             <h1>Lịch sử giao dịch</h1>
             <p>Theo dõi tất cả các giao dịch và thay đổi điểm trong tài khoản của bạn</p>
         </div>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
 
         <div class="stats-overview">
             <div class="stat-card">
