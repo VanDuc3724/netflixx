@@ -1,22 +1,4 @@
 ﻿﻿
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.EntityFrameworkCore
-@using Netflixx.Models
-@using Netflixx.Repositories
-@inject UserManager<AppUserModel> UserManager
-@inject DBContext DBContext
-@{
-    int coins = 0;
-    var user = await UserManager.GetUserAsync(User);
-    if (user != null)
-    {
-        var account = await DBContext.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
-        if (account != null)
-        {
-            coins = account.PointsBalance;
-        }
-    }
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,10 +38,6 @@
                     <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
                 </ul>
                 <span class="navbar-text me-3"><i class="fa fa-bell"></i></span>
-                <span class="navbar-text me-3 coins-display">
-                    <i class="fas fa-coins"></i> @coins
-                    <a asp-controller="Payment" asp-action="Recharge" class="btn btn-danger btn-sm ms-2">Nạp</a>
-                </span>
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle p-0" role="button"
                        id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
