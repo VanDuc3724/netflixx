@@ -12,11 +12,14 @@ namespace Netflixx.Services.Vnpay
         }
         public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
         {
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeZoneId = _configuration["TimeZoneId"];
+            var timeZoneById = string.IsNullOrEmpty(timeZoneId)
+                ? TimeZoneInfo.Local
+                : TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
