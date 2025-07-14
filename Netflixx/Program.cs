@@ -5,6 +5,7 @@ using Netflixx.Models;
 using Netflixx.Repositories;
 
 using Netflixx.Services;
+using Netflixx.Services.Vnpay;
 
 
 namespace Netflixx
@@ -15,6 +16,8 @@ namespace Netflixx
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Connect VNPay API
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
             // Đăng ký OtpService
             builder.Services.AddSingleton<IOtpService, OtpService>();
 
