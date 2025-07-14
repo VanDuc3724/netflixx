@@ -1,0 +1,77 @@
+@model IEnumerable<Netflixx.Models.BrandSouModel>
+@{
+    ViewData["Title"] = "Brand Management";
+}
+
+<style>
+    body {
+        background: #000;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+    h1 {
+        color: #FF4081;
+        margin-bottom: 1.5rem;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border: 1px solid #333;
+    }
+    .table th {
+        background-color: #FF4081;
+        color: #fff;
+        font-weight: 600;
+    }
+    .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.2rem;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+    .btn-primary { background-color: #FF4081; color:#fff; border:none; }
+    .btn-warning { background-color:#ffc107; color:#212529; border:none; }
+    .btn-danger { background-color:#dc3545; color:#fff; border:none; }
+</style>
+
+<div class="container">
+    <h1>Brand Management</h1>
+    <p>
+        <a href="/ShopSouvenir/BrandSou/Create" class="btn btn-primary">Create New Brand</a>
+    </p>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var brand in Model)
+{
+            <tr>
+                <td>@brand.Name</td>
+                <td>@brand.Description</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@brand.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@brand.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+}
+        </tbody>
+    </table>
+</div>
