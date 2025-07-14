@@ -16,3 +16,16 @@ $('.btn-add').on('click', function (e) {
         }
     });
 });
+
+// Highlight active navigation item based on current path
+$(document).ready(function () {
+    var currentPath = window.location.pathname.toLowerCase();
+    $('.navbar-nav .nav-link').each(function () {
+        var linkPath = $(this).attr('href').toLowerCase();
+        if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) {
+            $('.navbar-nav .nav-link').removeClass('active');
+            $(this).addClass('active');
+            return false; // Stop after first match
+        }
+    });
+});
