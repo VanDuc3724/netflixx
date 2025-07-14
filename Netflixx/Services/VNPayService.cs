@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Netflixx.Services
 {
@@ -10,6 +11,28 @@ namespace Netflixx.Services
         public VNPayService(IConfiguration config)
         {
             _config = config;
+        }
+
+        public bool ValidateResponse(IQueryCollection queryCollection)
+        {
+            var hashSecret = _config["VNPay:HashSecret"] ?? "SECRET";
+            if (!queryCollection.TryGetValue("vnp_SecureHash", out var secureHash))
+            {
+                return false;
+            }
+            var sorted = new SortedDictionary<string, string>();
+            foreach (var key in queryCollection.Keys)
+            {
+                if (key.StartsWith("vnp_") && key != "vnp_SecureHash" && key != "vnp_SecureHashType")
+                {
+                    sorted[key] = queryCollection[key];
+                }
+            }
+            var signData = string.Join("&", sorted.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+            using var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(hashSecret));
+            var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(signData));
+            var computed = BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+            return string.Equals(computed, secureHash.ToString(), StringComparison.OrdinalIgnoreCase);
         }
 
         public string CreatePaymentUrl(decimal amount, string orderInfo, string returnUrl)
