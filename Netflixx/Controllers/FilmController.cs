@@ -232,7 +232,8 @@ namespace Netflixx.Controllers
             return RedirectToAction(nameof(Detail), new { id = vm.Film.Id });
         }
 
-        public async Task<IActionResult> DetailSreach(int id)
+        [ActionName("DetailSearch")]
+        public async Task<IActionResult> DetailSearch(int id)
         {
             var film = await _db.Films.FirstOrDefaultAsync(f => f.Id == id);
             if (film == null)
