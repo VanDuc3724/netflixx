@@ -35,9 +35,9 @@ namespace Netflixx.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Recharge(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 20000)
             {
-                ModelState.AddModelError(string.Empty, "Amount must be greater than 0");
+                ModelState.AddModelError(string.Empty, "Số tiền tối thiểu để nạp là 20.000 VND");
                 return View();
             }
 

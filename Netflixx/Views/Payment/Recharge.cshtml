@@ -6,9 +6,10 @@
     <div class="recharge-card">
         <h2 class="text-center mb-4">Nạp tiền</h2>
         <form asp-action="Recharge" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
             <div class="mb-3">
                 <label for="amount" class="form-label">Số tiền (VND)</label>
-                <input type="number" class="form-control bg-dark text-white border-secondary" id="amount" name="amount" required min="1" />
+                <input type="number" class="form-control bg-dark text-white border-secondary" id="amount" name="amount" required min="20000" />
             </div>
             <button type="submit" class="btn btn-danger w-100">Thanh toán qua VNPAY</button>
         </form>
