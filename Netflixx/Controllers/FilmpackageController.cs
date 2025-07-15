@@ -1,13 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
+using Netflixx.Models.ViewModel;
+using Netflixx.Repositories;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
 {
     public class FilmpackageController : Controller
     {
-        public IActionResult Index()
+        private readonly DBContext _context;
+
+        public FilmpackageController(DBContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var packages = await _context.Packages
+                .Include(p => p.PackageFilms)
+                    .ThenInclude(pf => pf.Film)
+                .ToListAsync();
+
+            var viewModel = packages.Select(p => new FilmpackageIndexViewModel
+            {
+                PackageId = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Films = p.PackageFilms.Select(pf => pf.Film.Title).ToList()
+            }).ToList();
+
+            return View(viewModel);
         }
 
         public IActionResult Billhistory()
