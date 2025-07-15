@@ -222,7 +222,7 @@ namespace Netflixx.Controllers
             var comment = new FilmComment
             {
                 FilmId = vm.Film.Id,
-                AuthorName = user != null ? user.ToString() : "Anonymous",
+                AuthorName = user?.UserName ?? "Anonymous",
                 Content = vm.NewCommentContent,
                 Level = vm.ReplyToCommentId.HasValue ? 2 : 1,
                 ParentCommentId = vm.ReplyToCommentId

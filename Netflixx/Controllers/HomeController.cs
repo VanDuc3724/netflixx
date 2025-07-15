@@ -72,8 +72,8 @@ namespace Netflixx.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            if (!(user == null))
-                _logger.LogInformation("CurrentUser session JSON: {SessionRaw}", user.ToString());
+            if (user != null)
+                _logger.LogInformation("CurrentUser session JSON: {SessionRaw}", JsonSerializer.Serialize(user));
             else
                 _logger.LogInformation("No CurrentUser found in Session");
 
