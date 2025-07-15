@@ -11,6 +11,7 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
+            <th>Price</th>
             <th>Films</th>
         </tr>
     </thead>
@@ -20,6 +21,7 @@
         <tr>
             <td>@pkg.Name</td>
             <td>@pkg.Description</td>
+            <td>@pkg.Price.ToString("N0")</td>
             <td>
                 @string.Join(", ", pkg.PackageFilms.Select(pf => pf.Film.Title))
             </td>
