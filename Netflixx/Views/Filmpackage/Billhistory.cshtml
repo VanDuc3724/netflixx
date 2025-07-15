@@ -140,6 +140,20 @@
             font-size: 16px;
         }
 
+        .search-input {
+            padding: 8px 16px;
+            background-color: #2a304a;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            margin-left: 15px;
+            font-size: 16px;
+        }
+
+            .search-input::placeholder {
+                color: #cccccc;
+            }
+
             .filter-dropdown:focus {
                 outline: none;
             }
@@ -309,13 +323,14 @@
                             <option>Tất cả</option>
                         </select>
                         <button class="refresh-btn" disabled>🔄 Làm mới</button>
+                        <input type="text" id="transactionSearch" class="search-input" placeholder="Tìm kiếm..." />
                     </div>
                 </div>
 
 
 
                 <div class="billing-table-container">
-                    <table class="billing-table">
+                    <table class="billing-table" id="transactionTable">
                         <thead>
                             <tr>
                                 <th>Ngày</th>
@@ -394,5 +409,20 @@
             </div>
         </div>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('transactionSearch');
+            const rows = document.querySelectorAll('#transactionTable tbody tr');
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    const q = this.value.toLowerCase();
+                    rows.forEach(r => {
+                        const text = r.textContent.toLowerCase();
+                        r.style.display = text.includes(q) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
