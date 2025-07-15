@@ -356,6 +356,45 @@
                     <!-- Pagination placeholder -->
                 </div>
             </div>
+
+            <!-- Lịch sử mua phim bằng coins -->
+            <div class="history-section" style="margin-top:40px;">
+                <div class="history-header">
+                    <h2>Lịch sử mua phim bằng coins</h2>
+                </div>
+                <div class="billing-table-container">
+                    <table class="billing-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Tên phim</th>
+                                <th>Coins sử dụng</th>
+                                <th>Giá (VND)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.FilmPurchases.Any())
+                            {
+                                foreach (var p in Model.FilmPurchases)
+                                {
+                                    <tr>
+                                        <td>@p.PurchaseDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@p.Film?.Title</td>
+                                        <td>@p.PointsUsed</td>
+                                        <td>@p.PricePaid.ToString("N0")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="loading">Không có giao dịch mua phim</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
 </body>
