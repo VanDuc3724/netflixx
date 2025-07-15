@@ -206,17 +206,27 @@
                     }
                     else if (user != null)
                     {
-                        <form id="purchaseForm" asp-action="Purchase" method="post">
+                        <div class="card poster-card position-relative overflow-hidden">
+                            <img src="@Model.Film.PosterPath"
+                                 class="card-img-top"
+                                 style="height:314px; object-fit:cover;" />
+                        </div>
+                        <form id="purchaseForm" asp-action="Purchase" method="post" class="mt-2">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@Model.Film.Id" />
-                            <button type="submit" class="btn btn-danger w-100" style="height:314px;">
+                            <button type="submit" class="btn btn-danger w-100">
                                 Mua - @Model.Film.Price?.ToString("N0") coins
                             </button>
                         </form>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-danger w-100" style="height:314px;">
+                        <div class="card poster-card position-relative overflow-hidden">
+                            <img src="@Model.Film.PosterPath"
+                                 class="card-img-top"
+                                 style="height:314px; object-fit:cover;" />
+                        </div>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-danger w-100 mt-2">
                             Login to Buy
                         </a>
                     }
@@ -550,17 +560,13 @@
                         .then(r => r.json())
                         .then(json => {
                             if (json.success) {
-                                const link = document.createElement('a');
-                                link.href = json.redirectUrl;
-                                link.className = 'btn btn-danger w-100';
-                                link.style.height = '314px';
-                                link.textContent = 'Xem ngay';
-                                form.replaceWith(link);
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Thành công',
                                     text: 'Mua phim thành công!',
                                     confirmButtonColor: '#e50914'
+                                }).then(() => {
+                                    window.location.reload();
                                 });
                             } else {
                                 Swal.fire({
