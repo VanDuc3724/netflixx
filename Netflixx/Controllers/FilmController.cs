@@ -371,7 +371,7 @@ namespace Netflixx.Controllers
             {
                 return Json(new { success = true, redirectUrl = redirect });
             }
-
+            TempData["success"] = "Mua phim thành công!";
             return Redirect(redirect);
         }
 
