@@ -1,0 +1,25 @@
+@model IEnumerable<Netflixx.Models.ViewModel.FilmpackageIndexViewModel>
+
+<h2>Film Packages</h2>
+<a asp-action="Create" class="btn btn-primary">Create Package</a>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Films</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var pkg in Model)
+    {
+        <tr>
+            <td>@pkg.Name</td>
+            <td>@pkg.Description</td>
+            <td>
+                @string.Join(", ", pkg.Films)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
