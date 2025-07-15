@@ -1,14 +1,4 @@
-let filmpackage = window.filmPackageData && window.filmPackageData.length ? window.filmPackageData.map(p => ({
-    packageId: `package${p.id.toString().padStart(2,'0')}`,
-    packageName: p.name,
-    packagePrice: parseFloat(p.price),
-    features: [
-        "Tất cả tính năng cơ bản",
-        "Xem trên nhiều thiết bị",
-        "Chất lượng video cao"
-    ],
-    btnClass: p.name === "Cơ Bản" ? "basic-btn" : p.name === "Tiêu Chuẩn" ? "standard-btn" : "premium-btn"
-})) : [
+﻿let filmpackage = [
     {
         packageId: "package01",
         packageName: "Cơ Bản",

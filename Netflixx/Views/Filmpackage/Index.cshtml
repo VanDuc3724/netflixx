@@ -1,6 +1,4 @@
-@model IEnumerable<Netflixx.Models.PackagesModel>
-@using Newtonsoft.Json
-
+﻿﻿
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,7 +18,7 @@
         </div>
 
         <div class="package-container">
-
+            
         </div>
 
         <div class="comparison">
@@ -92,8 +90,5 @@
 
     </main>
 </body>
-<script>
-    var filmPackageData = @Html.Raw(JsonConvert.SerializeObject(Model));
-</script>
 <script src="~/js/Filmpackage.js"></script>
 </html>

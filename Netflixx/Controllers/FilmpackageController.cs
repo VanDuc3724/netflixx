@@ -1,21 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Netflixx.Models;
-using Netflixx.Repositories;
 
 namespace Netflixx.Controllers
 {
     public class FilmpackageController : Controller
     {
-        private readonly DBContext _context;
-        public FilmpackageController(DBContext context)
-        {
-            _context = context;
-        }
-
         public IActionResult Index()
         {
-            var packages = _context.Packages.ToList();
-            return View(packages);
+            return View();
         }
 
         public IActionResult Billhistory()
