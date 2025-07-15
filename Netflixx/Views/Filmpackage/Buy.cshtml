@@ -155,7 +155,6 @@
     </style>
 </head>
 <body>
-    @Html.AntiForgeryToken()
     <div class="package-card @packageClass">
         <span class="package-icon">@packageIcon</span>
         <h1>Gói: @Model.PackageName</h1>
@@ -184,31 +183,31 @@
 <script>
     document.getElementById("checkPaymentBtn").addEventListener("click", async function () {
         const price = @Model.PackagePrice;
-        const packageId = "@Model.PackageId";
-        const packageName = "@Model.PackageName";
+        const content = "@username";
         const resultElement = document.getElementById("paymentResult");
 
         try {
-            const response = await fetch('/Filmpackage/BuyWithCoins', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ packageId: packageId, packageName: packageName, packagePrice: price })
-            });
+            const response = await fetch(
+
+                "https://script.google.com/macros/s/AKfycbyi5nMWfuHp3BigdOV9h0lq97ci0f1YTWOlULUsRgkW8_AT0e34FVu67ao3l00EXOHx/exec"
+
+            );
             const data = await response.json();
-            if (data.success) {
-                resultElement.style.color = 'lime';
-                resultElement.textContent = '✅ ' + data.message;
+            const lastPaid = data.data[data.data.length - 1];
+            const lastPrice = parseInt(lastPaid["Giá trị"]);
+            const lastContent = lastPaid["Mô tả"];
+
+            if (lastPrice == price && lastContent.includes(content)) {
+                resultElement.style.color = "lime";
+                resultElement.textContent = "✅ Thanh toán thành công!";
             } else {
-                resultElement.style.color = 'orange';
-                resultElement.textContent = '⚠️ ' + data.message;
+                resultElement.style.color = "orange";
+                resultElement.textContent = "⚠️ Chưa nhận được thanh toán. Vui lòng thử lại sau vài phút.";
             }
         } catch (e) {
-            console.error('Lỗi', e);
-            resultElement.style.color = 'red';
-            resultElement.textContent = '❌ Đã xảy ra lỗi khi thanh toán.';
+            console.error("Lỗi", e);
+            resultElement.style.color = "red";
+            resultElement.textContent = "❌ Đã xảy ra lỗi khi kiểm tra thanh toán.";
         }
     });
 </script>
