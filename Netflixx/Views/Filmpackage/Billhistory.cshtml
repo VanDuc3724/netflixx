@@ -319,11 +319,13 @@
                 <div class="history-header">
                     <h2>Lịch sử thanh toán</h2>
                     <div>
-                        <select class="filter-dropdown" id="filterDropdown" disabled>
-                            <option>Tất cả</option>
+                        <select class="filter-dropdown" id="dateFilter">
+                            <option value="all">Tất cả</option>
+                            <option value="today">Hôm nay</option>
+                            <option value="7">7 ngày trước</option>
+                            <option value="30">30 ngày trước</option>
                         </select>
-                        <button class="refresh-btn" disabled>🔄 Làm mới</button>
-                        <input type="text" id="transactionSearch" class="search-input" placeholder="Tìm kiếm..." />
+                        <input type="text" id="transactionSearch" class="search-input" placeholder="Tìm kiếm trạng thái..." />
                     </div>
                 </div>
 
@@ -412,16 +414,42 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('transactionSearch');
+            const dateFilter = document.getElementById('dateFilter');
             const rows = document.querySelectorAll('#transactionTable tbody tr');
-            if (searchInput) {
-                searchInput.addEventListener('input', function () {
-                    const q = this.value.toLowerCase();
-                    rows.forEach(r => {
-                        const text = r.textContent.toLowerCase();
-                        r.style.display = text.includes(q) ? '' : 'none';
-                    });
+
+            function filterRows() {
+                const query = searchInput.value.toLowerCase();
+                const range = dateFilter.value;
+                const now = new Date();
+
+                rows.forEach(r => {
+                    const dateText = r.cells[0].textContent.trim();
+                    const statusText = r.cells[2].textContent.toLowerCase();
+
+                    const [day, month, year] = dateText.split('/');
+                    const rowDate = new Date(year, month - 1, day);
+
+                    let show = true;
+                    if (range === 'today') {
+                        show = rowDate.toDateString() === now.toDateString();
+                    } else if (range === '7') {
+                        show = now - rowDate <= 7 * 24 * 60 * 60 * 1000;
+                    } else if (range === '30') {
+                        show = now - rowDate <= 30 * 24 * 60 * 60 * 1000;
+                    }
+
+                    if (show) {
+                        show = statusText.includes(query);
+                    }
+
+                    r.style.display = show ? '' : 'none';
                 });
             }
+
+            if (searchInput) searchInput.addEventListener('input', filterRows);
+            if (dateFilter) dateFilter.addEventListener('change', filterRows);
+
+            filterRows();
         });
     </script>
 </body>
