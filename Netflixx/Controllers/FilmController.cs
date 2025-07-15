@@ -389,7 +389,18 @@ namespace Netflixx.Controllers
 
             var purchased = await _db.FilmPurchases
                 .AnyAsync(p => p.UserID == user.Id && p.FilmID == filmId);
-            if (!purchased)
+
+            var hasPackage = await _db.PackageSubscriptions
+                .Where(ps => ps.UserID == user.Id
+                             && ps.StartDate <= DateTime.UtcNow
+                             && ps.EndDate >= DateTime.UtcNow)
+                .Join(_db.PackageFilms.Where(pf => pf.FilmID == filmId),
+                      ps => ps.PackageID,
+                      pf => pf.PackageID,
+                      (ps, pf) => ps)
+                .AnyAsync();
+
+            if (!purchased && !hasPackage)
             {
                 TempData["error"] = "You need to purchase this film.";
                 return RedirectToAction(nameof(Detail), new { id = filmId });
