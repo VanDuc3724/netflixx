@@ -289,38 +289,7 @@
             <p>Quản lý gói dịch vụ, phương thức thanh toán và xem lịch sử thanh toán của bạn</p>
         </div>
 
-        <div class="billing-container">
-            <!-- Thông tin gói hiện tại -->
-            <div class="current-plan">
-                <div class="plan-header">
-                    <div class="plan-info">
-                        <h2>Gói dịch vụ hiện tại</h2>
-                        <div class="plan-type">
-                            @(Model.CurrentPackage != null ? Model.CurrentPackage.Package?.Name : "Gói Free")
-                        </div>
-                        <div class="plan-details">
-                            @if (Model.CurrentPackage != null)
-                            {
-                                <text>Đã kích hoạt: @Model.CurrentPackage.StartDate.ToString("dd/MM/yyyy") | Hết hạn: @Model.CurrentPackage.EndDate.ToString("dd/MM/yyyy")</text>
-                            }
-                            else
-                            {
-                                <text>Chưa có giao dịch thanh toán nào</text>
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="plan-details">
-                    @if (Model.CurrentPackage != null)
-                    {
-                        <p>Bạn đang sử dụng @Model.CurrentPackage.Package?.Name.</p>
-                    }
-                    else
-                    {
-                        <p>Bạn đang sử dụng gói miễn phí. Hãy nâng cấp để trải nghiệm đầy đủ tính năng.</p>
-                    }
-                </div>
-            </div>
+        
 
             <!-- Lịch sử giao dịch -->
             <div class="history-section">
