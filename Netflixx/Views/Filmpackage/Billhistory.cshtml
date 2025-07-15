@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+@model Netflixx.Models.ViewModel.BillHistoryViewModel
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -272,12 +273,30 @@
                 <div class="plan-header">
                     <div class="plan-info">
                         <h2>Gói dịch vụ hiện tại</h2>
-                        <div class="plan-type" id="currentPlanType">Đang cập nhật...</div>
-                        <div class="plan-details" id="currentPlanDetails">Đang tải thông tin gói...</div>
+                        <div class="plan-type">
+                            @(Model.CurrentPackage != null ? Model.CurrentPackage.Package?.Name : "Gói Free")
+                        </div>
+                        <div class="plan-details">
+                            @if (Model.CurrentPackage != null)
+                            {
+                                <text>Đã kích hoạt: @Model.CurrentPackage.StartDate.ToString("dd/MM/yyyy") | Hết hạn: @Model.CurrentPackage.EndDate.ToString("dd/MM/yyyy")</text>
+                            }
+                            else
+                            {
+                                <text>Chưa có giao dịch thanh toán nào</text>
+                            }
+                        </div>
                     </div>
                 </div>
                 <div class="plan-details">
-                    <p id="planDescription">Đang tải thông tin chi tiết gói dịch vụ...</p>
+                    @if (Model.CurrentPackage != null)
+                    {
+                        <p>Bạn đang sử dụng @Model.CurrentPackage.Package?.Name.</p>
+                    }
+                    else
+                    {
+                        <p>Bạn đang sử dụng gói miễn phí. Hãy nâng cấp để trải nghiệm đầy đủ tính năng.</p>
+                    }
                 </div>
             </div>
 
@@ -286,348 +305,58 @@
                 <div class="history-header">
                     <h2>Lịch sử thanh toán</h2>
                     <div>
-                        <select class="filter-dropdown" id="filterDropdown">
-                            <option value="all">Tất cả</option>
-                            <option value="3">3 tháng gần đây</option>
-                            <option value="6">6 tháng gần đây</option>
-                            <option value="12">12 tháng gần đây</option>
+                        <select class="filter-dropdown" id="filterDropdown" disabled>
+                            <option>Tất cả</option>
                         </select>
-                        <button class="refresh-btn" onclick="loadPaymentHistory()">🔄 Làm mới</button>
+                        <button class="refresh-btn" disabled>🔄 Làm mới</button>
                     </div>
                 </div>
 
                 <!-- Hiển thị thông tin username -->
                 <div class="username-info">
-                    <strong>Lọc theo username:</strong> <span id="currentUsername">Đang tải...</span>
+                    <strong>Lọc theo username:</strong> <span>@User.Identity.Name</span>
                 </div>
-
-                <div id="errorMessage" class="error-message" style="display: none;"></div>
 
                 <div class="billing-table-container">
                     <table class="billing-table">
                         <thead>
                             <tr>
                                 <th>Ngày</th>
-                                <th>Mã đơn hàng</th>
-                                <th>Mô tả</th>
+                                <th>Mã giao dịch</th>
+                                <th>Trạng thái</th>
                                 <th>Số tiền</th>
-                                <th>Số tài khoản</th>
-                                <th>Thao tác</th>
+                                <th>Nhà cung cấp</th>
                             </tr>
                         </thead>
-                        <tbody id="paymentTableBody">
-                            <tr>
-                                <td colspan="6" class="loading">Đang tải dữ liệu...</td>
-                            </tr>
+                        <tbody>
+                            @if (Model.Transactions.Any())
+                            {
+                                foreach (var t in Model.Transactions)
+                                {
+                                    <tr>
+                                        <td>@t.TransactionDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@t.ExternalTransactionRef</td>
+                                        <td>@t.Status</td>
+                                        <td>@t.Amount.ToString("N0") @t.Currency</td>
+                                        <td>@t.Provider?.Name</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="loading">Không có giao dịch nào cho tài khoản này</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
 
-                <div class="pagination" id="pagination">
-                    <!-- Pagination sẽ được tạo động -->
+                <div class="pagination">
+                    <!-- Pagination placeholder -->
                 </div>
             </div>
         </div>
     </main>
-
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyi5nMWfuHp3BigdOV9h0lq97ci0f1YTWOlULUsRgkW8_AT0e34FVu67ao3l00EXOHx/exec";
-        let paymentData = [];
-        let filteredData = [];
-        let currentPage = 1;
-        const itemsPerPage = 5; // Đã thay đổi từ 10 thành 5
-
-        // Lấy username của người dùng hiện tại đã đăng nhập từ server
-        const currentUsername = "@User.Identity.Name";
-
-        // Load dữ liệu khi trang được tải
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hiển thị username hiện tại
-            document.getElementById('currentUsername').textContent = currentUsername;
-
-            loadPaymentHistory();
-
-            // Thêm event listener cho filter dropdown
-            document.getElementById('filterDropdown').addEventListener('change', function() {
-                filterData();
-                renderTable();
-            });
-        });
-
-        async function loadPaymentHistory() {
-            const errorDiv = document.getElementById('errorMessage');
-            const tbody = document.getElementById('paymentTableBody');
-
-            try {
-                errorDiv.style.display = 'none';
-                tbody.innerHTML = '<tr><td colspan="6" class="loading">Đang tải dữ liệu...</td></tr>';
-
-                const response = await fetch(API_URL);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-
-                const result = await response.json();
-
-                if (result.error) {
-                    throw new Error(result.message || 'Lỗi từ server');
-                }
-
-                if (!result.data || !Array.isArray(result.data)) {
-                    throw new Error('Dữ liệu không hợp lệ');
-                }
-
-                // Lọc dữ liệu theo username ngay từ đầu
-                paymentData = result.data.filter(item => {
-                    const description = item['Mô tả'] || '';
-                    return description.includes(currentUsername);
-                });
-
-                // Cập nhật thông tin gói dựa trên giao dịch mới nhất
-                updateCurrentPlan();
-
-                filterData();
-                renderTable();
-
-            } catch (error) {
-                console.error('Error loading payment history:', error);
-                errorDiv.textContent = `Lỗi tải dữ liệu: ${error.message}`;
-                errorDiv.style.display = 'block';
-                tbody.innerHTML = '<tr><td colspan="6" class="loading">Không thể tải dữ liệu</td></tr>';
-            }
-        }
-
-        function updateCurrentPlan() {
-            const planTypeElement = document.getElementById('currentPlanType');
-            const planDetailsElement = document.getElementById('currentPlanDetails');
-            const planDescriptionElement = document.getElementById('planDescription');
-
-            if (paymentData.length === 0) {
-                planTypeElement.textContent = 'Gói Free';
-                planDetailsElement.textContent = 'Chưa có giao dịch thanh toán nào';
-                planDescriptionElement.textContent = 'Bạn đang sử dụng gói miễn phí. Hãy nâng cấp để trải nghiệm đầy đủ tính năng.';
-                return;
-            }
-
-            // Sắp xếp theo ngày mới nhất
-            const sortedData = [...paymentData].sort((a, b) => {
-                const dateA = new Date(a['Ngày diễn ra'] || 0);
-                const dateB = new Date(b['Ngày diễn ra'] || 0);
-                return dateB - dateA;
-            });
-
-            const latestPayment = sortedData[0];
-            const amount = parseInt(latestPayment['Giá trị'] || 0);
-            const paymentDate = new Date(latestPayment['Ngày diễn ra']);
-
-            // Xác định loại gói dựa trên số tiền
-            let planType = 'Gói Free';
-            let planColor = '#2ecc71';
-
-            if (amount >= 199000) {
-                planType = 'Gói Premium';
-                planColor = '#ffcc00';
-            } else if (amount >= 99000) {
-                planType = 'Gói Standard';
-                planColor = '#3498db';
-            } else if (amount > 0) {
-                planType = 'Gói Basic';
-                planColor = '#9b59b6';
-            }
-
-            // Tính ngày hết hạn (giả sử gói có thời hạn 1 tháng)
-            const expiryDate = new Date(paymentDate);
-            expiryDate.setMonth(expiryDate.getMonth() + 1);
-
-            // Cập nhật giao diện
-            planTypeElement.textContent = planType;
-            planTypeElement.style.color = planColor;
-
-            planDetailsElement.innerHTML = `
-                Đã kích hoạt: ${paymentDate.toLocaleDateString('vi-VN')} |
-                Hết hạn: ${expiryDate.toLocaleDateString('vi-VN')}
-            `;
-
-            const formattedAmount = amount.toLocaleString('vi-VN');
-            planDescriptionElement.textContent = `Bạn đang sử dụng ${planType} với mức thanh toán gần nhất là ${formattedAmount}đ vào ngày ${paymentDate.toLocaleDateString('vi-VN')}.`;
-
-            // Kiểm tra xem gói có hết hạn không
-            const now = new Date();
-            if (now > expiryDate) {
-                planDetailsElement.innerHTML += ` <span style="color: #e74c3c; font-weight: bold;">⚠️ Đã hết hạn</span>`;
-                planDescriptionElement.textContent += ' Gói dịch vụ của bạn đã hết hạn, vui lòng gia hạn để tiếp tục sử dụng.';
-            }
-        }
-
-        function filterData() {
-            const filterValue = document.getElementById('filterDropdown').value;
-            const now = new Date();
-
-            if (filterValue === 'all') {
-                filteredData = [...paymentData];
-            } else {
-                const monthsBack = parseInt(filterValue);
-                const cutoffDate = new Date(now.getFullYear(), now.getMonth() - monthsBack, now.getDate());
-
-                filteredData = paymentData.filter(item => {
-                    if (item['Ngày diễn ra']) {
-                        const itemDate = new Date(item['Ngày diễn ra']);
-                        return itemDate >= cutoffDate;
-                    }
-                    return true;
-                });
-            }
-
-            currentPage = 1;
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('paymentTableBody');
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageData = filteredData.slice(startIndex, endIndex);
-
-            if (pageData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="loading">Không có giao dịch nào cho tài khoản này</td></tr>';
-                renderPagination();
-                return;
-            }
-
-            tbody.innerHTML = pageData.map(item => {
-                const date = formatDate(item['Ngày diễn ra']);
-                const orderId = item['Mã GD'] || 'N/A';
-                const description = item['Mô tả'] || 'N/A';
-                const amount = formatAmount(item['Giá trị']);
-                const accountNo = item['Số tài khoản'] || 'N/A';
-
-                return `
-                    <tr>
-                        <td>${date}</td>
-                        <td>${orderId}</td>
-                        <td>${description}</td>
-                        <td>${amount}</td>
-                        <td>${accountNo}</td>
-                        <td><button class="action-btn" onclick="viewDetails('${orderId}')">Xem chi tiết</button></td>
-                    </tr>
-                `;
-            }).join('');
-
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const paginationDiv = document.getElementById('pagination');
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-            if (totalPages <= 1) {
-                paginationDiv.innerHTML = '';
-                return;
-            }
-
-            let paginationHTML = '';
-            const maxVisiblePages = 5; // Số trang tối đa hiển thị
-            let startPage, endPage;
-
-            if (totalPages <= maxVisiblePages) {
-                // Hiển thị tất cả các trang nếu tổng số trang ít
-                startPage = 1;
-                endPage = totalPages;
-            } else {
-                // Tính toán trang bắt đầu và kết thúc để hiển thị
-                const half = Math.floor(maxVisiblePages / 2);
-                if (currentPage <= half + 1) {
-                    startPage = 1;
-                    endPage = maxVisiblePages;
-                } else if (currentPage >= totalPages - half) {
-                    startPage = totalPages - maxVisiblePages + 1;
-                    endPage = totalPages;
-                } else {
-                    startPage = currentPage - half;
-                    endPage = currentPage + half;
-                }
-            }
-
-            // Nút Previous
-            if (currentPage > 1) {
-                paginationHTML += `<button onclick="changePage(${currentPage - 1})">‹</button>`;
-            } else {
-                paginationHTML += `<button disabled>‹</button>`;
-            }
-
-            // Nút trang đầu tiên
-            if (startPage > 1) {
-                paginationHTML += `<button onclick="changePage(1)">1</button>`;
-                if (startPage > 2) {
-                    paginationHTML += `<button disabled>...</button>`;
-                }
-            }
-
-            // Các nút trang
-            for (let i = startPage; i <= endPage; i++) {
-                if (i === currentPage) {
-                    paginationHTML += `<button class="active">${i}</button>`;
-                } else {
-                    paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
-                }
-            }
-
-            // Nút trang cuối cùng
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    paginationHTML += `<button disabled>...</button>`;
-                }
-                paginationHTML += `<button onclick="changePage(${totalPages})">${totalPages}</button>`;
-            }
-
-            // Nút Next
-            if (currentPage < totalPages) {
-                paginationHTML += `<button onclick="changePage(${currentPage + 1})">›</button>`;
-            } else {
-                paginationHTML += `<button disabled>›</button>`;
-            }
-
-            paginationDiv.innerHTML = paginationHTML;
-        }
-
-        function changePage(page) {
-            currentPage = page;
-            renderTable();
-            // Cuộn lên đầu bảng
-            document.querySelector('.billing-table-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('vi-VN', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-            } catch (e) {
-                return dateString;
-            }
-        }
-
-        function formatAmount(amount) {
-            if (amount === undefined || amount === null) return 'N/A';
-
-            // Chuyển về số nếu là string
-            const numAmount = typeof amount === 'string' ?
-                parseInt(amount.replace(/[^\d]/g, '')) : amount;
-
-            if (isNaN(numAmount)) return 'N/A';
-
-            return numAmount.toLocaleString('vi-VN') + 'đ';
-        }
-
-        function viewDetails(orderId) {
-            alert(`Xem chi tiết đơn hàng: ${orderId}`);
-            // Có thể thêm logic hiển thị modal hoặc chuyển trang
-        }
-    </script>
 </body>
 </html>
