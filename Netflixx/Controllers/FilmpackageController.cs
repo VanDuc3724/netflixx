@@ -43,10 +43,17 @@ namespace Netflixx.Controllers
                 .OrderByDescending(p => p.StartDate)
                 .FirstOrDefaultAsync();
 
+            var filmPurchases = await _context.FilmPurchases
+                .Include(fp => fp.Film)
+                .Where(fp => fp.UserID == user.Id)
+                .OrderByDescending(fp => fp.PurchaseDate)
+                .ToListAsync();
+
             var vm = new BillHistoryViewModel
             {
                 CurrentPackage = currentPackage,
-                Transactions = transactions
+                Transactions = transactions,
+                FilmPurchases = filmPurchases
             };
 
             return View(vm);
