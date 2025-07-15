@@ -280,7 +280,43 @@
                     cancelButtonText: 'Hủy'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit();
+                        const data = new FormData(form);
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            body: data
+                        })
+                            .then(r => r.json())
+                            .then(json => {
+                                if (json.success) {
+                                    const link = document.createElement('a');
+                                    link.href = json.redirectUrl;
+                                    link.className = 'btn btn-primary';
+                                    link.textContent = 'Xem ngay';
+                                    form.replaceWith(link);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công',
+                                        text: 'Mua phim thành công!',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi',
+                                        text: json.message || 'Not enough coins',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Đã xảy ra lỗi!',
+                                    confirmButtonColor: '#e50914'
+                                });
+                            });
                     }
                 });
             });
