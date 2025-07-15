@@ -29,7 +29,7 @@
                         <p class="card-text text-truncate">@item.Description</p>
                         @if (item.Price.HasValue)
                         {
-                            <div class="price-badge fs-5 text-danger">@item.Price.Value.ToString("C")</div>
+                            <div class="price-badge fs-5 text-danger">@item.Price.Value.ToString("C0")</div>
                         }
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger mt-2">View Details</a>
                     </div>

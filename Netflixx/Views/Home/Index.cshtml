@@ -200,7 +200,7 @@
                             <h4>@film.Title<br><span>@film.Genre</span></h4>
                             <ul>
                                 <li><i class="fa fa-star"></i> @film.Rating</li>
-                                <li><i class="fa fa-dollar-sign"></i> @(film.Price.HasValue ? $"{film.Price:F2}" : "Free")</li>
+                                <li><i class="fa fa-dollar-sign"></i> @(film.Price.HasValue ? $"{film.Price:F0}" : "Free")</li>
                             </ul>
                         </div>
                     </div>
@@ -224,7 +224,7 @@
                             <h4>@film.Title<br><span>@film.Genre</span></h4>
                             <ul>
                                 <li><i class="fa fa-star-o"></i> @film.Rating</li>
-                                <li><i class="fa fa-dollar-sign"></i> @(film.Price.HasValue ? $"{film.Price:F2}" : "Free")</li>
+                                <li><i class="fa fa-dollar-sign"></i> @(film.Price.HasValue ? $"{film.Price:F0}" : "Free")</li>
                             </ul>
                         </div>
                     </div>
