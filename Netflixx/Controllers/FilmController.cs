@@ -322,7 +322,7 @@ namespace Netflixx.Controllers
             var priceCoins = film.Price.HasValue ? (int)Math.Ceiling(film.Price.Value) : 0;
             if (account == null || film.Price == null || account.PointsBalance < priceCoins)
             {
-                var msg = "Not enough coins";
+                var msg = "vui lòng nạp thêm coins";
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = false, message = msg });
