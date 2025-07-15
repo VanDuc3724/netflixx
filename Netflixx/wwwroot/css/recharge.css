@@ -1,0 +1,33 @@
+.recharge-wrapper {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 15px;
+}
+
+.recharge-card,
+.recharge-result-card {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 2rem;
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 420px;
+}
+
+.recharge-card .btn-danger {
+    background-color: #e50914;
+    border-color: #e50914;
+}
+
+.recharge-card .btn-danger:hover {
+    background-color: #bf0810;
+    border-color: #bf0810;
+}
+
+.result-icon {
+    font-size: 4rem;
+}

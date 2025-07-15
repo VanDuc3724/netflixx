@@ -1,11 +1,20 @@
 @{
     ViewData["Title"] = "Recharge";
 }
-<h2>Recharge Coins</h2>
-<form asp-action="Recharge" method="post">
-    <div class="mb-3">
-        <label for="amount" class="form-label">Amount (VND)</label>
-        <input type="number" class="form-control" id="amount" name="amount" required min="1" />
+
+<div class="recharge-wrapper">
+    <div class="recharge-card">
+        <h2 class="text-center mb-4">Nạp tiền</h2>
+        <form asp-action="Recharge" method="post">
+            <div class="mb-3">
+                <label for="amount" class="form-label">Số tiền (VND)</label>
+                <input type="number" class="form-control bg-dark text-white border-secondary" id="amount" name="amount" required min="1" />
+            </div>
+            <button type="submit" class="btn btn-danger w-100">Thanh toán qua VNPAY</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Pay with VNPAY</button>
-</form>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/recharge.css" />
+}
