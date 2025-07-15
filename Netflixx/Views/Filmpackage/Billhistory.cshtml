@@ -325,7 +325,11 @@
                             <option value="7">7 ngày trước</option>
                             <option value="30">30 ngày trước</option>
                         </select>
-                        <input type="text" id="transactionSearch" class="search-input" placeholder="Tìm kiếm trạng thái..." />
+                        <select id="statusFilter" class="filter-dropdown search-input">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="success">Success</option>
+                            <option value="failed">Failed</option>
+                        </select>
                     </div>
                 </div>
 
@@ -413,12 +417,12 @@
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('transactionSearch');
+            const statusFilter = document.getElementById('statusFilter');
             const dateFilter = document.getElementById('dateFilter');
             const rows = document.querySelectorAll('#transactionTable tbody tr');
 
             function filterRows() {
-                const query = searchInput.value.toLowerCase();
+                const statusValue = statusFilter.value.toLowerCase();
                 const range = dateFilter.value;
                 const now = new Date();
 
@@ -438,15 +442,15 @@
                         show = now - rowDate <= 30 * 24 * 60 * 60 * 1000;
                     }
 
-                    if (show) {
-                        show = statusText.includes(query);
+                    if (show && statusValue) {
+                        show = statusText === statusValue;
                     }
 
                     r.style.display = show ? '' : 'none';
                 });
             }
 
-            if (searchInput) searchInput.addEventListener('input', filterRows);
+            if (statusFilter) statusFilter.addEventListener('change', filterRows);
             if (dateFilter) dateFilter.addEventListener('change', filterRows);
 
             filterRows();
