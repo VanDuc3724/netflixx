@@ -24,7 +24,7 @@
                 }
                 @if (Model.Price.HasValue)
                 {
-                    <span class="price-badge fs-5 text-danger ms-2">@Model.Price.Value.ToString("C")</span>
+                    <span class="price-badge fs-5 text-danger ms-2">@Model.Price.Value.ToString("C0")</span>
                 }
             </div>
 

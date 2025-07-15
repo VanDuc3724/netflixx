@@ -502,7 +502,7 @@
                                                                         '@item.ReleaseDate?.ToString("dd/MM/yyyy")',
                                                                         '@item.Genre',
                                                                         '@Html.Raw(item.Description?.Replace("'", "\\'") ?? "")',
-                                                                        '@(item.Price?.ToString() ?? "0")',
+                                                                        '@(item.Price?.ToString("N0") ?? "0")',
                                                                         '@item.FilmURL',
                                                                         '@item.PosterPath',
                                                                         '@item.Duration',
@@ -710,7 +710,7 @@
             // Format giá tiền với đơn vị coin
             const priceValue = parseFloat(price);
             $('#detailPrice').text(!isNaN(priceValue) ?
-                priceValue.toLocaleString('vi-VN') + ' coins' : 'N/A');
+                priceValue.toLocaleString('vi-VN', {maximumFractionDigits:0}) + ' coins' : 'N/A');
 
             $('#detailFilmURL').attr('href', filmURL || '#');
             $('#detailActors').text(actors || 'N/A');

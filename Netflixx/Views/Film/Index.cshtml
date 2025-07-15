@@ -75,7 +75,7 @@
                     <p class="card-text">
                         <strong>Thể loại:</strong> @film.Genre<br>
                         <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
-                        <strong>Giá:</strong> @film.Price coins<br>
+                        <strong>Giá:</strong> @film.Price.ToString("N0") coins<br>
                         <strong>Đánh giá:</strong> @film.Rating/10
                     </p>
                 </div>
