@@ -1,10 +1,9 @@
 @model Netflixx.Models.ViewModel.BillHistoryViewModel
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineViet - Lịch Sử Đơn Hàng & Thanh Toán</title>
+@{
+    ViewData["Title"] = "Lịch Sử Đơn Hàng & Thanh Toán";
+    Layout = "_Layout";
+}
+@section Styles {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
     <style>
         * {
@@ -283,9 +282,8 @@
             color: #cccccc;
         }
     </style>
-</head>
-<body>
-    <main>
+}
+<main>
         <div class="page-title">
             <h1>Lịch Sử Đơn Hàng & Thanh Toán</h1>
             <p>Quản lý gói dịch vụ, phương thức thanh toán và xem lịch sử thanh toán của bạn</p>
@@ -435,7 +433,7 @@
 
         </div>
     </main>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Scripts {
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
@@ -510,5 +508,4 @@
             });
         });
     </script>
-</body>
-</html>
+}
