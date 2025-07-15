@@ -63,6 +63,8 @@ namespace Netflixx.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
+                await using var transaction = await _context.Database.BeginTransactionAsync();
+
                 long.TryParse(amountStr, out var amount);
                 var coins = (int)(amount / 100);
 
@@ -90,6 +92,7 @@ namespace Netflixx.Controllers
                         .FirstOrDefaultAsync(pt => pt.ExternalTransactionRef == response.PaymentId);
                     if (existingTransaction != null)
                     {
+                        await transaction.RollbackAsync();
                         return View("RechargeResult", true);
                     }
 
@@ -134,6 +137,8 @@ namespace Netflixx.Controllers
 
                     await _context.SaveChangesAsync();
                 }
+
+                await transaction.CommitAsync();
             }
 
             return View("RechargeResult", success);
