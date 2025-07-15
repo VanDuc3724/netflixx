@@ -6,8 +6,8 @@ using Netflixx.Repositories;
 
 namespace Netflixx.Areas.Manager.Controllers
 {
-    [Area("Manager")]
-    [Authorize(Roles = "Manager")]
+    //[Area("Manager")]
+    //[Authorize(Roles = "Manager")]
     public class PackagesController : Controller
     {
         private readonly DBContext _context;
