@@ -10,6 +10,7 @@ using Netflixx.Models;
 using Netflixx.Models.ViewModel;
 using Netflixx.Repositories;
 using System.IO;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
@@ -307,32 +308,71 @@ namespace Netflixx.Controllers
             return RedirectToAction(nameof(Detail), new { id = FilmId, tab = "info" });
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Purchase(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var film = await _db.Films.FindAsync(id);
+            if (film == null) return NotFound();
+
+            var account = await _db.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
+            if (account == null || film.Price == null || account.PointsBalance < (int)film.Price)
+            {
+                TempData["error"] = "Not enough coins";
+                return RedirectToAction(nameof(Detail), new { id });
+            }
+
+            var existing = await _db.FilmPurchases.FirstOrDefaultAsync(p => p.UserID == user.Id && p.FilmID == id);
+            if (existing != null)
+            {
+                return RedirectToAction(nameof(Watch), new { filmId = id });
+            }
+
+            account.PointsBalance -= (int)film.Price;
+
+            var purchase = new FilmPurchasesModel
+            {
+                UserID = user.Id,
+                FilmID = id,
+                PointsUsed = (int)film.Price,
+                PricePaid = film.Price.Value,
+                PurchaseDate = DateTime.UtcNow
+            };
+
+            _db.FilmPurchases.Add(purchase);
+            _db.PointsTransactions.Add(new PointsTransactionsModel
+            {
+                UserID = user.Id,
+                TransactionDate = DateTime.UtcNow,
+                PointsChange = -(int)film.Price,
+                Reason = $"Purchase film {film.Title}"
+            });
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Watch), new { filmId = id });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Watch(int filmId, int episode = 1)
         {
 
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
 
-
-
-
-            // if nobody's signed in, use a sample user for testing
-            if (user == null)
-            {
-                user = new AppUserModel
-                {
-                    FullName = "Sample User",
-                    Email = "sample@example.com",
-                    PhoneNumber = "000-000-0000",
-                    DateOfBirth = DateTime.Today.AddYears(-30),
-                    Address = "1234 Example St.",
-                    AvatarUrl = "/image/logo/avatar_default.jpg",
-                    FavoriteGenres = "Action,Drama,Documentary"
-                };
-            }
             // 1) Load the film
             var film = await _db.Films.FindAsync(filmId);
             if (film == null) return NotFound();
+
+            var purchased = await _db.FilmPurchases
+                .AnyAsync(p => p.UserID == user.Id && p.FilmID == filmId);
+            if (!purchased)
+            {
+                TempData["error"] = "You need to purchase this film.";
+                return RedirectToAction(nameof(Detail), new { id = filmId });
+            }
 
             // 2) Load comments and recent films (reuse GET Details logic)
             var comments = await _db.FilmComments

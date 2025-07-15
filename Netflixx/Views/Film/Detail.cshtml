@@ -1,9 +1,21 @@
 ﻿@model Netflixx.Models.ViewModel.FilmDetailViewModel
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<AppUserModel> _userManager
-@{
+@inject DBContext DBContext
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Repositories
+@{ 
     ViewData["Title"] = Model.Film.Title;
     Layout = null;
+}
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+    var hasPurchased = false;
+    if (user != null)
+    {
+        hasPurchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == user.Id && p.FilmID == Model.Film.Id);
+    }
 }
 
 @{
@@ -175,20 +187,39 @@
             <!-- Row 1: Poster (2) + Description (6) -->
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <a asp-action="Watch"
-                       asp-route-filmId="@Model.Film.Id"
-                       class="poster-link d-block">
-                        <div class="card poster-card position-relative overflow-hidden">
-                            <img src="@Model.Film.PosterPath"
-                                 class="card-img-top"
-                                 style="height:314px; object-fit:cover;" />
+                    @if (hasPurchased)
+                    {
+                        <a asp-action="Watch"
+                           asp-route-filmId="@Model.Film.Id"
+                           class="poster-link d-block">
+                            <div class="card poster-card position-relative overflow-hidden">
+                                <img src="@Model.Film.PosterPath"
+                                     class="card-img-top"
+                                     style="height:314px; object-fit:cover;" />
 
-                            <div class="watch-overlay position-absolute top-50 start-50 translate-middle text-center">
-                                <i class="fa fa-play fa-2x"></i>
-                                <div class="mt-1">Watch</div>
+                                <div class="watch-overlay position-absolute top-50 start-50 translate-middle text-center">
+                                    <i class="fa fa-play fa-2x"></i>
+                                    <div class="mt-1">Watch</div>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    }
+                    else if (user != null)
+                    {
+                        <form asp-action="Purchase" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Film.Id" />
+                            <button type="submit" class="btn btn-danger w-100" style="height:314px;">
+                                Buy - @Model.Film.Price coins
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-danger w-100" style="height:314px;">
+                            Login to Buy
+                        </a>
+                    }
                 </div>
                 <div class="col-md-8">
                     <div class="card p-3 details-box"
