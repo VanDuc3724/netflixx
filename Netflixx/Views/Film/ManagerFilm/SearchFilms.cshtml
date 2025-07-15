@@ -538,7 +538,7 @@
                                     <th width="3%">STT</th>
                                     <th width="20%">Tên phim</th>
                                     <th width="15%">Thể loại</th>
-                                    <th width="10%" class="price-column">Giá (VNĐ)</th>
+                                    <th width="10%" class="price-column">Giá (coins)</th>
                                     <th width="14%">Ngày phát hành</th>
                                     <th width="10%">Trạng thái</th>
                                     <th width="8%">Độ tuổi</th>
@@ -740,7 +740,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label class="form-label">Giá (VNĐ)</label>
+                                        <label class="form-label">Giá (coins)</label>
                                         <input id="editPrice" name="Price" type="number" step="0.01" class="form-control" min="0" />
                                     </div>
                                     <div class="form-group mb-3">
@@ -905,10 +905,10 @@
                 $('#detailDirector').text(director || 'N/A');
                 $('#detailDescription').text(description || 'Không có mô tả');
 
-                // Format giá tiền với đơn vị VND
+                // Format giá tiền với đơn vị coin
                 const priceValue = parseFloat(price);
                 $('#detailPrice').text(!isNaN(priceValue) ?
-                    priceValue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'N/A');
+                    priceValue.toLocaleString('vi-VN') + ' coins' : 'N/A');
 
                 $('#detailFilmURL').attr('href', filmURL || '#');
                 $('#detailActors').text(actors || 'N/A');
