@@ -96,5 +96,54 @@ namespace Netflixx.Controllers
             return Json(new { success = true, message = "Thanh toán thành công" });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var films = await _context.Films
+                .OrderBy(f => f.Title)
+                .ToListAsync();
+            var model = new PackageCreateViewModel
+            {
+                AvailableFilms = films
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(PackageCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.AvailableFilms = await _context.Films.OrderBy(f => f.Title).ToListAsync();
+                return View(model);
+            }
+
+            var package = new PackagesModel
+            {
+                Name = model.Name,
+                Description = model.Description
+            };
+
+            _context.Packages.Add(package);
+            await _context.SaveChangesAsync();
+
+            if (model.SelectedFilmIds.Any())
+            {
+                foreach (var filmId in model.SelectedFilmIds)
+                {
+                    _context.PackageFilms.Add(new PackageFilmsModel
+                    {
+                        PackageID = package.Id,
+                        FilmID = filmId
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["SuccessMessage"] = "Đã tạo gói phim";
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
