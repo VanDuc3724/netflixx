@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineViet - Lịch Sử Đơn Hàng & Thanh Toán</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
     <style>
         * {
             margin: 0;
@@ -323,29 +324,13 @@
                 </div>
             </div>
 
-            <!-- Lịch sử thanh toán -->
+            <!-- Lịch sử giao dịch -->
             <div class="history-section">
                 <div class="history-header">
-                    <h2>Lịch sử thanh toán & mua phim</h2>
-                    <div>
-                        <select class="filter-dropdown" id="dateFilter">
-                            <option value="all">Tất cả</option>
-                            <option value="today">Hôm nay</option>
-                            <option value="7">7 ngày trước</option>
-                            <option value="30">30 ngày trước</option>
-                        </select>
-                        <select id="statusFilter" class="filter-dropdown search-input">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="success">Success</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                    </div>
+                    <h2>Giao dịch gói dịch vụ</h2>
                 </div>
-
-
-
                 <div class="billing-table-container">
-                    <table class="billing-table" id="transactionTable">
+                    <table class="billing-table" id="transactionsTable">
                         <thead>
                             <tr>
                                 <th>Ngày</th>
@@ -356,110 +341,91 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model.History.Any())
+                            @if (Model.Transactions.Any())
                             {
-                                foreach (var h in Model.History)
+                                foreach (var t in Model.Transactions)
                                 {
                                     <tr>
-                                        <td>@h.Date.ToString("dd/MM/yyyy")</td>
-                                        <td>@h.Description</td>
-                                        <td>@h.Status</td>
-                                        <td>@h.AmountText</td>
-                                        <td>@h.Provider</td>
+                                        <td>@t.TransactionDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@t.ExternalTransactionRef</td>
+                                        <td>@t.Status</td>
+                                        <td>@t.Amount.ToString("N0") @t.Currency</td>
+                                        <td>@t.Provider?.Name</td>
                                     </tr>
                                 }
                             }
                             else
                             {
-                                <tr>
-                                    <td colspan="5" class="loading">Không có giao dịch nào cho tài khoản này</td>
-                                </tr>
+                                <tr><td colspan="5" class="loading">Không có giao dịch nào</td></tr>
                             }
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <div class="pagination">
-                    <!-- Pagination placeholder -->
+            <div class="history-section" style="margin-top:40px;">
+                <div class="history-header">
+                    <h2>Lịch sử mua phim</h2>
+                </div>
+                <div class="billing-table-container">
+                    <table class="billing-table" id="purchasesTable">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Tên phim</th>
+                                <th>Giá</th>
+                                <th>Điểm sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.FilmPurchases.Any())
+                            {
+                                foreach (var p in Model.FilmPurchases)
+                                {
+                                    <tr>
+                                        <td>@p.PurchaseDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@(p.Film?.Title ?? string.Empty)</td>
+                                        <td>@p.PricePaid.ToString("N0")</td>
+                                        <td>@p.PointsUsed</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="loading">Không có giao dịch mua phim nào</td></tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
     </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const statusFilter = document.getElementById('statusFilter');
-            const dateFilter = document.getElementById('dateFilter');
-            const rows = Array.from(document.querySelectorAll('#transactionTable tbody tr'));
-            const headers = document.querySelectorAll('#transactionTable th');
-
-            function sortRows(index, order) {
-                const tbody = document.querySelector('#transactionTable tbody');
-                const sorted = rows.slice().sort((a, b) => {
-                    const aText = a.cells[index].textContent.trim();
-                    const bText = b.cells[index].textContent.trim();
-
-                    if (index === 0) {
-                        const [da, ma, ya] = aText.split('/');
-                        const [db, mb, yb] = bText.split('/');
-                        const dateA = new Date(ya, ma - 1, da);
-                        const dateB = new Date(yb, mb - 1, db);
-                        return dateA - dateB;
-                    }
-
-                    return aText.localeCompare(bText);
-                });
-
-                if (order === 'desc') sorted.reverse();
-
-                tbody.innerHTML = '';
-                sorted.forEach(r => tbody.appendChild(r));
-            }
-
-            function filterRows() {
-                const statusValue = statusFilter.value.toLowerCase();
-                const range = dateFilter.value;
-                const now = new Date();
-
-                rows.forEach(r => {
-                    const dateText = r.cells[0].textContent.trim();
-                    const statusText = r.cells[2].textContent.toLowerCase();
-
-                    const [day, month, year] = dateText.split('/');
-                    const rowDate = new Date(year, month - 1, day);
-
-                    let show = true;
-                    if (range === 'today') {
-                        show = rowDate.toDateString() === now.toDateString();
-                    } else if (range === '7') {
-                        show = now - rowDate <= 7 * 24 * 60 * 60 * 1000;
-                    } else if (range === '30') {
-                        show = now - rowDate <= 30 * 24 * 60 * 60 * 1000;
-                    }
-
-                    if (show && statusValue) {
-                        show = statusText === statusValue;
-                    }
-
-                    r.style.display = show ? '' : 'none';
-                });
-            }
-
-            headers.forEach((h, i) => {
-                h.addEventListener('click', () => {
-                    const current = h.dataset.order === 'asc' ? 'desc' : 'asc';
-                    headers.forEach(head => head.classList.remove('sort-asc', 'sort-desc'));
-                    h.dataset.order = current;
-                    h.classList.add(current === 'asc' ? 'sort-asc' : 'sort-desc');
-                    sortRows(i, current);
-                    filterRows();
-                });
+        $(document).ready(function () {
+            $('#transactionsTable').DataTable({
+                pageLength: 10,
+                lengthMenu: [5, 10, 20, 50],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json',
+                    lengthMenu: 'Hiển thị _MENU_ mục',
+                    paginate: { previous: 'Trước', next: 'Sau' }
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">'
             });
-
-            if (statusFilter) statusFilter.addEventListener('change', filterRows);
-            if (dateFilter) dateFilter.addEventListener('change', filterRows);
-
-            filterRows();
+            $('#purchasesTable').DataTable({
+                pageLength: 10,
+                lengthMenu: [5, 10, 20, 50],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json',
+                    lengthMenu: 'Hiển thị _MENU_ mục',
+                    paginate: { previous: 'Trước', next: 'Sau' }
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">'
+            });
         });
     </script>
 </body>
