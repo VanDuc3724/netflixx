@@ -71,7 +71,7 @@
                                 <p class="card-text">@ViewBag.FeaturedFilm.Description</p>
                                 <div class="mt-3">
                                     <a href="@ViewBag.FeaturedFilm.FilmURL" class="btn btn-danger me-2">Xem Ngay</a>
-                                    <a asp-action="DetailSreach" asp-route-id="@ViewBag.FeaturedFilm.Id" class="btn btn-outline-light">Chi Tiết</a>
+                                    <a asp-action="DetailSearch" asp-route-id="@ViewBag.FeaturedFilm.Id" class="btn btn-outline-light">Chi Tiết</a>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                             {
                                 <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
                             }
-                            <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -187,7 +187,7 @@
                             {
                                 <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
                             }
-                            <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -248,7 +248,7 @@
                             {
                                 <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
                             }
-                            <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>
                 </div>
