@@ -328,7 +328,18 @@
             <div class="history-section">
                 <div class="history-header d-flex justify-content-between align-items-center">
                     <h2>Giao dịch gói dịch vụ</h2>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <select class="filter-dropdown" id="transactionsDateFilter">
+                            <option value="">Tất cả ngày</option>
+                            <option value="3">3 ngày</option>
+                            <option value="7">7 ngày</option>
+                            <option value="30">30 ngày</option>
+                        </select>
+                        <select class="filter-dropdown" id="transactionsStatusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Success">Success</option>
+                            <option value="Failed">Failed</option>
+                        </select>
                         <span class="mr-2">Xem</span>
                         <select class="form-control" style="width: 80px;" id="transactionsPageLength">
                             <option value="5" selected>5</option>
@@ -374,7 +385,14 @@
             <div class="history-section" style="margin-top:40px;">
                 <div class="history-header d-flex justify-content-between align-items-center">
                     <h2>Lịch sử mua phim</h2>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="text" class="search-input" id="purchasesSearch" placeholder="Tìm tên phim" />
+                        <select class="filter-dropdown" id="purchasesDateFilter">
+                            <option value="">Tất cả ngày</option>
+                            <option value="3">3 ngày</option>
+                            <option value="7">7 ngày</option>
+                            <option value="30">30 ngày</option>
+                        </select>
                         <span class="mr-2">Xem</span>
                         <select class="form-control" style="width: 80px;" id="purchasesPageLength">
                             <option value="5" selected>5</option>
@@ -434,9 +452,26 @@
                 dom: '<"top"f>rt<"bottom"ip><"clear">'
             });
 
+            // Custom filter for transactions table
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                if (settings.nTable.id !== 'transactionsTable') return true;
+                var days = $('#transactionsDateFilter').val();
+                var status = $('#transactionsStatusFilter').val().toLowerCase();
+                var dateParts = data[0].split('/');
+                var rowDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                var diffDays = (new Date() - rowDate) / (1000 * 60 * 60 * 24);
+                var dateMatch = !days || diffDays <= parseInt(days);
+                var statusMatch = !status || status === data[2].toLowerCase();
+                return dateMatch && statusMatch;
+            });
+
             $('#transactionsPageLength').change(function () {
                 var len = parseInt($(this).val());
                 transactionsTable.page.len(len).draw();
+            });
+
+            $('#transactionsDateFilter, #transactionsStatusFilter').change(function () {
+                transactionsTable.draw();
             });
 
             var purchasesTable = $('#purchasesTable').DataTable({
@@ -451,9 +486,27 @@
                 dom: '<"top"f>rt<"bottom"ip><"clear">'
             });
 
+            // Custom filter for purchases table
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                if (settings.nTable.id !== 'purchasesTable') return true;
+                var days = $('#purchasesDateFilter').val();
+                var dateParts = data[0].split('/');
+                var rowDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                var diffDays = (new Date() - rowDate) / (1000 * 60 * 60 * 24);
+                return !days || diffDays <= parseInt(days);
+            });
+
             $('#purchasesPageLength').change(function () {
                 var len = parseInt($(this).val());
                 purchasesTable.page.len(len).draw();
+            });
+
+            $('#purchasesDateFilter').change(function () {
+                purchasesTable.draw();
+            });
+
+            $('#purchasesSearch').on('keyup change', function () {
+                purchasesTable.column(1).search(this.value).draw();
             });
         });
     </script>
