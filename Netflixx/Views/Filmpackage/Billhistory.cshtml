@@ -317,7 +317,7 @@
             <!-- Lịch sử thanh toán -->
             <div class="history-section">
                 <div class="history-header">
-                    <h2>Lịch sử thanh toán</h2>
+                    <h2>Lịch sử thanh toán & mua phim</h2>
                     <div>
                         <select class="filter-dropdown" id="dateFilter">
                             <option value="all">Tất cả</option>
@@ -347,16 +347,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model.Transactions.Any())
+                            @if (Model.History.Any())
                             {
-                                foreach (var t in Model.Transactions)
+                                foreach (var h in Model.History)
                                 {
                                     <tr>
-                                        <td>@t.TransactionDate.ToString("dd/MM/yyyy")</td>
-                                        <td>@t.ExternalTransactionRef</td>
-                                        <td>@t.Status</td>
-                                        <td>@t.Amount.ToString("N0") @t.Currency</td>
-                                        <td>@t.Provider?.Name</td>
+                                        <td>@h.Date.ToString("dd/MM/yyyy")</td>
+                                        <td>@h.Description</td>
+                                        <td>@h.Status</td>
+                                        <td>@h.AmountText</td>
+                                        <td>@h.Provider</td>
                                     </tr>
                                 }
                             }
@@ -375,44 +375,6 @@
                 </div>
             </div>
 
-            <!-- Lịch sử mua phim bằng coins -->
-            <div class="history-section" style="margin-top:40px;">
-                <div class="history-header">
-                    <h2>Lịch sử mua phim bằng coins</h2>
-                </div>
-                <div class="billing-table-container">
-                    <table class="billing-table">
-                        <thead>
-                            <tr>
-                                <th>Ngày</th>
-                                <th>Tên phim</th>
-                                <th>Coins sử dụng</th>
-                                <th>Giá (VND)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.FilmPurchases.Any())
-                            {
-                                foreach (var p in Model.FilmPurchases)
-                                {
-                                    <tr>
-                                        <td>@p.PurchaseDate.ToString("dd/MM/yyyy")</td>
-                                        <td>@p.Film?.Title</td>
-                                        <td>@p.PointsUsed</td>
-                                        <td>@p.PricePaid.ToString("N0")</td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="loading">Không có giao dịch mua phim</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </main>
     <script>

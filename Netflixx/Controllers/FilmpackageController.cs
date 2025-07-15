@@ -49,11 +49,36 @@ namespace Netflixx.Controllers
                 .OrderByDescending(fp => fp.PurchaseDate)
                 .ToListAsync();
 
+            var historyItems = transactions
+                .Select(t => new BillHistoryItem
+                {
+                    Date = t.TransactionDate,
+                    Description = t.ExternalTransactionRef,
+                    Status = t.Status,
+                    AmountText = $"{t.Amount.ToString("N0")} {t.Currency}",
+                    Provider = t.Provider?.Name ?? string.Empty
+                })
+                .ToList();
+
+            historyItems.AddRange(filmPurchases.Select(p => new BillHistoryItem
+            {
+                Date = p.PurchaseDate,
+                Description = p.Film?.Title ?? string.Empty,
+                Status = "success",
+                AmountText = p.PricePaid.ToString("N0"),
+                Provider = $"{p.PointsUsed} coins"
+            }));
+
+            historyItems = historyItems
+                .OrderByDescending(h => h.Date)
+                .ToList();
+
             var vm = new BillHistoryViewModel
             {
                 CurrentPackage = currentPackage,
                 Transactions = transactions,
-                FilmPurchases = filmPurchases
+                FilmPurchases = filmPurchases,
+                History = historyItems
             };
 
             return View(vm);
