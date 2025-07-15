@@ -322,14 +322,26 @@ namespace Netflixx.Controllers
             var priceCoins = film.Price.HasValue ? (int)Math.Ceiling(film.Price.Value) : 0;
             if (account == null || film.Price == null || account.PointsBalance < priceCoins)
             {
-                TempData["error"] = "Not enough coins";
+                var msg = "Not enough coins";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = msg });
+                }
+
+                TempData["error"] = msg;
                 return RedirectToAction(nameof(Detail), new { id });
             }
 
             var existing = await _db.FilmPurchases.FirstOrDefaultAsync(p => p.UserID == user.Id && p.FilmID == id);
             if (existing != null)
             {
-                return RedirectToAction(nameof(Watch), new { filmId = id });
+                var url = Url.Action(nameof(Watch), new { filmId = id });
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = true, redirectUrl = url });
+                }
+
+                return Redirect(url);
             }
 
             account.PointsBalance -= priceCoins;
@@ -353,7 +365,14 @@ namespace Netflixx.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Watch), new { filmId = id });
+
+            var redirect = Url.Action(nameof(Watch), new { filmId = id });
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, redirectUrl = redirect });
+            }
+
+            return Redirect(redirect);
         }
 
         [HttpGet]

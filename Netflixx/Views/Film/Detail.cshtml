@@ -206,7 +206,7 @@
                     }
                     else if (user != null)
                     {
-                        <form asp-action="Purchase" method="post">
+                        <form id="purchaseForm" asp-action="Purchase" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@Model.Film.Id" />
                             <button type="submit" class="btn btn-danger w-100" style="height:314px;">
@@ -519,5 +519,68 @@
           });
         });
       });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('purchaseForm');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Xác nhận mua?',
+                text: 'Bạn có chắc chắn muốn mua phim này?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#e50914',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Mua',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const data = new FormData(form);
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        body: data
+                    })
+                        .then(r => r.json())
+                        .then(json => {
+                            if (json.success) {
+                                const link = document.createElement('a');
+                                link.href = json.redirectUrl;
+                                link.className = 'btn btn-danger w-100';
+                                link.style.height = '314px';
+                                link.textContent = 'Xem ngay';
+                                form.replaceWith(link);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công',
+                                    text: 'Mua phim thành công!',
+                                    confirmButtonColor: '#e50914'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: json.message || 'Not enough coins',
+                                    confirmButtonColor: '#e50914'
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Đã xảy ra lỗi!',
+                                confirmButtonColor: '#e50914'
+                            });
+                        });
+                }
+            });
+        });
     });
 </script>
