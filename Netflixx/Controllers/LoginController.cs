@@ -186,6 +186,16 @@ namespace Netflixx.Controllers
 
             if (result.Succeeded)
             {
+                // create separate account record for this user
+                var account = new UserAccountsModel
+                {
+                    UserID = user.Id,
+                    Balance = 0,
+                    PointsBalance = 0
+                };
+                _dbContext.UserAccounts.Add(account);
+                await _dbContext.SaveChangesAsync();
+
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("SignUpSuccess"); // Chuyển hướng đến trang thành công
             }
