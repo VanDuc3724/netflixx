@@ -319,7 +319,8 @@ namespace Netflixx.Controllers
             if (film == null) return NotFound();
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
-            if (account == null || film.Price == null || account.PointsBalance < (int)film.Price)
+            var priceCoins = film.Price.HasValue ? (int)Math.Ceiling(film.Price.Value) : 0;
+            if (account == null || film.Price == null || account.PointsBalance < priceCoins)
             {
                 TempData["error"] = "Not enough coins";
                 return RedirectToAction(nameof(Detail), new { id });
@@ -331,13 +332,13 @@ namespace Netflixx.Controllers
                 return RedirectToAction(nameof(Watch), new { filmId = id });
             }
 
-            account.PointsBalance -= (int)film.Price;
+            account.PointsBalance -= priceCoins;
 
             var purchase = new FilmPurchasesModel
             {
                 UserID = user.Id,
                 FilmID = id,
-                PointsUsed = (int)film.Price,
+                PointsUsed = priceCoins,
                 PricePaid = film.Price.Value,
                 PurchaseDate = DateTime.UtcNow
             };
@@ -347,7 +348,7 @@ namespace Netflixx.Controllers
             {
                 UserID = user.Id,
                 TransactionDate = DateTime.UtcNow,
-                PointsChange = -(int)film.Price,
+                PointsChange = -priceCoins,
                 Reason = $"Purchase film {film.Title}"
             });
 

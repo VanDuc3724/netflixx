@@ -1,4 +1,6 @@
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Repositories
 @inject UserManager<AppUserModel> _userManager
 @inject DBContext DBContext
 @{
@@ -107,7 +109,8 @@
                                 var purchased = false;
                                 if (currentUser != null)
                                 {
-                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
                                 }
                             }
                             @if (purchased)
@@ -164,7 +167,8 @@
                                 var purchased = false;
                                 if (currentUser != null)
                                 {
-                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
                                 }
                             }
                             @if (purchased)
@@ -224,7 +228,8 @@
                                 var purchased = false;
                                 if (currentUser != null)
                                 {
-                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
                                 }
                             }
                             @if (purchased)
