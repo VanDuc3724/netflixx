@@ -94,7 +94,7 @@
                     }
                     else if (currentUser != null)
                     {
-                        <form asp-action="Purchase" method="post" class="d-inline">
+                        <form asp-action="Purchase" method="post" class="d-inline purchase-form">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@film.Id" />
                             <button type="submit" class="btn btn-danger">Mua</button>
@@ -113,8 +113,31 @@
 
 @if (Model.Count == 0)
 {
-    <div class="alert alert-info" style="text-align: center;"> 
+    <div class="alert alert-info" style="text-align: center;">
             Không tìm thấy phim nào phù hợp với tiêu chí của bạn. Vui lòng thử bộ lọc khác.
     </div>
 }
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('form.purchase-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Xác nhận mua?',
+                    text: 'Bạn có muốn mua phim này không?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e50914',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Mua',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
