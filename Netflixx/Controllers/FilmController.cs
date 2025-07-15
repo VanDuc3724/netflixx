@@ -334,6 +334,34 @@ namespace Netflixx.Controllers
             var film = await _db.Films.FindAsync(filmId);
             if (film == null) return NotFound();
 
+            // Check if user purchased this film or a package containing it
+            bool hasFilmPurchase = false;
+            bool hasPackageAccess = false;
+            if (user != null)
+            {
+                hasFilmPurchase = await _db.FilmPurchases
+                    .AnyAsync(fp => fp.UserID == user.Id && fp.FilmID == filmId);
+
+                var packageIds = await _db.PackageFilms
+                    .Where(pf => pf.FilmID == filmId)
+                    .Select(pf => pf.PackageID)
+                    .ToListAsync();
+
+                if (packageIds.Any())
+                {
+                    hasPackageAccess = await _db.PackageSubscriptions.AnyAsync(ps =>
+                        ps.UserID == user.Id &&
+                        packageIds.Contains(ps.PackageID) &&
+                        ps.EndDate >= DateTime.UtcNow &&
+                        ps.Status == "Active");
+                }
+            }
+
+            if (!hasFilmPurchase && !hasPackageAccess)
+            {
+                return RedirectToAction("Index", "Filmpackage");
+            }
+
             // 2) Load comments and recent films (reuse GET Details logic)
             var comments = await _db.FilmComments
                                     .Where(c => c.FilmId == filmId)
