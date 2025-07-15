@@ -1,5 +1,9 @@
-﻿@{
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUserModel> _userManager
+@inject DBContext DBContext
+@{
     ViewData["Title"] = "Film List";
+    var currentUser = await _userManager.GetUserAsync(User);
 }
 
 
@@ -94,12 +98,34 @@
                             <p class="card-text">
                                 <strong>Thể loại:</strong> @film.Genre<br>
                                 <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
-                                <strong>Giá:</strong> @film.Price VNĐ<br>
+                                <strong>Giá:</strong> @film.Price coins<br>
                                 <strong>Đánh giá:</strong> @film.Rating/10
                             </p>
                         </div>
                         <div class="card-footer bg-transparent">
-                            <a href="@film.FilmURL" class="btn btn-primary" target="_blank">Xem</a>
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
                             <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>
@@ -129,12 +155,34 @@
                             <p class="card-text">
                                 <strong>Thể loại:</strong> @film.Genre<br>
                                 <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
-                                <strong>Giá:</strong> @film.Price VNĐ<br>
+                                <strong>Giá:</strong> @film.Price coins<br>
                                 <strong>Đánh giá:</strong> @film.Rating/10
                             </p>
                         </div>
                         <div class="card-footer bg-transparent">
-                            <a href="@film.FilmURL" class="btn btn-primary" target="_blank">Xem</a>
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
                             <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>
@@ -167,12 +215,34 @@
                             <p class="card-text">
                                 <strong>Thể loại:</strong> @film.Genre<br>
                                 <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
-                                <strong>Giá:</strong> @film.Price VNĐ<br>
+                                <strong>Giá:</strong> @film.Price coins<br>
                                 <strong>Đánh giá:</strong> @film.Rating/10
                             </p>
                         </div>
                         <div class="card-footer bg-transparent">
-                            <a href="@film.FilmURL" class="btn btn-primary" target="_blank">Xem</a>
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == film.Id);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
                             <a asp-action="DetailSreach" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
                         </div>
                     </div>

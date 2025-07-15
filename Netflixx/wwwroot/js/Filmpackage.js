@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const header = `
             <div class="package-header ${headerClass}">
                 <h2>${pkg.packageName}</h2>
-                <div class="price">${pkg.packagePrice.toLocaleString()}đ <span>/tháng</span></div>
+                <div class="price">${pkg.packagePrice.toLocaleString()} coins <span>/tháng</span></div>
             </div>
         `;
 
