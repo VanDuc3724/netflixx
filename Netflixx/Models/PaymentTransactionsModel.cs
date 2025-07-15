@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Netflixx.Models
 {
+    [Index(nameof(ExternalTransactionRef), IsUnique = true)]
     public class PaymentTransactionsModel
     {
         [Key]
