@@ -493,7 +493,7 @@ namespace Netflixx.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExternalTransactionRef = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ExternalTransactionRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1160,6 +1160,12 @@ namespace Netflixx.Migrations
                 name: "IX_PaymentTransactions_EnvironmentID",
                 table: "PaymentTransactions",
                 column: "EnvironmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentTransactions_ExternalTransactionRef",
+                table: "PaymentTransactions",
+                column: "ExternalTransactionRef",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PaymentTransactions_ProviderID",

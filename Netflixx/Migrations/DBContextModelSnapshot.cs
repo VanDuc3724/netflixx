@@ -866,7 +866,7 @@ namespace Netflixx.Migrations
 
                     b.Property<string>("ExternalTransactionRef")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProviderID")
                         .HasColumnType("int");
@@ -885,6 +885,9 @@ namespace Netflixx.Migrations
                     b.HasKey("TransactionID");
 
                     b.HasIndex("EnvironmentID");
+
+                    b.HasIndex("ExternalTransactionRef")
+                        .IsUnique();
 
                     b.HasIndex("ProviderID");
 

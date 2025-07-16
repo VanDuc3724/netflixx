@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250715102354_db1")]
+    [Migration("20250716072726_db1")]
     partial class db1
     {
         /// <inheritdoc />
@@ -869,7 +869,7 @@ namespace Netflixx.Migrations
 
                     b.Property<string>("ExternalTransactionRef")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProviderID")
                         .HasColumnType("int");
@@ -888,6 +888,9 @@ namespace Netflixx.Migrations
                     b.HasKey("TransactionID");
 
                     b.HasIndex("EnvironmentID");
+
+                    b.HasIndex("ExternalTransactionRef")
+                        .IsUnique();
 
                     b.HasIndex("ProviderID");
 
