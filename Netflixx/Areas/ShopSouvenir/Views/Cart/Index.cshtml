@@ -338,7 +338,28 @@
 
     <!-- Shoping Cart -->
     @using Netflixx.Areas.ShopSouvenir.Models
+    @using Microsoft.AspNetCore.Identity
+    @using Microsoft.EntityFrameworkCore
+    @using Netflixx.Models
+    @using Netflixx.Repositories
+    @inject UserManager<AppUserModel> UserManager
+    @inject DBContext DBContext
     @model CartViewModel
+
+    @{
+        int coins = 0;
+        string accountName = string.Empty;
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            accountName = user.UserName;
+            var account = await DBContext.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
+            if (account != null)
+            {
+                coins = account.PointsBalance;
+            }
+        }
+    }
     <div class="bg0 p-t-75 p-b-85">
         <div class="container">
             @if (Model.CartItems != null && Model.CartItems.Count > 0)
@@ -421,6 +442,14 @@
                                 Cart Totals
                             </h4>
 
+                            @if (User.Identity?.IsAuthenticated ?? false)
+                            {
+                                <div class="mb-3">
+                                    <strong>Tài khoản:</strong> @accountName<br />
+                                    <strong>Coins:</strong> @coins
+                                </div>
+                            }
+
                             <div class="flex-w flex-t bor12 p-b-13">
                                 <div class="size-208">
                                     <span class="stext-110 cl2">
@@ -480,6 +509,15 @@
                                     Thanh toán với Momo
                                 </button>
                             </form>
+
+                            @if (User.Identity?.IsAuthenticated ?? false)
+                            {
+                                <form method="post" asp-action="PayWithCoins" class="m-t-20">
+                                    <button class="flex-c-m stext-101 cl0 size-116 bg-success bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit" onclick="return confirm('Thanh toán bằng coin?');">
+                                        Thanh toán bằng coin
+                                    </button>
+                                </form>
+                            }
 
                             <a class="flex-c-m stext-101 cl0 size-116 bg1 bor14 hov-btn3 p-lr-15 trans-04 pointer m-t-20"
                                asp-controller="Home" asp-action="Index">
