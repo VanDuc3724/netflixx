@@ -104,6 +104,58 @@ namespace Netflixx.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuyWithCoins(int packageId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var package = await _context.Packages.FindAsync(packageId);
+            if (package == null) return NotFound();
+
+            var account = await _context.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
+            if (account == null || account.PointsBalance < package.Price)
+            {
+                TempData["error"] = "Không đủ coins để mua gói.";
+                return RedirectToAction(nameof(Buy), new { packageId, packageName = package.Name, packagePrice = package.Price });
+            }
+
+            var existing = await _context.PackageSubscriptions
+                .FirstOrDefaultAsync(ps => ps.UserID == user.Id && ps.PackageID == packageId && ps.EndDate >= DateTime.UtcNow);
+            if (existing != null)
+            {
+                TempData["error"] = "Bạn đã sở hữu gói này.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            account.PointsBalance -= package.Price;
+
+            var subscription = new PackageSubscriptionsModel
+            {
+                UserID = user.Id,
+                PackageID = package.Id,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddMonths(1),
+                Price = package.Price,
+                Status = "Active"
+            };
+            _context.PackageSubscriptions.Add(subscription);
+
+            _context.PointsTransactions.Add(new PointsTransactionsModel
+            {
+                UserID = user.Id,
+                TransactionDate = DateTime.UtcNow,
+                PointsChange = -package.Price,
+                Reason = $"Purchase package {package.Name}"
+            });
+
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = "Mua gói thành công!";
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Filmpackage/Create
         public async Task<IActionResult> Create()
         {
