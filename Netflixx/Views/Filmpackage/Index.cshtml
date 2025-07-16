@@ -24,6 +24,7 @@
                 <div class="package-card">
                     <div class="package-header">
                         <h2>@pkg.Name</h2>
+                        <div class="price">@pkg.Price.ToString("N0") coins<span></span></div>
                     </div>
                     @if (!string.IsNullOrEmpty(pkg.Description))
                     {
@@ -33,7 +34,7 @@
                             </div>
                         </div>
                     }
-                    <a class="basic-btn" asp-action="Buy" asp-route-packageId="@pkg.Id" asp-route-packageName="@pkg.Name" asp-route-packagePrice="0">Đăng ký ngay</a>
+                    <a class="basic-btn" asp-action="Buy" asp-route-packageId="@pkg.Id" asp-route-packageName="@pkg.Name" asp-route-packagePrice="@pkg.Price">Đăng ký ngay</a>
                 </div>
             }
         </div>
