@@ -420,23 +420,27 @@
         </div>
 
         <div class="modal fade" id="transactionDetailModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-dark text-white">
                     <div class="modal-header">
                         <h5 class="modal-title">Chi tiết giao dịch</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
-                        <p><strong>ID giao dịch:</strong> <span id="tdId"></span></p>
-                        <p><strong>Ngày:</strong> <span id="tdDate"></span></p>
-                        <p><strong>Mã giao dịch:</strong> <span id="tdRef"></span></p>
-                        <p><strong>Trạng thái:</strong> <span id="tdStatus"></span></p>
-                        <p><strong>Số tiền:</strong> <span id="tdAmount"></span></p>
-                        <p><strong>Nhà cung cấp:</strong> <span id="tdProvider"></span></p>
-                        <p><strong>Môi trường:</strong> <span id="tdEnv"></span></p>
-                        <p><strong>Phim liên quan:</strong> <span id="tdFilms"></span></p>
-                        <p><strong>Điểm thay đổi:</strong> <span id="tdPoints"></span></p>
-                        <p><strong>Ghi chú:</strong> <span id="tdReason"></span></p>
+                    <div class="modal-body px-4">
+                        <table class="table table-borderless text-white mb-0">
+                            <tbody>
+                                <tr><th class="w-25">ID giao dịch</th><td id="tdId"></td></tr>
+                                <tr><th>Ngày</th><td id="tdDate"></td></tr>
+                                <tr><th>Mã giao dịch</th><td id="tdRef"></td></tr>
+                                <tr><th>Trạng thái</th><td id="tdStatus"></td></tr>
+                                <tr><th>Số tiền</th><td id="tdAmount"></td></tr>
+                                <tr><th>Nhà cung cấp</th><td id="tdProvider"></td></tr>
+                                <tr><th>Môi trường</th><td id="tdEnv"></td></tr>
+                                <tr><th>Phim liên quan</th><td id="tdFilms"></td></tr>
+                                <tr><th>Điểm thay đổi</th><td id="tdPoints"></td></tr>
+                                <tr><th>Ghi chú</th><td id="tdReason"></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
