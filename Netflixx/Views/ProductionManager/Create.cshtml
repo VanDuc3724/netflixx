@@ -1,0 +1,512 @@
+﻿@model ProductionManagerApp.Models.ProductionManager
+
+@{
+    ViewData["Title"] = "Thêm Công ty Sản xuất";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}
+
+<style>
+    body {
+        background-color: #1f1f1f;
+        color: #fff;
+        transition: margin-left 0.3s;
+        overflow-x: hidden;
+    }
+
+    .navbar {
+        z-index: 1100;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        height: calc(100vh - 70px);
+        width: 230px;
+        background-color: #2c2c2c;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #444;
+    }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: #fff;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .sidebar a:hover {
+                background-color: #ff4d6d;
+            }
+
+    .main-content {
+        margin-left: 230px;
+        padding: 100px 20px 20px;
+        transition: margin-left 0.3s ease;
+    }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+    .toggle-btn,
+    .show-sidebar-btn {
+        position: fixed;
+        top: 75px;
+        z-index: 1200;
+        background-color: #ff4d6d;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .toggle-btn {
+        left: 10px;
+    }
+
+    .show-sidebar-btn {
+        left: 10px;
+        display: none;
+    }
+
+    .sidebar.collapsed ~ .show-sidebar-btn {
+        display: block;
+    }
+
+    .card {
+        background: linear-gradient(135deg, #2c2c2c 0%, #383838 100%);
+        border-radius: 20px;
+        border: 1px solid #444;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: rgba(255, 77, 109, 0.1);
+        color: #fff;
+        border-bottom: 1px solid #444;
+        padding: 1.5rem;
+    }
+
+    .form-control {
+        background-color: #3c3c3c;
+        border: 1px solid #555;
+        color: #fff;
+    }
+
+        .form-control:focus {
+            background-color: #3c3c3c;
+            border-color: #ff4d6d;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #fff;
+    }
+
+    .required::after {
+        content: " *";
+        color: #ff4d6d;
+    }
+
+    .btn-primary {
+        background-color: #ff4d6d;
+        border-color: #ff4d6d;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+
+        .btn-primary:hover {
+            background-color: #e63946;
+            border-color: #e63946;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+    .alert-danger {
+        background-color: #2c1618;
+        border-color: #5c2125;
+        color: #f8d7da;
+    }
+
+    .text-danger {
+        color: #ff6b6b !important;
+    }
+
+    .logo-preview {
+        border: 2px dashed #555;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        background-color: #333;
+        transition: all 0.3s ease;
+    }
+
+        .logo-preview:hover {
+            border-color: #ff4d6d;
+            background-color: #383838;
+        }
+
+        .logo-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    .form-section {
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #404040;
+    }
+
+    .form-section-title {
+        color: #ff4d6d;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #ff4d6d;
+    }
+
+    .input-group-text {
+        background-color: #404040;
+        border-color: #555;
+        color: #fff;
+    }
+
+    /* Page Header */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.75rem;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stat-badge {
+        background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        text-align: center;
+        font-weight: 600;
+        min-width: 100px;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+</style>
+
+@await Html.PartialAsync("_ProductionManagerMenu")
+
+<div class="main-content" id="mainContent">
+    <div class="container-fluid px-4 py-3">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-plus me-2 text-success"></i>
+                            Thêm Công ty Sản xuất
+                        </h2>
+                        <p class="text-muted mb-0">Tạo công ty sản xuất mới</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                            <!-- Thông tin cơ bản -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    Thông tin cơ bản
+                                </h5>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label asp-for="Name" class="form-label required">Tên công ty</label>
+                                            <input asp-for="Name" class="form-control" placeholder="Nhập tên công ty sản xuất" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Alias" class="form-label">Tên viết tắt</label>
+                                            <input asp-for="Alias" class="form-control" placeholder="Ví dụ: Netflix, HBO" />
+                                            <span asp-validation-for="Alias" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Country" class="form-label required">Quốc gia</label>
+                                            <input asp-for="Country" class="form-control" list="countryList" placeholder="Nhập hoặc chọn quốc gia" />
+                                            <datalist id="countryList">
+                                                @await Html.PartialAsync("_CountryOptions", Model.Country)
+
+                                            </datalist>
+                                            <span asp-validation-for="Country" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="EstablishedDate" class="form-label">Ngày thành lập</label>
+                                            <input asp-for="EstablishedDate" class="form-control" type="date" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                            <span asp-validation-for="EstablishedDate" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thông tin quản lý -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="fas fa-user-tie mr-2"></i>
+                                    Thông tin quản lý
+                                </h5>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CEO" class="form-label">CEO</label>
+                                            <input asp-for="CEO" class="form-control" placeholder="Nhập tên CEO" />
+                                            <span asp-validation-for="CEO" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Headquarters" class="form-label">Trụ sở chính</label>
+                                            <input asp-for="Headquarters" class="form-control" placeholder="Địa chỉ trụ sở chính" />
+                                            <span asp-validation-for="Headquarters" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thông tin liên hệ & Logo -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="fas fa-globe mr-2"></i>
+                                    Thông tin liên hệ & Logo
+                                </h5>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Website" class="form-label">Website</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                                </div>
+                                                <input asp-for="Website" class="form-control" placeholder="https://example.com" />
+                                            </div>
+                                            <span asp-validation-for="Website" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogoFile" class="form-label">Logo công ty</label>
+                                            <input asp-for="LogoFile" type="file" class="form-control" accept="image/*" />
+                                            <span asp-validation-for="LogoFile" class="text-danger"></span>
+                                            <small class="form-text text-muted">Chấp nhận: JPG, PNG, GIF. Kích thước tối đa: 5MB</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Preview Logo -->
+                                <div class="form-group" id="logoPreview" style="display: none;">
+                                    <label class="form-label">Xem trước Logo:</label>
+                                    <div class="logo-preview">
+                                        <img id="logoImage" src="" alt="Logo Preview" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mô tả -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="fas fa-align-left mr-2"></i>
+                                    Mô tả
+                                </h5>
+
+                                <div class="form-group">
+                                    <label asp-for="Description" class="form-label">Mô tả về công ty</label>
+                                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết về công ty sản xuất..."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="form-group text-center">
+                                <a asp-action="Index" class="btn btn-secondary mr-3">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    Quay lại
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Lưu thông tin
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview logo when a file is selected
+    document.getElementById('LogoFile').addEventListener('change', function () {
+        const file = this.files[0];
+        const preview = document.getElementById('logoPreview');
+        const image = document.getElementById('logoImage');
+
+        if (file) {
+            // Kiểm tra định dạng file
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Chỉ chấp nhận file ảnh (JPG, PNG, GIF)');
+                this.value = '';
+                preview.style.display = 'none';
+                return;
+            }
+
+            // Kiểm tra kích thước file (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Kích thước file không được vượt quá 5MB');
+                this.value = '';
+                preview.style.display = 'none';
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            image.src = url;
+            image.onload = () => URL.revokeObjectURL(url);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+            image.src = '';
+        }
+    });
+
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        let isValid = true;
+        let errorMessage = '';
+
+        // Kiểm tra các trường bắt buộc
+        const requiredFields = [
+            { id: 'Name', name: 'Tên công ty' },
+            { id: 'Country', name: 'Quốc gia' }
+        ];
+
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field.id);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+                errorMessage += `${field.name} là bắt buộc.\n`;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        // Kiểm tra định dạng website
+        const websiteInput = document.getElementById('Website');
+        if (websiteInput.value.trim()) {
+            const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+            if (!urlPattern.test(websiteInput.value.trim())) {
+                isValid = false;
+                websiteInput.classList.add('is-invalid');
+                errorMessage += 'Định dạng website không hợp lệ.\n';
+            } else {
+                websiteInput.classList.remove('is-invalid');
+            }
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Vui lòng kiểm tra lại thông tin:\n' + errorMessage);
+        }
+    });
+
+    // Auto-format website URL
+    document.getElementById('Website').addEventListener('blur', function() {
+        let url = this.value.trim();
+        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+            this.value = 'https://' + url;
+        }
+    });
+</script>
+
+@await Html.PartialAsync("_ProductionManagerMenuScripts")
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

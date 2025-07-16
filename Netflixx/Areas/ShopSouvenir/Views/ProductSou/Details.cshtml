@@ -1,0 +1,50 @@
+﻿@model Netflixx.Models.Souvenir.ProductSouModel
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1>Product Details</h1>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Category</dt>
+        <dd class="col-sm-10">@(Model.Category?.Name ?? "N/A")</dd>
+
+        <dt class="col-sm-2">Brand</dt>
+        <dd class="col-sm-10">@(Model.Brand?.Name ?? "N/A")</dd>
+
+        <dt class="col-sm-2">Series</dt>
+        <dd class="col-sm-10">@(Model.Series?.Name ?? "N/A")</dd>
+
+        <dt class="col-sm-2">Price</dt>
+        <dd class="col-sm-10">@Model.Price.ToString("C")</dd>
+
+        <dt class="col-sm-2">Stock Quantity</dt>
+        <dd class="col-sm-10">@Model.StockQuantity</dd>
+
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Image</dt>
+        <dd class="col-sm-10">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 200px;" />
+            }
+            else
+            {
+                <span>No image available</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

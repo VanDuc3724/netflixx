@@ -1,0 +1,346 @@
+﻿@using Netflixx.Models
+@model UserViewModel
+
+<style>
+    .user-detail-container {
+        background: #1A1A1A;
+        color: #E0E0E0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        width: 100%;
+        max-width: 380px;
+        margin: 8px auto;
+        display: flex;
+
+        flex-direction: column;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .profile-header,
+    .profile-details,
+    .profile-status,
+    .profile-body-1,
+    .profile-body-2,
+    .profile-summary {
+        margin: 0 5px;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding: 12px 10px 14px;
+    }
+
+        .profile-header .avatar {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            background: #2C2C2C;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #3A3A3A;
+        }
+
+            .profile-header .avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .profile-header .name {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            color: #FFFFFF;
+        }
+
+    .profile-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px 18px;
+        padding: 0 10px 14px;
+    }
+
+        .profile-details .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            color: #E0E0E0;
+            min-width: calc(50% - 9px);
+        }
+
+            .profile-details .detail-item .icon {
+                width: 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #4DB6AC; /* xanh ngọc dịu */
+            }
+
+            .profile-details .detail-item .text {
+                line-height: 1.4;
+                font-weight: 500;
+                font-size: 12px;
+                color: #F5F5F5;
+            }
+
+    .profile-status {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        padding: 0 10px 14px;
+        margin: 0 10px 14px;
+        box-shadow:none;
+    }
+
+        .profile-status .box-user-detail
+        {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            min-width: calc(50% - 9px);
+        }
+
+            .profile-status .box-user-detail.label {
+                color: #81D4FA; /* xanh dương pastel */
+                font-weight: 700;
+            }
+
+                .profile-status .box-user-detail .label::after {
+                    content: ":";
+                    margin-right: 2px;
+                    color: #81D4FA;
+                }
+
+            .profile-status .box-user-detail.value {
+                font-size: 14px;
+                font-weight: 600;
+                color: #FAFAFA;
+            }
+
+                .profile-status .box-user-detail .value.active {
+                    color: #66BB6A; /* xanh lá tươi */
+                }
+
+    .separator {
+        height: 1px;
+        background: #333;
+        width: calc(100% - 20px);
+        margin: 0 auto;
+    }
+
+    .profile-body-1 {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 14px 0;
+    }
+
+        .profile-body-1 .likes {
+            background: #1A1A1A;
+            border: 1px solid #2E2E2E;
+            padding: 14px 10px;
+            margin: 0 10px;
+            border-radius: 5px;
+        }
+
+            .profile-body-1 .likes h3 {
+                margin: 0 0 6px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #FFB74D; /* cam nhạt */
+            }
+
+            .profile-body-1 .likes ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .profile-body-1 .likes li {
+                background: #2C2C2C;
+                padding: 4px 8px;
+                font-size: 12px;
+                white-space: nowrap;
+                color: #EEEEEE;
+                border: 1px solid #FFB74D;
+                border-radius: 4px;
+            }
+
+    .profile-body-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 12px 0;
+    }
+
+        .profile-body-2 .stats {
+            padding: 12px 10px;
+            margin: 0 10px;
+            width: fit-content;
+        }
+
+            .profile-body-2 .stats .item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 6px;
+                font-size: 14px;
+            }
+
+                .profile-body-2 .stats .item:last-child {
+                    margin-bottom: 0;
+                }
+
+                .profile-body-2 .stats .item .label {
+                    color: #BA68C8; /* tím pastel */
+                    font-weight: 700;
+                }
+
+                    .profile-body-2 .stats .item .label::after {
+                        content: ":";
+                        margin-right: 4px;
+                        color: #BA68C8;
+                    }
+
+                .profile-body-2 .stats .item .value {
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #FFFFFF;
+                }
+
+    .profile-summary {
+        background: #1A1A1A;
+        border: 1px solid #2E2E2E;
+        border-radius: 5px;
+        padding: 14px 10px;
+        margin: 14px 10px;
+    }
+
+        .profile-summary h3 {
+            margin: 0 0 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4FC3F7; /* xanh dương nhạt */
+        }
+
+        .profile-summary p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #BDBDBD;
+        }
+
+    
+        @@media (max-width: 480px) {
+        .profile-details .detail-item, .profile-status .box-user-detail, .profile-body-1 .likes, .profile-body-2 .stats
+
+    {
+        min-width: 100%;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .separator {
+        width: calc(100% - 12px);
+    }
+
+    }
+</style>
+
+<div class="user-detail-container">
+    <!-- AVATAR + TÊN -->
+    <div class="profile-header">
+        <div class="avatar">
+             <img src="~/image/logo/avatar_default.jpg" alt="Avatar">
+        </div>
+        <h2 class="name">@Model.Name</h2>
+    </div>
+
+    <!-- NGÀY SINH – TUỔI – EMAIL – ĐỊA CHỈ -->
+    <div class="profile-details">
+        <div class="detail-item">
+            <span class="icon">🎂</span>
+            <span class="text">02/03/1977</span>
+        </div>
+        <div class="detail-item">
+            <span class="icon">⌛</span>
+            <span class="text">30 tuổi</span>
+        </div>
+        <div class="detail-item">
+            <span class="icon">✉️</span>
+            <span class="text">@Model.Email</span>
+        </div>
+        <div class="detail-item">
+            <span class="icon">📍</span>
+            <span class="text">Đường 123, Phố 123</span>
+        </div>
+    </div>
+
+    <!-- VAI TRÒ & TRẠNG THÁI -->
+    <div class="profile-status">
+        <div class="box-user-detail">
+            <span class="label">Vai trò</span>
+            <span class="value">@Model.Role</span>
+        </div>
+        <div class="box-user-detail">
+            <span class="label">Trạng thái</span>
+            <span class="value active">Hoạt động</span>
+        </div>
+    </div>
+
+    <div class="separator"></div>
+
+    <!-- SỞ THÍCH -->
+    <div class="profile-body-1">
+        <div class="likes">
+            <h3>Sở thích</h3>
+            <ul>
+                <li>Phim viễn tưởng</li>
+                <li>Phim lãng mạn</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="separator"></div>
+
+    <!-- GÓI ĐÃ MUA & PHIM ĐÃ XEM -->
+    <div class="profile-body-2">
+        <div class="stats">
+            <div class="item">
+                <span class="label">Gói đã mua</span>
+                <span class="value">2</span>
+            </div>
+            <div class="item">
+                <span class="label">Phim đã xem</span>
+                <span class="value">10</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="separator"></div>
+
+    <!-- TÓM TẮT BẢN THÂN -->
+    <div class="profile-summary">
+        <h3>Tóm tắt bản thân</h3>
+        <p>
+            Tôi là Nguyễn Văn A – một người mê phim điện ảnh với nhiều năm kinh nghiệm
+            đánh giá và chia sẻ cảm nhận. Tôi luôn tìm kiếm những câu chuyện sâu sắc
+            và giàu cảm xúc để truyền tải tới cộng đồng.
+        </p>
+    </div>
+    <form  asp-area="admin" asp-controller="user" asp-action="Detail"  method="get">
+
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="submit"value="update" /> 
+    </form>
+</div>

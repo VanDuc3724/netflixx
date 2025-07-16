@@ -1,0 +1,362 @@
+﻿@model IEnumerable<ProductionManagerApp.Models.ProductionManagerHistory>
+@{
+    ViewData["Title"] = "Tất cả thay đổi";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+}
+
+<style>
+    body {
+        background-color: #1f1f1f;
+        color: #fff;
+        transition: margin-left 0.3s;
+        overflow-x: hidden;
+    }
+
+    .navbar {
+        z-index: 1100;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        height: calc(100vh - 70px);
+        width: 230px;
+        background-color: #2c2c2c;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #444;
+    }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: #fff;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .sidebar a:hover {
+                background-color: #ff4d6d;
+            }
+
+    .main-content {
+        margin-left: 230px;
+        padding: 100px 20px 20px;
+        transition: margin-left 0.3s ease;
+    }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+    .toggle-btn,
+    .show-sidebar-btn {
+        position: fixed;
+        top: 75px;
+        z-index: 1200;
+        background-color: #ff4d6d;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .toggle-btn {
+        left: 10px;
+    }
+
+    .show-sidebar-btn {
+        left: 10px;
+        display: none;
+    }
+
+    .sidebar.collapsed ~ .show-sidebar-btn {
+        display: block;
+    }
+
+    .card {
+        background-color: #2c2c2c;
+        border: 1px solid #444;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #ff4d6d;
+        color: #fff;
+    }
+
+    .filter-card .card-header {
+        background-color: #ff4d6d;
+    }
+
+    .btn-primary {
+        background-color: #ff4d6d;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #e6426b;
+        }
+
+    .table {
+        color: #fff;
+    }
+
+        .table thead {
+            background-color: #333;
+        }
+
+    .table-dark {
+        background-color: #2c2c2c;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #3c3c3c;
+    }
+
+    .form-control {
+        background-color: #3c3c3c;
+        border: 1px solid #555;
+        color: #fff;
+    }
+
+        .form-control:focus {
+            background-color: #3c3c3c;
+            border-color: #ff4d6d;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+    /* Header styles borrowed from Trash page */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.75rem;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stat-badge {
+        background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        text-align: center;
+        font-weight: 600;
+        min-width: 100px;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+</style>
+
+@await Html.PartialAsync("_ProductionManagerMenu")
+
+<div class="main-content" id="mainContent">
+    <div class="container-fluid px-4 py-3">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-history me-2 text-info"></i>
+                            Tất cả thay đổi
+                        </h2>
+                        <p class="text-muted mb-0">Danh sách lịch sử chỉnh sửa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card tìm kiếm và lọc -->
+        <div class="card shadow filter-card">
+            <div class="card-header">
+                <strong><i class="fas fa-search"></i> Tìm kiếm & Lọc</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <label>Tên công ty</label>
+                        <input type="text" class="form-control" id="searchCompany" placeholder="Tên công ty..." />
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label>Thao tác</label>
+                        <select class="form-control" id="filterAction">
+                            <option value="">Tất cả thao tác</option>
+                            <option value="Create">Create</option>
+                            <option value="Edit">Edit</option>
+                            <option value="Delete">Delete</option>
+                            <option value="Restore">Restore</option>
+                            <option value="HardDelete">HardDelete</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label>Ngày</label>
+                        <input type="date" class="form-control" id="searchDate" />
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label>&nbsp;</label>
+                        <div class="d-flex gap-2 align-items-end">
+                            <button id="searchButton" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                            <button id="clearHistoryFilter" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Xóa lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card danh sách lịch sử -->
+        <div class="card bg-dark text-white shadow-lg">
+            <div class="card-header">
+                <h4><i class="fas fa-history"></i> Tất cả thay đổi của công ty sản xuất</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped" id="historyAllTable">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-clock"></i> Thời gian</th>
+                                <th><i class="fas fa-building"></i> Công ty</th>
+                                <th><i class="fas fa-cogs"></i> Thao tác</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@(item.ProductionManagerName ?? item.ProductionManager?.Name)</td>
+                                    <td>@item.Action</td>
+                                    <td>
+                                        <a asp-action="HistoryDetails" asp-route-id="@item.Id" asp-route-returnTo="HistoryAll" class="btn btn-sm btn-info">
+                                            Xem
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ProductionManagerMenuScripts")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var historyKey = 'pmHistoryFilters';
+
+            function loadHistoryState() {
+                var saved = localStorage.getItem(historyKey);
+                if (saved) {
+                    try {
+                        var state = JSON.parse(saved);
+                        $('#searchCompany').val(state.company || '');
+                        $('#filterAction').val(state.action || '');
+                        $('#searchDate').val(state.date || '');
+                    } catch (e) { }
+                }
+            }
+
+            function saveHistoryState() {
+                var state = {
+                    company: $('#searchCompany').val(),
+                    action: $('#filterAction').val(),
+                    date: $('#searchDate').val()
+                };
+                localStorage.setItem(historyKey, JSON.stringify(state));
+            }
+
+            function filterTable() {
+                var action = $('#filterAction').val().toLowerCase();
+                var company = $('#searchCompany').val().toLowerCase();
+                var date = $('#searchDate').val();
+
+                $('#historyAllTable tbody tr').each(function () {
+                    var row = $(this);
+                    var rowDateText = row.find('td:eq(0)').text().trim();
+                    var rowCompany = row.find('td:eq(1)').text().toLowerCase();
+                    var rowAction = row.find('td:eq(2)').text().toLowerCase();
+
+                    var show = true;
+
+                    if (action && rowAction.indexOf(action) === -1) {
+                        show = false;
+                    }
+
+                    if (company && rowCompany.indexOf(company) === -1) {
+                        show = false;
+                    }
+
+                    if (date) {
+                        var parts = rowDateText.split(' ')[0].split('/'); // dd/MM/yyyy
+                        if (parts.length === 3) {
+                            var formatted = parts[2] + '-' + parts[1] + '-' + parts[0];
+                            if (formatted !== date) {
+                                show = false;
+                            }
+                        }
+                    }
+
+                    row.toggle(show);
+                });
+                saveHistoryState();
+            }
+
+            $('#searchButton').on('click', filterTable);
+            $('#clearHistoryFilter').on('click', function () {
+                localStorage.removeItem(historyKey);
+                $('#searchCompany').val('');
+                $('#filterAction').val('');
+                $('#searchDate').val('');
+                filterTable();
+            });
+
+            loadHistoryState();
+            filterTable();
+
+          });
+    </script>
+}

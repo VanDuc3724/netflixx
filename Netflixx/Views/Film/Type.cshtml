@@ -1,0 +1,369 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Repositories
+@inject UserManager<AppUserModel> _userManager
+@inject DBContext DBContext
+@{
+    ViewData["Title"] = "Film List";
+    var currentUser = await _userManager.GetUserAsync(User);
+}
+
+
+
+<!-- Thêm padding để nội dung không bị navbar che -->
+<div class="container-fluid main-content" style="padding-top: 70px;">
+
+    <link rel="stylesheet" href="~/css/film.css" />
+
+    <h1 class="mb-4" style="text-align: center; color: #ff4d6d;">THỂ LOẠI</h1>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar mb-4">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <!-- Newest Films Button -->
+            <a asp-action="Type"
+               class="btn @(string.IsNullOrEmpty(ViewBag.SelectedGenre) ? "btn-danger" : "btn-outline-danger")">
+                Phim Mới Nhất
+            </a>
+
+            <!-- Genre Filters -->
+            @foreach (var genre in ViewBag.Genres)
+            {
+                <a asp-action="Type"
+                   asp-route-genreFilter="@genre"
+                   class="btn @(ViewBag.SelectedGenre == genre ? "btn-primary" : "btn-outline-primary")">
+                    @genre
+                </a>
+            }
+
+            <!-- All Films Button -->
+            <a asp-action="Type"
+               asp-route-genreFilter="all"
+               class="btn @(ViewBag.SelectedGenre == "all" ? "btn-primary" : "btn-outline-primary")">
+                Tất Cả
+            </a>
+        </div>
+    </div>
+
+    @if (string.IsNullOrEmpty(ViewBag.SelectedGenre))
+    {
+        <!-- Featured Film -->
+        @if (ViewBag.FeaturedFilm != null)
+        {
+            <div class="featured-film mb-5">
+                <h3 class="text-light mb-4 text-center">PHIM NỔI BẬT</h3>
+                <div class="card bg-dark text-light">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="@(ViewBag.FeaturedFilm.PosterPath ?? "https://via.placeholder.com/300x450")" 
+                                 class="img-fluid rounded-start" 
+                                 alt="@ViewBag.FeaturedFilm.Title"
+                                 style="height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h2 class="card-title">@ViewBag.FeaturedFilm.Title</h2>
+                                <p class="card-text">
+                                    <strong class="text-info">Genre:</strong> @ViewBag.FeaturedFilm.Genre<br>
+                                    <strong class="text-info">Release Date:</strong> @ViewBag.FeaturedFilm.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                                    <strong class="text-info">Rating:</strong> @ViewBag.FeaturedFilm.Rating/10
+                                </p>
+                                <p class="card-text">@ViewBag.FeaturedFilm.Description</p>
+                                <div class="mt-3">
+                                    <a href="@ViewBag.FeaturedFilm.FilmURL" class="btn btn-danger me-2">Xem Ngay</a>
+                                    <a asp-action="DetailSearch" asp-route-id="@ViewBag.FeaturedFilm.Id" class="btn btn-outline-light">Chi Tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Other New Films -->
+        <h4 class="text-light mb-3 text-center">PHIM MỚI</h4>
+        <div class="row">
+            @foreach (var film in ViewBag.OtherNewFilms)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100" style="background-color: #1f1f1f">
+                        <a asp-action="Detail" asp-route-id="@film.Id">
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
+                                 class="card-img-top"
+                                 alt="@film.Title"
+                                 style="height: 500px; object-fit: cover;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a asp-action="Detail" asp-route-id="@film.Id" class="text-decoration-none">@film.Title</a>
+                            </h5>
+                            <p class="card-text">
+                                <strong>Thể loại:</strong> @film.Genre<br>
+                                <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                                <strong>Giá:</strong> @film.Price?.ToString("N0") coins<br>
+                                <strong>Đánh giá:</strong> @film.Rating/10
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline purchase-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (ViewBag.SelectedGenre == "all")
+    {
+        <!-- Hiển thị tất cả phim -->
+        <h4 class="text-light mb-3">TẤT CẢ PHIM</h4>
+        <div class="row">
+            @foreach (var film in Model)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100" style="background-color: #1f1f1f">
+                        <a asp-action="Detail" asp-route-id="@film.Id">
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
+                                 class="card-img-top"
+                                 alt="@film.Title"
+                                 style="height: 500px; object-fit: cover;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a asp-action="Detail" asp-route-id="@film.Id" class="text-decoration-none">@film.Title</a>
+                            </h5>
+                            <p class="card-text">
+                                <strong>Thể loại:</strong> @film.Genre<br>
+                                <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                                <strong>Giá:</strong> @film.Price?.ToString("N0") coins<br>
+                                <strong>Đánh giá:</strong> @film.Rating/10
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline purchase-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- Hiển thị phim theo thể loại -->
+        <div style="margin-left: 50px;">
+            <h4 class="text-light mb-3">Phim @ViewBag.SelectedGenre</h4>
+        </div>
+        
+        <div class="row">
+            @foreach (var film in Model)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100" style="background-color: #1f1f1f">
+                        <a asp-action="Detail" asp-route-id="@film.Id">
+                            <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
+                                 class="card-img-top"
+                                 alt="@film.Title"
+                                 style="height: 500px; object-fit: cover;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a asp-action="Detail" asp-route-id="@film.Id" class="text-decoration-none">@film.Title</a>
+                            </h5>
+                            <p class="card-text">
+                                <strong>Thể loại:</strong> @film.Genre<br>
+                                <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                                <strong>Giá:</strong> @film.Price?.ToString("N0") coins<br>
+                                <strong>Đánh giá:</strong> @film.Rating/10
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            @{
+                                var purchased = false;
+                                if (currentUser != null)
+                                {
+                                    int filmId = film.Id;
+                                    purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
+                                }
+                            }
+                            @if (purchased)
+                            {
+                                <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                            }
+                            else if (currentUser != null)
+                            {
+                                <form asp-action="Purchase" method="post" class="d-inline purchase-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@film.Id" />
+                                    <button type="submit" class="btn btn-danger">Mua</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                            }
+                            <a asp-action="DetailSearch" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info" style="text-align: center;">
+            Không tìm thấy phim nào phù hợp.
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('form.purchase-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Xác nhận mua?',
+                    text: 'Bạn có muốn mua phim này không?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e50914',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Mua',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = new FormData(form);
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            body: data
+                        })
+                            .then(r => r.json())
+                            .then(json => {
+                                if (json.success) {
+                                    const link = document.createElement('a');
+                                    link.href = json.redirectUrl;
+                                    link.className = 'btn btn-primary';
+                                    link.textContent = 'Xem ngay';
+                                    form.replaceWith(link);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công',
+                                        text: 'Mua phim thành công!',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Không đủ coins',
+                                        text: json.message || 'vui lòng nạp thêm coins',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Đã xảy ra lỗi!',
+                                    confirmButtonColor: '#e50914'
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .filter-bar {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .filter-bar::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .filter-bar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .featured-film {
+        background-color: #1a1a1a;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .featured-film .card {
+        border: none;
+        background-color: transparent;
+    }
+
+    .featured-film .card-title {
+        color: #ff4d6d;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .featured-film .card-text {
+        color: #e0e0e0;
+        margin-bottom: 1rem;
+    }
+</style>

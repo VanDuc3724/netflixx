@@ -1,0 +1,179 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Repositories
+@inject UserManager<AppUserModel> _userManager
+@inject DBContext DBContext
+@{
+    ViewData["Title"] = "Film List";
+    var currentUser = await _userManager.GetUserAsync(User);
+}
+
+
+
+<!-- Thêm padding để nội dung không bị navbar che -->
+<div class="container-fluid main-content" style="padding-top: 70px;">
+
+<link rel="stylesheet" href="~/css/film.css" />
+
+    <h1 class="mb-4" style="text-align: center; color: #ff4d6d;">DANH SÁCH PHIM</h1>
+
+<!-- Search and Filter Section -->
+<div class=" mb-4">
+        <div class="card-body" style="background-color: #1f1f1f">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="searchString" class="form-control"
+                           placeholder="Bạn muốn xem gì hôm nay?" value="@ViewBag.SearchString">
+            </div>
+            <div class="col-md-3">
+                <select name="genreFilter" class="form-select">
+                    <option value="">Thể loại</option>
+                    @foreach (var genre in ViewBag.Genres)
+                    {
+                        <option value="@genre" selected="@(genre == ViewBag.SelectedGenre ? "selected" : null)">@genre</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="yearFilter" class="form-select">
+                    <option value="">Các năm</option>
+                    @foreach (var year in ViewBag.Years)
+                    {
+                        <option value="@year" selected="@(year == ViewBag.SelectedYear ? "selected" : null)">@year</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+            </div>
+                <div class="col-md-1">
+                    <a class="btn btn-primary w-100" asp-controller="Film" asp-action="Index">Xóa</a>
+                </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Count -->
+    <!-- <p class="text-muted mb-3">Found @Model.Count results</p> -->
+
+<!-- Film Grid -->
+<div class="row">
+    @foreach (var film in Model)
+    {
+            <div class="col-md-3 mb-3">
+                <div class="card h-100" style="background-color: #1f1f1f">
+                <a asp-action="Detail" asp-route-id="@film.Id">
+                    <img src="@(film.PosterPath ?? "https://via.placeholder.com/300x450")"
+                         class="card-img-top"
+                         alt="@film.Title"
+                         style="height: 450px; object-fit: cover;">
+                </a>
+                    <div class="card-body">
+                    <h5 class="card-title">
+                        <a asp-action="Detail" asp-route-id="@film.Id" class="text-decoration-none">@film.Title</a>
+                    </h5>
+                    <p class="card-text">
+                        <strong>Thể loại:</strong> @film.Genre<br>
+                        <strong>Ngày:</strong> @film.ReleaseDate?.ToString("dd/MM/yyyy")<br>
+                        <strong>Giá:</strong> @film.Price?.ToString("N0") coins<br>
+                        <strong>Đánh giá:</strong> @film.Rating/10
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    @{
+                        var purchased = false;
+                        if (currentUser != null)
+                        {
+                            int filmId = film.Id;
+                            purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
+                        }
+                    }
+                    @if (purchased)
+                    {
+                        <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
+                    }
+                    else if (currentUser != null)
+                    {
+                        <form asp-action="Purchase" method="post" class="d-inline purchase-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@film.Id" />
+                            <button type="submit" class="btn btn-danger">Mua</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-danger">Mua</a>
+                    }
+                    <a asp-action="Detail" asp-route-id="@film.Id" class="btn btn-outline-secondary">Chi tiết</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info" style="text-align: center;">
+            Không tìm thấy phim nào phù hợp với tiêu chí của bạn. Vui lòng thử bộ lọc khác.
+    </div>
+}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('form.purchase-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Xác nhận mua?',
+                    text: 'Bạn có muốn mua phim này không?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e50914',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Mua',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = new FormData(form);
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            body: data
+                        })
+                            .then(r => r.json())
+                            .then(json => {
+                                if (json.success) {
+                                    const link = document.createElement('a');
+                                    link.href = json.redirectUrl;
+                                    link.className = 'btn btn-primary';
+                                    link.textContent = 'Xem ngay';
+                                    form.replaceWith(link);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công',
+                                        text: 'Mua phim thành công!',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Không đủ coins',
+                                        text: json.message || 'vui lòng nạp thêm coins',
+                                        confirmButtonColor: '#e50914'
+                                    });
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Đã xảy ra lỗi!',
+                                    confirmButtonColor: '#e50914'
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    });
+</script>

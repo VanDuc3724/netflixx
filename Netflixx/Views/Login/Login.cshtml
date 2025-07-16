@@ -1,0 +1,92 @@
+﻿    @model Netflixx.Models.ViewModel.LoginViewModel
+@{
+	ViewData["Title"] = "Login";
+}
+@{
+	Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<!-- Link đến file CSS -->
+<link rel="stylesheet" href="~/css/login.css" />
+
+<section id="form" class="login-wrapper">
+	<div class="login-container">
+		<div class="login-form">
+			<div class="logo">
+				<img src="~/image/logo/NetflixxLogo.png" alt="Netflixx Logo" />
+			</div>
+			<h2>Đăng nhập</h2>
+			<form asp-action="Login" method="post">
+				@if (!string.IsNullOrEmpty(Model.ReturnUrl))
+				{
+					<input type="hidden" asp-for="ReturnUrl" />
+				}
+
+
+				<!-- Username -->
+				<div class="form-group">
+					<input asp-for="Username" class="form-control" placeholder=" " />
+					<label class="form-label" for="Username">Email hoặc username</label>
+					<span asp-validation-for="Username" class="text-danger"></span>
+				</div>
+
+				<!-- Password -->
+				<div class="form-group">
+					<input asp-for="Password" type="password" class="form-control" id="passwordInput" placeholder=" " />
+					<label class="form-label" for="Password">Mật khẩu</label>
+					<span asp-validation-for="Password" class="text-danger"></span>
+
+					<div id="passwordRequirements">
+						<div id="lengthRequirement">Ít nhất 8 ký tự</div>
+						<div id="uppercaseRequirement">Chứa ít nhất 1 chữ hoa</div>
+						<div id="numberRequirement">Chứa ít nhất 1 số</div>
+						<div id="specialRequirement">Chứa ít nhất 1 ký tự đặc biệt</div>
+					</div>
+				</div>
+
+				<!-- Submit Button -->
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary">Đăng nhập</button>
+				</div>
+
+				<!-- Options -->
+				<div class="options">
+					<label>
+						<input asp-for="RememberMe" type="checkbox" /> Ghi nhớ tôi
+					</label>
+					<a asp-action="ForgotPassword" asp-controller="Login">Quên mật khẩu?</a>
+				</div>
+
+				<!-- Sign Up Link -->
+				<div class="signup">
+					Mới tham gia Netflixx? <a asp-action="SignUp" asp-controller="Login">Đăng ký ngay.</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script src="~/js/login.js"></script>
+	@await Html.PartialAsync("_ValidationScriptsPartial")
+	@await Html.PartialAsync("_NotificationPartial")
+	<script>
+				document.getElementById('togglePassword').addEventListener('click', function() {
+			const passwordInput = document.getElementById('passwordInput');
+			const icon = this.querySelector('i');
+
+			if (passwordInput.type === 'password') {
+				passwordInput.type = 'text';
+				icon.classList.remove('fa-eye');
+				icon.classList.add('fa-eye-slash');
+				this.classList.add('active');
+			} else {
+				passwordInput.type = 'password';
+				icon.classList.remove('fa-eye-slash');
+				icon.classList.add('fa-eye');
+				this.classList.remove('active');
+			}
+		});
+	</script>
+
+    }

@@ -1,0 +1,179 @@
+﻿@model Netflixx.Models.BlogPost
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/blog.css">
+
+
+@{
+    ViewData["Title"] = "Create Blog Post";
+}
+
+<div class="container netflix-bg blog-form-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card netflix-card">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        @ViewData["Title"]
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" id="blogForm" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Title Field -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Title" class="form-label text-white">
+                                <i class="bi bi-text-left me-1"></i>
+                                Title <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Title" class="form-control" placeholder="Enter blog post title..." />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Content Field with Toast UI Editor -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Content" class="form-label text-white">
+                                <i class="bi bi-file-text me-1"></i>
+                                Content <span class="text-danger">*</span>
+                            </label>
+                            <div id="editor-wrapper">
+                                <div id="editor" class="netflix-editor"></div>
+                                <textarea asp-for="Content" id="blogContent" class="form-control d-none" rows="10"></textarea>
+                            </div>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Film Selection with Search -->
+                        <div class="form-group mb-4">
+                            <label asp-for="FilmId" class="form-label text-white">
+                                <i class="bi bi-camera-reels me-1"></i>
+                                Related Film <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="FilmId" class="form-control select2-film-search" required>
+                                <option value="">-- Search for a film --</option>
+                                @if (ViewBag.Films != null)
+                                {
+                                    @foreach (var film in ViewBag.Films)
+                                    {
+                                        <option value="@film.Id">@film.Title (@film.Genre)</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="FilmId" class="text-danger"></span>
+                        </div>
+
+                        @* <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-action="Index" class="btn btn-outline-light">
+                                <i class="bi bi-arrow-left me-1"></i> Back to Blog
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-save me-1"></i> Create Post
+                            </button>
+                        </div> *@
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-action="Index" class="btn btn-outline-light">
+                                <i class="bi bi-arrow-left me-1"></i> Back to Blog
+                            </a>
+                            <div>
+                                <button type="submit" name="action" value="draft" class="btn btn-secondary me-2">
+                                    <i class="bi bi-save me-1"></i> Save as Draft
+                                </button>
+                                <button type="submit" name="action" value="publish" class="btn btn-danger">
+                                    <i class="bi bi-send me-1"></i> Publish Post
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Load Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+
+    <!-- Load Toast UI Editor -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+    <script>
+                $(document).ready(function() {
+            // Initialize Select2 for Film Selection
+            $('.select2-film-search').select2({
+                placeholder: "Search for a film...",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Initialize Toast UI Editor
+            const editor = new toastui.Editor({
+                el: document.querySelector('#editor'),
+                initialEditType: 'wysiwyg',
+                previewStyle: 'vertical',
+                height: '500px',
+                theme: 'dark',
+                initialValue: $('#blogContent').val(),
+                hooks: {
+                    addImageBlobHook: (blob, callback) => {
+                        const formData = new FormData();
+                        formData.append('image', blob);
+
+                        // Add CSRF token for security
+                        const token = $('input[name="__RequestVerificationToken"]').val();
+
+                        fetch('/Blog/UploadImage', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'RequestVerificationToken': token
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Upload failed');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success === 1) {
+                                callback(data.file.url, 'image');
+                            } else {
+                                console.error('Upload failed:', data);
+                                alert('Image upload failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Image upload error:', error);
+                            alert('Error uploading image: ' + error.message);
+                        });
+                    }
+                },
+                toolbarItems: [
+                    ['heading', 'bold', 'italic', 'strike'],
+                    ['hr', 'quote'],
+                    ['ul', 'ol', 'task'],
+                    ['table', 'link'],
+                    ['image', 'code'],
+                    ['codeblock'],
+                    ['scrollSync']
+                ]
+            });
+
+            // Update hidden textarea before form submission
+            $('#blogForm').on('submit', function() {
+                $('#blogContent').val(editor.getHTML());
+            });
+        });
+    </script>
+}

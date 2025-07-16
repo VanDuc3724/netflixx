@@ -1,0 +1,133 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+@{
+    ViewData["Title"] = "Create Role";
+}
+
+<!-- Create Role View - Pink & Black Style -->
+<style>
+    body {
+        background: #000;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: 3rem auto;
+        padding: 1rem;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .header h2 {
+            color: #FF4081;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: .5rem;
+        color: #FF80AB;
+        font-weight: 600;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: .75rem 1rem;
+        background: #111;
+        border: 1px solid #444;
+        border-radius: .5rem;
+        color: #eee;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FF4081;
+        }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: .6rem 1.2rem;
+        border: none;
+        border-radius: .5rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s;
+    }
+
+    .btn-primary {
+        background: #FF4081;
+        color: #000;
+    }
+
+        .btn-primary:hover {
+            background: #E91E63;
+        }
+
+    .btn-secondary {
+        background: #444;
+        color: #fff;
+    }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+    .text-danger {
+        color: #D81B60;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .error-item {
+        margin-bottom: .25rem;
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <h2>@ViewData["Title"]</h2>
+    </div>
+   
+    
+     <form asp-area="Admin" asp-controller="Roles" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label for="roleName" class="form-label">Role Name</label>
+            <input type="text" id="roleName" name="roleName" class="form-control" placeholder="Enter role name" required />
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Create Role</button>
+            <a asp-action="Index" class="btn-secondary">Back to List</a>
+        </div>
+    </form> 
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="text-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div class="error-item">@error.ErrorMessage</div>
+            }
+        </div>
+    }
+</div>

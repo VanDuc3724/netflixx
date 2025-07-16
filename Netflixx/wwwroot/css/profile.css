@@ -1,0 +1,123 @@
+.maincontent {
+    min-height: 100vh;
+    background-color: #000;
+    color: #fff;
+    width: 100%;
+    margin: 0;
+}
+
+.avatar-trigger {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.alertmessage {
+    background-color: black;
+}
+
+
+
+.maincontent h3, .maincontent h4, .maincontent h5 {
+    color: #fff;
+}
+
+.maincontent p, .maincontent li, .maincontent small {
+    color: #ccc;
+}
+
+.alertmessage ul li {
+    color: #FF0000 !important; /* Bootstrap’s “danger” text color */
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 0.5em 1em;
+}
+
+.editbutton {
+    max-width: 200px;
+    width: 100%;
+}
+
+.profile-form .form-control,
+.profile-form .form-control-sm {
+    background-color: #0d1117; /* dark GitHub panel color */
+    border: 1px solid #30363d; /* subtle border */
+    color: #c9d1d9; /* light text */
+    padding: 6px 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    height: auto; /* let content dictate height */
+}
+
+    .profile-form .form-control:focus,
+    .profile-form .form-control-sm:focus {
+        background-color: #161b22;
+        border-color: #58a6ff;
+        box-shadow: 0 0 0 0.2rem rgba(56, 139, 253, 0.4);
+        color: #fff;
+    }
+
+/* Make the file input match too */
+.profile-form input[type="file"] {
+    background-color: #0d1117;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    padding: .375rem .75rem;
+    border-radius: 6px;
+}
+
+/* Apply to the form container */
+.profile-form {
+    max-width: 800px;
+    margin: auto;
+}
+
+    .profile-form .about-textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 120px;
+        background-color: #0d1117;
+        border: 1px solid #30363d;
+        color: #c9d1d9;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 1rem;
+    }
+
+        .profile-form .about-textarea:focus {
+            background-color: #161b22;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 0.2rem rgba(56,139,253,.4);
+            color: #fff;
+        }
+
+
+    .profile-form .avatar-img,
+    .avatarPreview {
+        width: 250px; /* or whatever fixed size you prefer */
+        height: 250px;
+        object-fit: contain; /* crop/extract center so it always fills the box */
+        border-radius: 50%;
+        border: 2px solid #30363d; /* optional GitHub-style border */
+    }
+
+@media (min-width: 768px) {
+    html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #000; /* same as .main-content for seamless fill */
+    height: 100%;
+    width: 100%;
+}

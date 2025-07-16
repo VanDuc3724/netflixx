@@ -1,0 +1,40 @@
+﻿@* Views/Films/Index.cshtml *@
+@model IEnumerable<Netflixx.Models.FilmsModel>
+
+@{
+    ViewData["Title"] = "Film Catalog";
+}
+
+<div class="container mt-4">
+    <h1 class="text-white mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="film-card card h-100">
+                    @if (!string.IsNullOrEmpty(item.FilmURL))
+                    {
+                        <img src="@item.FilmURL" class="film-poster card-img-top" alt="@item.Title poster">
+                    }
+                    <div class="film-details card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">
+                            <span class="badge bg-primary">@item.Genre</span>
+                            @if (item.ReleaseDate.HasValue)
+                            {
+                                <span class="text-muted">@item.ReleaseDate.Value.Year</span>
+                            }
+                        </p>
+                        <p class="card-text text-truncate">@item.Description</p>
+                        @if (item.Price.HasValue)
+                        {
+                            <div class="price-badge fs-5 text-danger">@item.Price.Value.ToString("C0")</div>
+                        }
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

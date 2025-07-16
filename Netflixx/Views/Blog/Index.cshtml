@@ -1,0 +1,303 @@
+﻿@model IEnumerable<Netflixx.Models.BlogPost>
+<link rel="stylesheet" href="/css/blog.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+@using Netflixx.Models
+@{
+    ViewData["Title"] = "Blog Posts";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+}
+
+<div class="container-fluid netflix-bg">
+    <div class="blog-index-container">
+        <!-- Filter Section -->
+        <div class="blog-filter-section">
+            <form method="get" asp-action="Index" class="row g-2 align-items-end">
+                <input type="hidden" name="page" value="1" />
+                <input type="hidden" name="myPosts" value="@ViewBag.MyPosts" />
+                <input type="hidden" name="showDrafts" value="@ViewBag.ShowDrafts" />
+                
+                <div class="col-md-4">
+                    <label class="form-label text-light">Search</label>
+                    <input type="text" name="searchTerm" class="form-control" 
+                           placeholder="Search for movie name or post title..." 
+                           value="@ViewBag.SearchTerm">
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label text-light">Time</label>
+                    <select name="dateFilter" class="form-select">
+                        <option value="all" selected="@(ViewBag.DateFilter == "all")">All</option>
+                        <option value="today" selected="@(ViewBag.DateFilter == "today")">Today</option>
+                        <option value="week" selected="@(ViewBag.DateFilter == "week")">This Week</option>
+                        <option value="month" selected="@(ViewBag.DateFilter == "month")">This Month</option>
+                        <option value="year" selected="@(ViewBag.DateFilter == "year")">This Year</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label text-light">Sort by</label>
+                    <select name="sortBy" class="form-select">
+                        <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc")">Newest</option>
+                        <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc")">Oldest</option>
+                        <option value="title_asc" selected="@(ViewBag.SortBy == "title_asc")">From A to Z</option>
+                        <option value="title_desc" selected="@(ViewBag.SortBy == "title_desc")">From Z to A</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 d-flex gap-2 align-items-end">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-funnel"></i> Apply
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="Create" class="btn btn-success">
+                            <i class="bi bi-plus-lg"></i> Add Post
+                        </a>
+                        <a href="@Url.Action("Index", new { myPosts = true, page = 1 })" class="btn btn-primary">
+                            <i class="bi bi-collection"></i> My Post
+                        </a>
+                        <a href="@Url.Action("Index", new { showDrafts = true, page = 1 })" class="btn btn-warning">
+                            <i class="bi bi-file-earmark"></i> My Draft
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        @if (ViewBag.TotalPosts > 0)
+        {
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-light mb-0">@ViewBag.TotalPosts Posts</h5>
+                <div class="text-muted">
+                    Page @currentPage/@ViewBag.TotalPages
+                </div>
+            </div>
+        }
+
+        @if (Model.Any())
+        {
+            <div class="blog-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="netflix-card">
+                        <div class="card-thumbnail"
+                             style="background-image: url('@(item.Film?.FilmURL ?? "/images/default-blog.jpg")')">
+                            <div class="card-overlay">
+                                <h5 class="blog-post-title">@item.Title</h5>
+                                @if (item.Film != null)
+                                {
+                                    <p class="blog-film-title">@item.Film.Title</p>
+                                }
+                                <div class="blog-post-meta">
+                                    <!-- Hiển thị badge Draft -->
+                                    @if (item.Status == BlogPostStatus.Draft)
+                                    {
+                                        <span class="badge bg-warning">Draft</span>
+                                    }
+                                    <span><i class="bi bi-calendar3"></i> @item.CreatedDate.ToString("dd/MM/yyyy")</span>
+                                    @if (item.Author != null)
+                                    {
+                                        <span><i class="bi bi-person"></i> @item.Author.UserName</span>
+                                    }
+                                </div>
+                                <div class="blog-post-actions">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-card-action btn-view">
+                                        <strong>Detail</strong>
+                                    </a>
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || item.AuthorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-card-action btn-edit" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-card-action btn-delete" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+        
+                                        @if (item.Status == BlogPostStatus.Published)
+                                        {
+                                            <!-- Kiểm tra ViewBag.ShowDrafts có null không -->
+                                            @if (!(ViewBag.ShowDrafts as bool? ?? false))
+                                            {
+                                                <form asp-action="SetAsDraft" method="post" style="display: inline;">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-card-action btn-draft" title="Save as Draft">
+                                                        <i class="bi bi-save"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        }
+                                        else if (item.Status == BlogPostStatus.Draft)
+                                        {
+                                            <!-- Luôn hiển thị nút Publish cho bài Draft -->
+                                            <form asp-action="Publish" method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-card-action btn-publish" title="Publish">
+                                                    <i class="bi bi-upload"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="pagination-container">
+                    @if (ViewBag.HasPreviousPage)
+                    {
+                        <a class="btn btn-outline-secondary" asp-action="Index" 
+                           asp-route-page="1"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-dateFilter="@ViewBag.DateFilter"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           asp-route-myPosts="@ViewBag.MyPosts"
+                           asp-route-showDrafts="@ViewBag.ShowDrafts">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                        
+                        <a class="btn btn-outline-secondary" asp-action="Index" 
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-dateFilter="@ViewBag.DateFilter"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           asp-route-myPosts="@ViewBag.MyPosts"
+                           asp-route-showDrafts="@ViewBag.ShowDrafts">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    }
+
+                    <div class="pagination-info">
+                        Page @currentPage / @ViewBag.TotalPages
+                    </div>
+
+                    @if (ViewBag.HasNextPage)
+                    {
+                        <a class="btn btn-outline-secondary" asp-action="Index" 
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-dateFilter="@ViewBag.DateFilter"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           asp-route-myPosts="@ViewBag.MyPosts"
+                           asp-route-showDrafts="@ViewBag.ShowDrafts">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        
+                        <a class="btn btn-outline-secondary" asp-action="Index" 
+                           asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-dateFilter="@ViewBag.DateFilter"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           asp-route-myPosts="@ViewBag.MyPosts"
+                           asp-route-showDrafts="@ViewBag.ShowDrafts">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    }
+
+                    <form method="get" class="page-jump-form" asp-action="Index">
+                        <input type="hidden" name="searchTerm" value="@ViewBag.SearchTerm" />
+                        <input type="hidden" name="dateFilter" value="@ViewBag.DateFilter" />
+                        <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
+                        <input type="hidden" name="myPosts" value="@ViewBag.MyPosts" />
+                        <input type="hidden" name="showDrafts" value="@ViewBag.ShowDrafts" />
+                        
+                        <span>Go to:</span>
+                        <input type="number" name="page" class="page-jump-input" 
+                               min="1" max="@ViewBag.TotalPages" value="@currentPage" />
+                        <button type="submit" class="page-jump-button">Go</button>
+                    </form>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="alert alert-dark" role="alert">
+                    <h4 class="alert-heading">Post not found</h4>
+                    <p>
+                        @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+                        {
+                            <span>There are no posts related to "<strong>@ViewBag.SearchTerm</strong>"</span>
+                        }
+                        else if (ViewBag.MyPosts)
+                        {
+                            <span>You have not posted anything</span>
+                        }
+                        else if (ViewBag.ShowDrafts)
+                        {
+                            <span>You have no drafts</span>
+                        }
+                        else
+                        {
+                            <span>There are no posts</span>
+                        }
+                    </p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <hr>
+                        <a asp-action="Create" class="btn btn-success mt-2">
+                            <i class="bi bi-plus-circle"></i> Create your own post
+                        </a>
+                        @if (ViewBag.MyPosts)
+                        {
+                            <a href="@Url.Action("Index")" class="btn btn-primary mt-2">
+                                <i class="bi bi-arrow-left"></i> All posts
+                            </a>
+                        }
+                        @if (ViewBag.ShowDrafts)
+                        {
+                            <a href="@Url.Action("Index")" class="btn btn-primary mt-2">
+                                <i class="bi bi-arrow-left"></i> All posts
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý sự kiện khi người dùng nhập số trang không hợp lệ
+        const pageJumpInput = document.querySelector('.page-jump-input');
+        if (pageJumpInput) {
+            pageJumpInput.addEventListener('change', function() {
+                const maxPage = parseInt(this.max);
+                const minPage = parseInt(this.min);
+                let value = parseInt(this.value);
+                
+                if (isNaN(value)) {
+                    this.value = minPage;
+                } else if (value < minPage) {
+                    this.value = minPage;
+                } else if (value > maxPage) {
+                    this.value = maxPage;
+                }
+            });
+        }
+        
+        // Xử lý sắp xếp
+        const sortSelect = document.querySelector('select[name="sortBy"]');
+        const sortOrderInput = document.getElementById('sortOrderValue');
+        
+        if (sortSelect && sortOrderInput) {
+            sortSelect.addEventListener('change', function() {
+                if (this.value === 'title') {
+                    const currentValue = sortOrderInput.value;
+                    sortOrderInput.value = currentValue === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortOrderInput.value = 'desc';
+                }
+            });
+        }
+    });
+    </script>
+</div>

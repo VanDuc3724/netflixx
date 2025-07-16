@@ -1,0 +1,233 @@
+﻿@using System.Linq
+@model Netflixx.Models.ViewModel.MyListViewModel
+@{
+    ViewData["Title"] = "My List";
+    Layout = "_Layout";
+    // paging setup
+    int pageSize = 6;
+    int page = 1;
+    var pageQuery = Context.Request.Query["page"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(pageQuery) && int.TryParse(pageQuery, out var parsedPage))
+    {
+        page = parsedPage < 1 ? 1 : parsedPage;
+    }
+
+    var totalCount = Model.MyList.Count();
+    var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+    var pagedList = Model.MyList
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize)
+                         .ToList();
+}
+
+
+    <style>
+        .main-content {
+            background-color: #121212;
+            color: #fff;
+            height: 100%;
+        }
+        .main-content h4, .main-content h5,
+        .main-content .card-title, .main-content .card-text,
+        .main-content .text-muted {
+            color: #fff !important;
+        }
+        .main-content .form-control,
+        .main-content .form-select {
+            background-color: #333;
+            color: #fff;
+            border-color: #555;
+        }
+        .main-content .form-control::placeholder {
+            color: #bbb;
+        }
+        .main-content .form-select option {
+            background-color: #333;
+            color: #fff;
+        }
+        .main-content .btn-outline-light {
+            border-color: #fff;
+            color: #fff;
+        }
+        .main-content .btn-outline-light:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+    .pagination {
+        justify-content: center;
+    }
+
+        .pagination .page-link {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #555;
+            color: #fff;
+            border-color: #777;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #444;
+            color: #fff;
+            border-color: #444;
+        }
+
+    .avatar-trigger {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* ----- My List cards ----- */
+    .col-md-7 .card {
+        height: 450px; /* total card height */
+        display: flex;
+        flex-direction: column;
+        background-color: #222; /* optional, to match dark theme */
+    }
+
+        .col-md-7 .card .card-img-top {
+            height: 350px; /* image box height */
+            object-fit: fill;
+            object-position: center;
+        }
+
+        .col-md-7 .card .card-body {
+            flex: 1; /* fill remaining 50px */
+            overflow: hidden; /* prevent overflow if title is long */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+    /* ----- Based on your list cards ----- */
+    .col-md-3 .card {
+        height: 220px; /* total card height */
+        display: flex;
+        flex-direction: column;
+        background-color: #222;
+    }
+
+        .col-md-3 .card .card-img-top {
+            height: 190px; /* leave ~60px for title */
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .col-md-3 .card .card-body {
+            flex: 1;
+            padding: 0.25rem; /* keep your existing p-2 or adjust */
+            display: flex;
+            align-items: center; /* vertically center the small title */
+            justify-content: center;
+        }
+        .card-title {
+            min-height: 1.5rem !important;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+
+@* Toast notifications *@
+@await Html.PartialAsync("_ToastPartial")
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container-fluid main-content pt-5" style="min-height: calc(100vh - 59px); margin-top: 55px;">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <!-- 8‑col: your list -->
+        <div class="col-md-7">
+            <div class="d-flex mb-3 align-items-center">
+                <h4 class="me-4">My List</h4>
+                <form class="d-flex" method="get" asp-action="MyList">
+                    <input type="text" name="search" value="@Model.Search"
+                           class="form-control form-control-sm me-2" placeholder="Search…" />
+                    <select name="sortOrder" class="form-select form-select-sm me-2">
+                        <option value="">Sort</option>
+                        <option value="title_asc" selected="@(Model.SortOrder == "title_asc")">Title ↑</option>
+                        <option value="title_desc" selected="@(Model.SortOrder == "title_desc")">Title ↓</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-outline-light">Go</button>
+                </form>
+            </div>
+
+            <div class="row g-3">
+                @foreach (var film in pagedList)
+                {
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card bg-dark text-white">
+                            <img src="@(film.PosterPath ?? "/images/placeholder.png")"
+                                 class="card-img-top" alt="@film.Title" />
+                            <div class="card-body">
+                                <h5 class="card-title">@film.Title</h5>
+                                <form asp-action="RemoveFromList" method="post"
+                                      onsubmit='return confirm("Remove @film.Title from your list?");'>
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="filmId" value="@film.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Pagination *@
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination">
+                        <li class="page-item @(page == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="MyList" asp-route-page="@(page - 1)" asp-route-search="@Model.Search" asp-route-sortOrder="@Model.SortOrder">Previous</a>
+                        </li>
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == page ? "active" : "")">
+                                <a class="page-link" asp-action="MyList" asp-route-page="@i" asp-route-search="@Model.Search" asp-route-sortOrder="@Model.SortOrder">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(page == totalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="MyList" asp-route-page="@(page + 1)" asp-route-search="@Model.Search" asp-route-sortOrder="@Model.SortOrder">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+
+        <!-- 4‑col: based on your list -->
+        <div class="col-md-3">
+            <h4 style="margin-bottom: 1.4rem">Based on your list</h4>
+            @if (!Model.BasedOnYourList.Any())
+            {
+                <p class="text-muted">No recommendations yet.</p>
+            } else {
+            <div class="row g-2">
+                @foreach (var film in Model.BasedOnYourList)
+                {
+                    <div class="col-6">
+                        <div class="card bg-dark text-white">
+                                <img src="@(film.PosterPath ?? "/images/placeholder.png")"
+                                 class="card-img-top" alt="@film.Title" />
+                            <div class="card-body p-2">
+                                <p class="card-text small mb-0">@film.Title</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>

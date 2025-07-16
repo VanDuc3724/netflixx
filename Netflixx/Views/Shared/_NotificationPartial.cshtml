@@ -1,0 +1,29 @@
+﻿@{
+    // Use null-coalescing operator to handle potential null values
+    string? successMsg = TempData["success"]?.ToString();
+    string? errorMsg = TempData["error"]?.ToString();
+}
+
+@if (!string.IsNullOrEmpty(errorMsg))
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: '@Html.Raw(errorMsg)',
+            confirmButtonColor: '#e50914'
+        });
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(successMsg))
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            text: '@Html.Raw(successMsg)',
+            confirmButtonColor: '#e50914'
+        });
+    </script>
+}

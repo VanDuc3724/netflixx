@@ -1,0 +1,692 @@
+﻿@using Netflixx.Models
+@using Newtonsoft.Json
+@model IEnumerable<FilmsModel>
+
+@{
+    ViewData["Title"] = "Lịch sử chỉnh sửa";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <!-- Chỉ sử dụng Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="/css/filmmanager.css" />
+    <link rel="stylesheet" href="~/css/film.css" />
+
+    <style>
+        /* Sửa lỗi modal bị che */
+        .modal {
+            z-index: 1200; /* Cao hơn navbar (1100) */
+        }
+
+        .modal-dialog {
+            margin-top: 80px; /* Tạo khoảng cách với navbar */
+        }
+
+        /* Đảm bảo modal backdrop che phủ đúng */
+        .modal-backdrop {
+            z-index: 1100; /* Thấp hơn modal nhưng cao hơn các phần tử khác */
+        }
+
+        body {
+            background-color: #1f1f1f;
+            color: #fff;
+            transition: margin-left 0.3s;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            z-index: 1100;
+        }
+
+        .form-group {
+            color: white;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            width: 230px;
+            background-color: #2c2c2c;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #444;
+        }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .sidebar a {
+                display: block;
+                padding: 15px 20px;
+                color: #fff;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+                .sidebar a:hover {
+                    background-color: #ff4d6d;
+                }
+
+        .main-content {
+            margin-left: 230px;
+            padding: 100px 20px 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+        .toggle-btn,
+        .show-sidebar-btn {
+            position: fixed;
+            top: 75px;
+            z-index: 1200;
+            background-color: #ff4d6d;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .toggle-btn {
+            left: 10px;
+        }
+
+        .show-sidebar-btn {
+            left: 10px;
+            display: none;
+        }
+
+        .sidebar.collapsed ~ .show-sidebar-btn {
+            display: block;
+        }
+
+        .card {
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #ff4d6d;
+            color: #fff;
+        }
+
+        .filter-card .card-header {
+            background-color: #ff4d6d;
+        }
+
+        .btn-primary {
+            background-color: #ff4d6d;
+            border: none;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border: none;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        /* Pagination Styling */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+            .pagination .page-item .page-link {
+                padding: 10px 15px;
+                border-radius: 8px;
+                background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+                border: 1px solid #555;
+                color: #fff;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+
+                .pagination .page-item .page-link:hover {
+                    background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+                    border-color: #ff4d6d;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+                }
+
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(135deg, #ff4d6d, #ff6b7a);
+                border-color: #ff4d6d;
+                box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            }
+
+        .pagination-info {
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .modal-content {
+            background-color: #2c2c2c;
+            color: #fff;
+        }
+
+        .badge-primary {
+            background-color: #ff4d6d;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-secondary {
+            background-color: #6c757d;
+        }
+
+        .form-control {
+            background-color: #3c3c3c;
+            border: 1px solid #555;
+            color: #fff;
+        }
+
+            .form-control:focus {
+                background-color: #3c3c3c;
+                border-color: #ff4d6d;
+                color: #fff;
+                box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.25);
+            }
+
+        /* ===== Header style from Trash page ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.75rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Custom styles for film list */
+        .film-list-card-header {
+            position: relative;
+            padding: 1rem;
+            background-color: #ff4d6d;
+            color: #fff;
+        }
+
+        .dataTables_wrapper .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_wrapper .bottom {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 1rem;
+        }
+
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .price-column {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .film-list-btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .film-list-btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .film-list-btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .film-list-btn-info {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        .table-dark {
+            background-color: #2c2c2c;
+            color: #fff;
+        }
+
+            .table-dark th,
+            .table-dark td,
+            .table-dark thead th {
+                border-color: #444;
+            }
+
+            .table-dark.table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .bg-primary {
+            background-color: #007bff !important;
+        }
+
+        .bg-warning {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+
+        .bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        /* Màu sắc cho các badge */
+        .film-list-badge-success {
+            background-color: #28a745 !important; /* Xanh lá - Tạo mới */
+            color: white !important;
+        }
+
+        .film-list-badge-warning {
+            background-color: #ffc107 !important; /* Vàng - Chỉnh sửa */
+            color: #212529 !important;
+        }
+
+        .film-list-badge-danger {
+            background-color: #dc3545 !important; /* Đỏ - Xóa */
+            color: white !important;
+        }
+
+        .film-list-badge-info {
+            background-color: #17a2b8 !important; /* Xanh dương - Khôi phục */
+            color: white !important;
+        }
+
+        .film-list-badge-secondary {
+            background-color: #6c757d !important; /* Xám - Mặc định */
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="filmListSidebar">
+        <div>
+            <a class="d-flex align-items-center justify-content-center gap-1 text-decoration-none py-3">
+                <strong>MENU</strong>
+            </a>
+            <a asp-action="Search"><i class="fas fa-filter me-2"></i> Tìm kiếm & Lọc</a>
+            <a asp-action="Create"><i class="fas fa-plus me-2"></i> Thêm phim mới</a>
+            <a asp-action="History" class="active"><i class="fas fa-history me-2"></i> Lịch sử chỉnh sửa</a>
+            <a asp-action="Trash"><i class="fas fa-trash-alt me-2"></i> Thùng rác</a>
+        </div>
+    </div>
+
+    <!-- Sidebar Toggle Buttons -->
+    <button id="filmListToggleSidebar" class="toggle-btn">
+        <i class="fas fa-angle-double-left"></i>
+    </button>
+    <button id="filmListShowSidebar" class="show-sidebar-btn">
+        <i class="fas fa-angle-double-right"></i>
+    </button>
+
+    <!-- Main Content -->
+    <div class="main-content" id="filmListMainContent">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-history me-2 text-warning"></i>
+                            Lịch Sử Chỉnh Sửa
+                        </h2>
+                        <p class="text-muted mb-0">Xem lịch sử các thay đổi trên hệ thống phim</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-badge">
+                            <span class="stat-number">@Model.Count()</span>
+                            <span class="stat-label">Bản ghi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Card -->
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong><i class="fas fa-filter"></i> Tìm kiếm & Lọc</strong>
+            </div>
+
+            <div class="card-body">
+                <!-- Search Form -->
+                <form method="get" asp-action="History" class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Tìm kiếm</label>
+                                <input type="text" class="form-control" name="searchKeyword"
+                                       placeholder="Tìm theo phim hoặc người dùng" value="@Context.Request.Query["searchKeyword"]">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Hành động</label>
+                                <select class="form-select" name="actionType">
+                                    <option value="">Tất cả hành động</option>
+                                    <option value="Update" selected="@(Context.Request.Query["actionType"] == "Update")">Chỉnh sửa</option>
+                                    <option value="Create" selected="@(Context.Request.Query["actionType"] == "Create")">Tạo mới</option>
+                                    <option value="Delete" selected="@(Context.Request.Query["actionType"] == "Delete")">Xoá</option>
+                                    <option value="Restore" selected="@(Context.Request.Query["actionType"] == "Restore")">Khôi phục</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="form-label">Từ ngày</label>
+                                <input type="date" class="form-control" name="fromDate"
+                                       value="@Context.Request.Query["fromDate"]">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="form-label">Đến ngày</label>
+                                <input type="date" class="form-control" name="toDate"
+                                       value="@Context.Request.Query["toDate"]">
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Lọc
+                            </button>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <a href="@Url.Action("History")" class="btn btn-secondary w-100">
+                                <i class="fas fa-times me-1"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-info alert-dismissible fade show">
+                        @ViewBag.Message
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <!-- History list -->
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">STT</th>
+                                <th width="20%">Tên phim</th>
+                                <th width="15%">Hành động</th>
+                                <th width="15%">Người chỉnh sửa</th>
+                                <th width="15%">Thời gian</th>
+                                <th width="10%">Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int counter = 1;
+                            }
+                            @foreach (var record in Model)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@record.Title</td>
+                                    <td>
+                                        @switch (record.LastAction)
+                                        {
+                                            case "Create":
+                                                <span class="badge film-list-badge-success">Tạo mới</span>
+                                                break;
+                                            case "Update":
+                                                <span class="badge film-list-badge-warning">Chỉnh sửa</span>
+                                                break;
+                                            case "Delete":
+                                                <span class="badge film-list-badge-danger">Xoá</span>
+                                                break;
+                                            case "Restore":
+                                                <span class="badge film-list-badge-info">Khôi phục</span>
+                                                break;
+                                            default:
+                                                <span class="badge film-list-badge-secondary">@record.LastAction</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@record.ModifiedBy</td>
+                                    <td>@record.ModificationDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal-@record.Id">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chi tiết -->
+    @foreach (var record in Model)
+    {
+        <div class="modal fade" id="detailModal-@record.Id" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header film-list-card-header">
+                        <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Chi tiết thay đổi - @record.Title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-dark">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p><strong>Hành động:</strong></p>
+                                @switch (record.LastAction)
+                                {
+                                    case "Create":
+                                        <span class="badge film-list-badge-success">Tạo mới</span>
+                                        break;
+                                    case "Update":
+                                        <span class="badge film-list-badge-warning">Chỉnh sửa</span>
+                                        break;
+                                    case "Delete":
+                                        <span class="badge film-list-badge-danger">Xoá</span>
+                                        break;
+                                    case "Restore":
+                                        <span class="badge film-list-badge-info">Khôi phục</span>
+                                        break;
+                                    default:
+                                        <span class="badge film-list-badge-secondary">@record.LastAction</span>
+                                        break;
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Người thực hiện:</strong> @record.ModifiedBy</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Thời gian:</strong> @record.ModificationDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h5><i class="fas fa-film me-2"></i>Thông tin phim</h5>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Tiêu đề</strong></td>
+                                            <td>@record.Title</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Thể loại</strong></td>
+                                            <td>@record.Genre</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Thời lượng</strong></td>
+                                            <td>@record.Duration phút</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Ngày phát hành</strong></td>
+                                            <td>@record.ReleaseDate?.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Trạng thái</strong></td>
+                                            <td>@record.Status</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Đạo diễn</strong></td>
+                                            <td>@record.Director</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Diễn viên</strong></td>
+                                            <td>@record.Actors</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Mô tả</strong></td>
+                                            <td>@record.Description</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-dark">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Xử lý sidebar
+            $('#filmListToggleSidebar').click(function () {
+                $('#filmListSidebar').addClass('collapsed');
+                $('#filmListMainContent').addClass('expanded');
+                $('#filmListShowSidebar').show();
+                $(this).hide();
+            });
+
+            $('#filmListShowSidebar').click(function () {
+                $('#filmListSidebar').removeClass('collapsed');
+                $('#filmListMainContent').removeClass('expanded');
+                $('#filmListShowSidebar').hide();
+                $('#filmListToggleSidebar').show();
+            });
+
+            // Ẩn nút show sidebar ban đầu
+            $('#filmListShowSidebar').hide();
+
+            // Khởi tạo DataTable
+            var table = $('#dataTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 15, 20],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json",
+                    "info": "",
+                    "paginate": {
+                        "previous": "Trước",
+                        "next": "Tiếp"
+                    }
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": [5] }
+                ],
+                "dom": '<"top"lf>rt<"bottom"p><"clear">',
+                "initComplete": function() {
+                    $('.dataTables_filter input').addClass('form-control').attr('placeholder', 'Tìm kiếm...');
+                    $('.dataTables_length').prependTo('#dataTable_wrapper .top');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
