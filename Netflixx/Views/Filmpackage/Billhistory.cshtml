@@ -340,10 +340,6 @@
                                     </tr>
                                 }
                             }
-                            else
-                            {
-                                <tr><td colspan="6" class="loading">Không có giao dịch nào</td></tr>
-                            }
                         </tbody>
                     </table>
                 </div>
@@ -391,10 +387,6 @@
                                     </tr>
                                 }
                             }
-                            else
-                            {
-                                <tr><td colspan="4" class="loading">Không có giao dịch mua phim nào</td></tr>
-                            }
                         </tbody>
                     </table>
                 </div>
@@ -416,7 +408,8 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json',
                     lengthMenu: 'Hiển thị _MENU_ mục',
-                    paginate: { previous: 'Trước', next: 'Sau' }
+                    paginate: { previous: 'Trước', next: 'Sau' },
+                    emptyTable: 'Không có giao dịch nào'
                 },
                 dom: 'rt<"bottom"ip><"clear">'
             });
@@ -450,7 +443,8 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json',
                     lengthMenu: 'Hiển thị _MENU_ mục',
-                    paginate: { previous: 'Trước', next: 'Sau' }
+                    paginate: { previous: 'Trước', next: 'Sau' },
+                    emptyTable: 'Không có giao dịch mua phim nào'
                 },
                 dom: 'rt<"bottom"ip><"clear">'
             });
