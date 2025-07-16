@@ -324,7 +324,6 @@
                                 <th>Trạng thái</th>
                                 <th>Số tiền</th>
                                 <th>Nhà cung cấp</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -338,22 +337,6 @@
                                         <td>@t.Status</td>
                                         <td>@t.Amount.ToString("N0") @t.Currency</td>
                                         <td>@t.Provider?.Name</td>
-                                        <td>
-                                            <button type="button" class="action-btn view-detail-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#transactionDetailModal"
-                                                    data-id="@t.TransactionID"
-                                                    data-date="@t.TransactionDate.ToString("dd/MM/yyyy")"
-                                                    data-ref="@t.ExternalTransactionRef"
-                                                    data-status="@t.Status"
-                                                    data-amount="@t.Amount.ToString("N0") @t.Currency"
-                                                    data-provider="@t.Provider?.Name"
-                                                    data-environment="@t.Environment?.Name"
-                                                    data-films="@((t.FilmPurchases != null && t.FilmPurchases.Any()) ? string.Join(", ", t.FilmPurchases.Select(fp => fp.Film?.Title ?? string.Empty)) : string.Empty)"
-                                                    data-points="@((t.RelatedPointsTransactions != null && t.RelatedPointsTransactions.Any()) ? t.RelatedPointsTransactions.Sum(pt => pt.PointsChange) : 0)"
-                                                    data-reason="@((t.RelatedPointsTransactions != null && t.RelatedPointsTransactions.Any()) ? string.Join(", ", t.RelatedPointsTransactions.Select(pt => pt.Reason)) : string.Empty)">
-                                                Chi tiết
-                                            </button>
-                                        </td>
                                     </tr>
                                 }
                             }
@@ -419,35 +402,6 @@
 
         </div>
 
-        <div class="modal fade" id="transactionDetailModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Chi tiết giao dịch</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body px-4">
-                        <table class="table table-borderless text-white mb-0">
-                            <tbody>
-                                <tr><th class="w-25">ID giao dịch</th><td id="tdId"></td></tr>
-                                <tr><th>Ngày</th><td id="tdDate"></td></tr>
-                                <tr><th>Mã giao dịch</th><td id="tdRef"></td></tr>
-                                <tr><th>Trạng thái</th><td id="tdStatus"></td></tr>
-                                <tr><th>Số tiền</th><td id="tdAmount"></td></tr>
-                                <tr><th>Nhà cung cấp</th><td id="tdProvider"></td></tr>
-                                <tr><th>Môi trường</th><td id="tdEnv"></td></tr>
-                                <tr><th>Phim liên quan</th><td id="tdFilms"></td></tr>
-                                <tr><th>Điểm thay đổi</th><td id="tdPoints"></td></tr>
-                                <tr><th>Ghi chú</th><td id="tdReason"></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </main>
 @section Scripts {
@@ -524,19 +478,6 @@
                 purchasesTable.column(1).search(this.value).draw();
             });
 
-            $('#transactionDetailModal').on('show.bs.modal', function (event) {
-                var btn = $(event.relatedTarget);
-                $('#tdId').text(btn.data('id'));
-                $('#tdDate').text(btn.data('date'));
-                $('#tdRef').text(btn.data('ref'));
-                $('#tdStatus').text(btn.data('status'));
-                $('#tdAmount').text(btn.data('amount'));
-                $('#tdProvider').text(btn.data('provider'));
-                $('#tdEnv').text(btn.data('environment'));
-                $('#tdFilms').text(btn.data('films'));
-                $('#tdPoints').text(btn.data('points'));
-                $('#tdReason').text(btn.data('reason'));
-            });
         });
     </script>
 }
