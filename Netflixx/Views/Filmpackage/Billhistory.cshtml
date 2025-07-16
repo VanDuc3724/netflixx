@@ -348,9 +348,9 @@
                                                     data-amount="@t.Amount.ToString("N0") @t.Currency"
                                                     data-provider="@t.Provider?.Name"
                                                     data-environment="@t.Environment?.Name"
-                                                    data-films="@string.Join(", ", t.FilmPurchases.Select(fp => fp.Film?.Title ?? string.Empty))"
+                                                    data-films="@((t.FilmPurchases != null && t.FilmPurchases.Any()) ? string.Join(", ", t.FilmPurchases.Select(fp => fp.Film?.Title ?? string.Empty)) : string.Empty)"
                                                     data-points="@((t.RelatedPointsTransactions != null && t.RelatedPointsTransactions.Any()) ? t.RelatedPointsTransactions.Sum(pt => pt.PointsChange) : 0)"
-                                                    data-reason="@string.Join(", ", t.RelatedPointsTransactions.Select(pt => pt.Reason))">
+                                                    data-reason="@((t.RelatedPointsTransactions != null && t.RelatedPointsTransactions.Any()) ? string.Join(", ", t.RelatedPointsTransactions.Select(pt => pt.Reason)) : string.Empty)">
                                                 Chi tiết
                                             </button>
                                         </td>
