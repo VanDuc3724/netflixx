@@ -23,6 +23,7 @@ namespace Netflixx.Controllers
         public async Task<IActionResult> Index()
         {
             var packages = await _context.Packages
+                .Include(p => p.PackageFilms)
                 .AsNoTracking()
                 .OrderBy(p => p.Name)
                 .ToListAsync();
