@@ -38,12 +38,12 @@
                     <td>
                         <div class="btn-group" role="group">
                             <a asp-action="Edit" asp-route-BrandId="@brand.Id"
-                               class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
+                               class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a asp-action="Remove" asp-route-BrandId="@brand.Id"
-                               class="btn btn-sm btn-danger confirmDeletion">
-                                <i class="fas fa-trash"></i>
+                               class="btn btn-sm btn-danger confirmDeletion" title="Xóa">
+                                <i class="fa-solid fa-trash"></i>
                             </a>
                         </div>
                     </td>
