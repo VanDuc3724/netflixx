@@ -57,6 +57,7 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             return View(brand);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int BrandId, BrandSouModel brand)
