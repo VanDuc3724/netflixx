@@ -38,6 +38,9 @@ namespace Netflixx.Controllers
             var transactions = await _context.PaymentTransactions
                 .Include(t => t.Provider)
                 .Include(t => t.Environment)
+                .Include(t => t.FilmPurchases)
+                    .ThenInclude(fp => fp.Film)
+                .Include(t => t.RelatedPointsTransactions)
                 .Where(t => t.UserID == user.Id)
                 .OrderByDescending(t => t.TransactionDate)
                 .ToListAsync();
