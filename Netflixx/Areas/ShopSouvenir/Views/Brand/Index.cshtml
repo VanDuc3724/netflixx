@@ -1,1 +1,62 @@
-﻿
+@model IEnumerable<Netflixx.Models.BrandSouModel>
+@{
+    ViewData["Title"] = "Danh sách Thương hiệu";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@ViewData["Title"]</h3>
+    <a asp-action="Add" class="btn btn-success">
+        <i class="fas fa-plus"></i> Thêm Thương hiệu
+    </a>
+</div>
+
+@await Html.PartialAsync("_NotificationPartial")
+
+<table class="table table-striped" id="brandTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+@{
+    var index = 1;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@index</td>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Sửa">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?');" title="Xóa">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        index++;
+    }
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#brandTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                }
+            });
+        });
+    </script>
+}
