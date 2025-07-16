@@ -31,3 +31,13 @@
 .result-icon {
     font-size: 4rem;
 }
+
+.amount-suggestions .amount-btn {
+    min-width: 100px;
+}
+
+.amount-suggestions .amount-btn.active {
+    background-color: #e50914;
+    border-color: #e50914;
+    color: #fff;
+}
