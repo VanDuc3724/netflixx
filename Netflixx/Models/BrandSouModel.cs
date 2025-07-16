@@ -1,11 +1,13 @@
-﻿using Netflixx.Models.Souvenir;
+using Netflixx.Models.Souvenir;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netflixx.Models
 {
     public class BrandSouModel
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Brand name is required")]
