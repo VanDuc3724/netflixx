@@ -37,27 +37,27 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             return View(model);
         }
 
-        [HttpPost("AddToCart/{id}/{quantity?}")]
-        public async Task<IActionResult> AddToCart(int id, int quantity = 1)
+        [HttpPost("AddToCart")]
+        public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
         {
             try
             {
-                var product = await _context.ProductSous.FindAsync(id);
+                var product = await _context.ProductSous.FindAsync(request.Id);
                 if (product == null)
                 {
                     return Json(new { success = false, message = "Product not found" });
                 }
 
                 var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
-                var item = cart.FirstOrDefault(x => x.ProductId == id);
+                var item = cart.FirstOrDefault(x => x.ProductId == request.Id);
 
                 if (item == null)
                 {
-                    cart.Add(new CartModel(product) { Quantity = quantity });
+                    cart.Add(new CartModel(product) { Quantity = request.Quantity });
                 }
                 else
                 {
-                    item.Quantity += quantity;
+                    item.Quantity += request.Quantity;
                 }
 
                 HttpContext.Session.SetJson("cart", cart);
