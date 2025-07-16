@@ -9,4 +9,9 @@
 .brand-manager-card {
     width: 100%;
     max-width: 600px;
+    color: #000 !important;
+}
+
+.brand-manager-card .btn {
+    color: #fff !important;
 }
