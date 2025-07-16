@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Repositories;
 using ProductionManagerApp.Models;
@@ -7,9 +8,10 @@ using System.IO;
 using System.Linq;
 
 
+[Authorize]
+[Area("Manager")]
 
-namespace Netflixx.Controllers
-{
+
     public class ProductionManagerController : Controller
     {
         private readonly DBContext _context;
@@ -24,7 +26,7 @@ namespace Netflixx.Controllers
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["YearFilter"] = yearFilter;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
             ViewData["YearSortParm"] = sortOrder == "Year" ? "year_desc" : "Year";
 
@@ -33,7 +35,7 @@ namespace Netflixx.Controllers
                                      select pm;
 
             // Tìm kiếm
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 productionManagers = productionManagers.Where(pm => pm.Name.Contains(searchString)
                                                        || pm.Country.Contains(searchString)
@@ -539,4 +541,3 @@ namespace Netflixx.Controllers
         }
 
     }
-}

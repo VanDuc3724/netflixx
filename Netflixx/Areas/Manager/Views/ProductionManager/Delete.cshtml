@@ -5,8 +5,9 @@
     {
         Layout = null;
     }
-    ViewData["Title"] = "Xóa vĩnh viễn công ty sản xuất";
+    ViewData["Title"] = "Xóa công ty sản xuất";
     ViewData["ProductionManagerId"] = Model.Id;
+    Layout = "_ManagerLayout";
 }
 
 @if (!isAjax)
@@ -379,7 +380,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <h1><i class="fas fa-trash-alt"></i> @ViewData["Title"]</h1>
-                <p class="warning-text">Bạn có chắc muốn xóa vĩnh viễn công ty này?</p>
+                <p class="warning-text">Bạn có chắc muốn xóa công ty này?</p>
             </div>
 
             <!-- Warning Message -->
@@ -458,11 +459,11 @@
                     }
                 </div>
 
-                <form asp-action="HardDelete" class="mt-4">
+                <form asp-action="Delete" class="mt-4">
                     <input type="hidden" asp-for="Id" />
                     <div class="action-buttons">
                         <button type="submit" class="btn-delete">
-                            <i class="fas fa-trash-alt"></i> Xác nhận xóa vĩnh viễn
+                            <i class="fas fa-trash-alt"></i> Xác nhận xóa
                         </button>
                         <a asp-action="Index" class="btn-cancel">
                             <i class="fas fa-times"></i> Hủy bỏ
@@ -657,7 +658,7 @@ else
     </style>
 
     <div class="modal-content">
-        <form asp-action="HardDelete" method="post">
+        <form asp-action="Delete" method="post">
             <div class="modal-header">
                 <h5 class="modal-title">@ViewData["Title"]</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -665,7 +666,7 @@ else
             <div class="modal-body">
                 <div class="modal-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <p>Bạn chắc chắn muốn xóa vĩnh viễn chứ!</p>
+                    <p>Bạn chắc chắn muốn xóa chứ!</p>
                 </div>
 
                 <div class="company-modal-info">
@@ -695,7 +696,7 @@ else
             <div class="modal-footer">
                 <input type="hidden" asp-for="Id" />
                 <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-trash-alt"></i> Xác nhận xóa vĩnh viễn
+                    <i class="fas fa-trash-alt"></i> Xác nhận xóa
                 </button>
                 <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Hủy bỏ
