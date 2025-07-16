@@ -1,7 +1,7 @@
 ﻿@model Netflixx.Models.BrandSouModel
 
 @{
-    ViewData["Title"] = "Edit Brand";
+    ViewData["Title"] = "Create Brand";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,14 +11,12 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-edit"></i> Edit Brand
+                        <i class="fas fa-plus"></i> Add New Brand
                     </h3>
                 </div>
-                <form asp-action="Edit" method="post">
+                <form asp-action="Create" method="post">
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
-                        <input type="hidden" asp-for="Id" />
 
                         <div class="form-group">
                             <label asp-for="Name" class="form-label">Brand Name</label>
@@ -32,38 +30,15 @@
                                       placeholder="Enter brand description"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-
-                        <!-- Brand Info -->
-                        <div class="card card-outline card-info">
-                            <div class="card-header">
-                                <h4 class="card-title">Brand Information</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <strong>Brand ID:</strong> @Model.Id
-                                    </div>
-                                    <div class="col-md-6">
-                                        <strong>Products Count:</strong>
-                                        <span class="badge badge-info">@Model.Products.Count</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Update Brand
+                                    <i class="fas fa-save"></i> Create Brand
                                 </button>
                                 <a asp-action="Index" class="btn btn-secondary">
                                     <i class="fas fa-times"></i> Cancel
-                                </a>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
-                                    <i class="fas fa-eye"></i> View Details
                                 </a>
                             </div>
                         </div>
@@ -103,9 +78,6 @@
                 }
             });
 
-            // Trigger character counter on page load
-            $('textarea[name="Description"]').trigger('input');
-
             // Form validation enhancement
             $('form').on('submit', function(e) {
                 var name = $('input[name="Name"]').val().trim();
@@ -125,22 +97,7 @@
 
                 // Show loading state
                 $(this).find('button[type="submit"]').prop('disabled', true)
-                    .html('<i class="fas fa-spinner fa-spin"></i> Updating...');
-            });
-
-            // Unsaved changes warning
-            var formChanged = false;
-            $('input, textarea').on('change', function() {
-                formChanged = true;
-            });
-
-            $('a[href], button[type="button"]').on('click', function(e) {
-                if (formChanged) {
-                    if (!confirm('You have unsaved changes. Are you sure you want to leave?')) {
-                        e.preventDefault();
-                        return false;
-                    }
-                }
+                    .html('<i class="fas fa-spinner fa-spin"></i> Creating...');
             });
         });
     </script>
