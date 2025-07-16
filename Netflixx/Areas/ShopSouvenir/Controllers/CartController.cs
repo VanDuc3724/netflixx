@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Netflixx.Areas.ShopSouvenir.Models;
-using Netflixx.Models;
 using Netflixx.Models.Souvenir;
 using Netflixx.Repositories;
 using System.Text.Json;
@@ -15,12 +11,9 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
     public class CartController : Controller
     {
         private readonly DBContext _context;
-        private readonly UserManager<AppUserModel> _userManager;
-
-        public CartController(DBContext context, UserManager<AppUserModel> userManager)
+        public CartController(DBContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -45,7 +38,7 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         }
 
         [HttpPost("AddToCart")]
-        public async Task<IActionResult> AddToCart(AddToCartRequest request)
+        public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
         {
             try
             {
@@ -174,81 +167,6 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             }
 
             return Json(new { success = false, message = "Mã giảm giá không hợp lệ" });
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> PayWithCoins()
-        {
-            var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
-            if (!cart.Any())
-            {
-                TempData["error"] = "Giỏ hàng trống.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
-
-            var account = await _context.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
-            if (account == null)
-            {
-                TempData["error"] = "Không tìm thấy tài khoản.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var total = cart.Sum(x => x.Quantity * x.Price);
-            int totalCoins = (int)Math.Ceiling(total);
-
-            if (account.PointsBalance < totalCoins)
-            {
-                TempData["error"] = "Không đủ coin để thanh toán.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var order = new OrderSouModel
-            {
-                OrderCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(),
-                CustomerId = user.Id,
-                CouponCode = HttpContext.Session.GetString("coupon"),
-                OrderDate = DateTime.UtcNow,
-                TotalAmount = total,
-                Status = "Paid"
-            };
-
-            _context.OrderSous.Add(order);
-            await _context.SaveChangesAsync();
-
-            foreach (var item in cart)
-            {
-                _context.OrderDetailSous.Add(new OrderDetailSouModel
-                {
-                    OrderId = order.OrderId,
-                    OrderCode = order.OrderCode,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.Price,
-                    Subtotal = item.TotalPrice
-                });
-            }
-
-            account.PointsBalance -= totalCoins;
-            _context.PointsTransactions.Add(new PointsTransactionsModel
-            {
-                UserID = user.Id,
-                TransactionDate = DateTime.UtcNow,
-                PointsChange = -totalCoins,
-                Reason = $"Purchase souvenir order {order.OrderCode}"
-            });
-
-            await _context.SaveChangesAsync();
-
-            HttpContext.Session.Remove("cart");
-            HttpContext.Session.Remove("coupon");
-            HttpContext.Session.Remove("discount");
-
-            TempData["success"] = "Thanh toán thành công bằng coin!";
-            return RedirectToAction(nameof(Index));
         }
 
     }
