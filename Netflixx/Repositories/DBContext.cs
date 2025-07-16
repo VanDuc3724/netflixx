@@ -75,10 +75,13 @@ namespace Netflixx.Repositories
        .OnDelete(DeleteBehavior.SetNull);         
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ProductSouModel>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
 
-            modelBuilder.Entity<FilmsModel>()
-        .Property(f => f.Price)
-        .HasPrecision(18, 2);
+            modelBuilder.Entity<OrderDetailSouModel>()
+                .Property(od => od.UnitPrice)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<OrderDetailSouModel>()
                 .Property(od => od.Subtotal)

@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Models.Souvenir;
 using Netflixx.Models.ViewModel;
 using Netflixx.Repositories;
-using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.WebRequestMethods;
 
 namespace Netflixx.Areas.ShopSouvenir.Controllers
 {
@@ -19,12 +15,10 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
     public class ProductSouController : Controller
     {
         private readonly DBContext _context;
-        private readonly IWebHostEnvironment _webHostEn;
 
-        public ProductSouController(DBContext context, IWebHostEnvironment webHostEn)
+        public ProductSouController(DBContext context)
         {
             _context = context;
-            _webHostEn = webHostEn;
         }
 
         [HttpGet]
@@ -38,318 +32,181 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             return View(products);
         }
 
-        [HttpGet]
         public IActionResult Create()
         {
-            // Lấy dữ liệu và log để debug
-            var categories = _context.CategorySous.ToList();
-            var brands = _context.BrandSous.ToList();
-            var series = _context.SeriesSous.ToList();
+            // Đảm bảo dữ liệu được lấy đúng
+            var categories = _context.CategorySous
+                .Select(c => new { c.Id, c.Name })
+                .ToList();
 
-            Console.WriteLine($"First category: {categories.FirstOrDefault()?.Name}");
+            var viewModel = new ProductCreateViewModel
+            {
+                Product = new ProductSouModel(),
+                Categories = new SelectList(categories, "Id", "Name"),
+                Brands = new SelectList(_context.BrandSous.ToList(), "Id", "Name"),
+                Series = new SelectList(_context.SeriesSous.ToList(), "Id", "Name")
+            };
 
-            // Tạo SelectList với kiểm tra null
-            ViewBag.CategoryId = categories.Any()
-                ? new SelectList(categories, "Id", "Name")
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-
-            ViewBag.BrandId = brands.Any()
-                ? new SelectList(brands, "Id", "Name")
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-
-            ViewBag.SeriesId = series.Any()
-                ? new SelectList(series, "Id", "Name")
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-
-            return View();
+            // Debug cuối cùng
+            Console.WriteLine($"Categories count: {viewModel.Categories.Count()}");
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-    [Bind("Name,CategoryId,BrandId,SeriesId,Price,StockQuantity,Description,ImageUpload")]
-    ProductSouModel product)
+        public async Task<IActionResult> Create([Bind("Product,Categories,Brands,Series")] ProductCreateViewModel viewModel)
         {
-            Console.WriteLine($"Received model: Name={product.Name}, CategoryId={product.CategoryId}, BrandId={product.BrandId}, SeriesId={product.SeriesId}");
-            // Debug received values
-            Console.WriteLine($"Received values - Price: {product.Price}, Stock: {product.StockQuantity}");
-
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var errors = ModelState
-                    .Where(x => x.Value.Errors.Count > 0)
-                    .Select(x => new { x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
-
-                Console.WriteLine("Validation errors:");
-                foreach (var error in errors)
+                // Handle file upload
+                if (viewModel.Product.ImageUpload != null && viewModel.Product.ImageUpload.Length > 0)
                 {
-                    Console.WriteLine($"{error.Key}: {string.Join(", ", error.Errors)}");
-                }
-
-                // Repopulate dropdowns
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
-
-                return View(product);
-            }
-            foreach (var entry in ModelState)
-            {
-                Console.WriteLine($"{entry.Key}: {string.Join(", ", entry.Value.Errors.Select(e => e.ErrorMessage))}");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                // Load lại dữ liệu dropdown
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
-
-                return View(product); // Trả về view với model hiện tại
-            }
-
-            try
-            {
-                // Xử lý upload file
-                if (product.ImageUpload != null && product.ImageUpload.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(_webHostEn.WebRootPath, "uploads");
+                    var uploadsFolder = Path.Combine("wwwroot", "image", "products");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
                     }
 
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.ImageUpload.FileName;
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + viewModel.Product.ImageUpload.FileName;
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        await product.ImageUpload.CopyToAsync(fileStream);
+                        await viewModel.Product.ImageUpload.CopyToAsync(fileStream);
                     }
 
-                    product.ImageUrl = "/uploads/" + uniqueFileName;
+                    viewModel.Product.ImageUrl = "/image/products/" + uniqueFileName;
                 }
 
-                // Debug trước khi save
-                Console.WriteLine($"Saving product: {System.Text.Json.JsonSerializer.Serialize(product)}");
-
-                _context.ProductSous.Add(product);
-                await _context.SaveChangesAsync(); // Đảm bảo có await
-
-                TempData["success"] = "Thêm sản phẩm thành công";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                // Log lỗi chi tiết
-                Console.WriteLine($"Error saving product: {ex}");
-
-                TempData["error"] = "Lỗi khi lưu sản phẩm: ";
-
-                // Load lại dữ liệu dropdown
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
-
-                return View(product);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var product = await _context.ProductSous
-                .Include(p => p.Category)
-                .Include(p => p.Brand)
-                .Include(p => p.Series)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            // Lấy dữ liệu và log để debug
-            var categories = _context.CategorySous.ToList();
-            var brands = _context.BrandSous.ToList();
-            var series = _context.SeriesSous.ToList();
-
-            Console.WriteLine($"Editing product: {product.Name}, Category: {product.Category?.Name}");
-
-            // Tạo SelectList với kiểm tra null và giá trị đã chọn
-            ViewBag.CategoryId = categories.Any()
-                ? new SelectList(categories, "Id", "Name", product.CategoryId)
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-            ViewBag.BrandId = brands.Any()
-                ? new SelectList(brands, "Id", "Name", product.BrandId)
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-            ViewBag.SeriesId = series.Any()
-                ? new SelectList(series, "Id", "Name", product.SeriesId)
-                : new SelectList(Enumerable.Empty<SelectListItem>());
-
-            return View(product);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,BrandId,SeriesId,Price,StockQuantity,Description,ImageUpload,ImageUrl")] ProductSouModel product)
-        {
-            Console.WriteLine($"Received model for edit: Id={id}, Name={product.Name}, CategoryId={product.CategoryId}, BrandId={product.BrandId}, SeriesId={product.SeriesId}");
-            Console.WriteLine($"Received values - Price: {product.Price}, Stock: {product.StockQuantity}");
-
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value.Errors.Count > 0)
-                    .Select(x => new { x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
-                Console.WriteLine("Validation errors:");
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"{error.Key}: {string.Join(", ", error.Errors)}");
-                }
-
-                // Repopulate dropdowns with selected values
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
-
-                return View(product);
-            }
-
-            try
-            {
-                var existingProduct = await _context.ProductSous.FindAsync(id);
-                if (existingProduct == null)
-                {
-                    return NotFound();
-                }
-
-                // Update existing product properties
-                existingProduct.Name = product.Name;
-                existingProduct.CategoryId = product.CategoryId;
-                existingProduct.BrandId = product.BrandId;
-                existingProduct.SeriesId = product.SeriesId;
-                existingProduct.Price = product.Price;
-                existingProduct.StockQuantity = product.StockQuantity;
-                existingProduct.Description = product.Description;
-
-                // Handle image upload if a new file is provided
-                if (product.ImageUpload != null && product.ImageUpload.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(_webHostEn.WebRootPath, "uploads");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    // Delete old image if it exists
-                    if (!string.IsNullOrEmpty(existingProduct.ImageUrl) && System.IO.File.Exists(Path.Combine(_webHostEn.WebRootPath, existingProduct.ImageUrl.TrimStart('/'))))
-                    {
-                        System.IO.File.Delete(Path.Combine(_webHostEn.WebRootPath, existingProduct.ImageUrl.TrimStart('/')));
-                    }
-
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.ImageUpload.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await product.ImageUpload.CopyToAsync(fileStream);
-                    }
-
-                    existingProduct.ImageUrl = "/uploads/" + uniqueFileName;
-                }
-
-                // Debug before save
-                Console.WriteLine($"Updating product: {System.Text.Json.JsonSerializer.Serialize(existingProduct)}");
-
-                _context.Entry(existingProduct).State = EntityState.Modified;
+                _context.Add(viewModel.Product);
                 await _context.SaveChangesAsync();
-
-                TempData["success"] = "Cập nhật sản phẩm thành công";
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating product: {ex}");
 
-                TempData["error"] = "Lỗi khi cập nhật sản phẩm: " + ex.Message;
+            // Repopulate dropdowns if validation fails
+            viewModel.Categories = new SelectList(_context.CategorySous.ToList(), "Id", "Name");
+            viewModel.Brands = new SelectList(_context.BrandSous.ToList(), "Id", "Name");
+            viewModel.Series = new SelectList(_context.SeriesSous.ToList(), "Id", "Name");
 
-                // Repopulate dropdowns with selected values
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
-
-                return View(product);
-            }
+            return View(viewModel);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        // GET: ShopSouvenir/Manager/ProductSou/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            var product = await _context.ProductSous
-                .Include(p => p.Category)
-                .Include(p => p.Brand)
-                .Include(p => p.Series)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (product == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return View(product);
-        }
-
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             var product = await _context.ProductSous.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            try
-            {
-                // Removed image deletion logic
-                _context.ProductSous.Remove(product);
-                await _context.SaveChangesAsync();
-
-                TempData["success"] = "Xóa sản phẩm thành công";
-                return Redirect("https://localhost:7198/ShopSouvenir/ProductSou/Index");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting product: {ex}");
-                TempData["error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
-                return Redirect("https://localhost:7198/ShopSouvenir/ProductSou/Index");
-            }
+            ViewBag.Categories = _context.CategorySous.ToList();
+            ViewBag.Brands = _context.BrandSous.ToList();
+            ViewBag.Series = _context.SeriesSous.ToList();
+            return View(product);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DetailsPartial(int id)
+        // POST: ShopSouvenir/Manager/ProductSou/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ProductSouModel product)
         {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.Categories = _context.CategorySous.ToList();
+            ViewBag.Brands = _context.BrandSous.ToList();
+            ViewBag.Series = _context.SeriesSous.ToList();
+            return View(product);
+        }
+
+        // GET: ShopSouvenir/Manager/ProductSou/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var product = await _context.ProductSous
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
                 .Include(p => p.Series)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return PartialView("_ProductDetailsPartial", product);
+            return View(product);
+        }
+
+        // GET: ShopSouvenir/Manager/ProductSou/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.ProductSous
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Series)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+        // POST: ShopSouvenir/Manager/ProductSou/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var product = await _context.ProductSous.FindAsync(id);
+            if (product != null)
+            {
+                _context.ProductSous.Remove(product);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.ProductSous.Any(e => e.Id == id);
         }
     }
 }
-

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\ShopSouvenir\Models\" />
     <Folder Include="Migrations\" />
     <Folder Include="Models\Souvenir\" />
     <Folder Include="wwwroot\css\adminDashboard\" />

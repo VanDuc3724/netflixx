@@ -16,54 +16,20 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category = null)
         {
-            var products = await _context.ProductSous
+            IQueryable<ProductSouModel> query = _context.ProductSous
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .Include(p => p.Series)
-                .ToListAsync();
+                .Include(p => p.Series);
 
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(p => p.Category != null && p.Category.Name.ToLower() == category.ToLower());
+            }
+
+            var products = await query.ToListAsync();
             return View(products);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> QuickView(int id)
-        {
-            try
-            {
-                // Đảm bảo bạn có DBContext trong HomeController
-                var product = await _context.ProductSous
-                    .Include(p => p.Category)
-                    .Include(p => p.Brand)
-                    .Include(p => p.Series)
-                    .FirstOrDefaultAsync(p => p.Id == id);
-
-                if (product == null)
-                {
-                    return Json(new { success = false, message = "Sản phẩm không tồn tại" });
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    id = product.Id,
-                    name = product.Name,
-                    price = product.Price,
-                    description = product.Description ?? "Không có mô tả",
-                    imageUrl = !string.IsNullOrEmpty(product.ImageUrl)
-                        ? product.ImageUrl
-                        : "/images/default-product.jpg",
-                    category = product.Category?.Name ?? "Không có danh mục",
-                    brand = product.Brand?.Name ?? "Không có thương hiệu",
-                    series = product.Series?.Name ?? "Không có series",
-                    stock = product.StockQuantity
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
-            }
         }
     }
 }
