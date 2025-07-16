@@ -25,6 +25,7 @@
                     <div class="package-header">
                         <h2>@pkg.Name</h2>
                         <div class="price">@pkg.Price.ToString("N0") coins<span></span></div>
+                    <div class="film-count">Bao gồm @((pkg.PackageFilms != null) ? pkg.PackageFilms.Count : 0) phim</div>
                     </div>
                     @if (!string.IsNullOrEmpty(pkg.Description))
                     {

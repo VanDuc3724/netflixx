@@ -1,4 +1,4 @@
-﻿﻿* {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -106,6 +106,12 @@ main {
         font-size: 16px;
         font-weight: normal;
     }
+.film-count {
+    font-size: 14px;
+    color: #cccccc;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
 .package-features {
     padding: 20px;
