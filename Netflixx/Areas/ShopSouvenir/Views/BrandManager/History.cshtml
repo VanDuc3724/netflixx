@@ -2,8 +2,7 @@
 @{
     ViewData["Title"] = "Lịch sử";
 }
-@await Html.PartialAsync("_BrandManagerMenu")
-<div class="main-content" id="mainContent">
+<div class="main-content">
     <div class="container">
         <h3 class="text-white mb-4">@ViewData["Title"]</h3>
         <table class="table table-striped table-bordered">
@@ -28,4 +27,3 @@
         <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
     </div>
 </div>
-@await Html.PartialAsync("_BrandManagerMenuScripts")
