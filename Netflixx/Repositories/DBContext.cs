@@ -43,6 +43,7 @@ namespace Netflixx.Repositories
         public virtual DbSet<DailyRevenueModel> DailyRevenue { get; set; }
         public virtual DbSet<ProductionManager> ProductionManagers { get; set; }
         public virtual DbSet<ProductionManagerHistory> ProductionManagerHistories { get; set; }
+        public virtual DbSet<BrandHistory> BrandHistories { get; set; }
 
         public virtual DbSet<LoginHistory> LoginHistory { get; set; }
         public virtual DbSet<FavoriteFilmsModel> FavoriteFilms { get; set; }
@@ -68,11 +69,29 @@ namespace Netflixx.Repositories
             modelBuilder.Entity<ProductionManagerHistory>()
                   .Property(h => h.Details)
                   .HasColumnType("nvarchar(max)");
+
+            modelBuilder.Entity<BrandSouModel>()
+                     .ToTable("BrandSous");
+            modelBuilder.Entity<BrandSouModel>()
+                     .Property(b => b.IsDeleted)
+                     .HasDefaultValue(false);
+            modelBuilder.Entity<BrandSouModel>()
+                     .Property(b => b.DeletedAt);
+            modelBuilder.Entity<BrandHistory>()
+                     .ToTable("BrandHistories");
+            modelBuilder.Entity<BrandHistory>()
+                     .HasOne(h => h.Brand)
+                     .WithMany(b => b.Histories)
+                     .HasForeignKey(h => h.BrandId)
+                     .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<BrandHistory>()
+                     .Property(h => h.Details)
+                     .HasColumnType("nvarchar(max)");
             modelBuilder.Entity<FilmsModel>()
-       .HasOne(f => f.ProductionManager)           
-       .WithMany(p => p.Films)                     
-       .HasForeignKey(f => f.ProductionManagerId)  
-       .OnDelete(DeleteBehavior.SetNull);         
+       .HasOne(f => f.ProductionManager)
+       .WithMany(p => p.Films)
+       .HasForeignKey(f => f.ProductionManagerId)
+       .OnDelete(DeleteBehavior.SetNull);
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ProductSouModel>()
