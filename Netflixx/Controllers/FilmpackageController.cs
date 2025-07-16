@@ -20,9 +20,14 @@ namespace Netflixx.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var packages = await _context.Packages
+                .AsNoTracking()
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return View(packages);
         }
 
         public async Task<IActionResult> Billhistory()
