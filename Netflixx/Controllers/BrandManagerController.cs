@@ -89,7 +89,7 @@ namespace Netflixx.Controllers
             {
                 _context.BrandSous.Remove(brand);
                 await _context.SaveChangesAsync();
-                TempData["success"] = "Brand deleted successfully";
+                TempData["success"] = $"Brand '{brand.Name}' deleted successfully";
             }
             return RedirectToAction(nameof(Index));
         }
