@@ -31,6 +31,23 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             return View(list);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _context.BrandSous
+                .Where(b => !b.IsDeleted)
+                .AsNoTracking()
+                .Select(b => new
+                {
+                    b.Id,
+                    b.Name,
+                    b.Description
+                })
+                .ToListAsync();
+
+            return Json(list);
+        }
+
         // GET: ShopSouvenir/BrandManager/Details/5
         public async Task<IActionResult> Details(int? id)
         {
