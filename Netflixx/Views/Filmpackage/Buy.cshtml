@@ -173,6 +173,10 @@
 
         <a asp-action="Index" asp-controller="Filmpackage" class="back-btn">Quay lại</a>
         <button id="checkPaymentBtn" class="check-payment-btn">✅ Tôi đã thanh toán</button>
+        <form asp-action="BuyWithCoins" method="post" style="display:inline;">
+            <input type="hidden" name="packageId" value="@Model.PackageId" />
+            <button type="submit" class="check-payment-btn">💰 Mua bằng coins</button>
+        </form>
 
         <div id="paymentResult" style="margin-top: 1rem; font-weight: bold;"></div>
 
