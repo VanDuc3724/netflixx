@@ -1,38 +1,347 @@
-@model IEnumerable<Netflixx.Models.BrandSouModel>
+﻿@model IEnumerable<Netflixx.Models.BrandSouModel>
 @{
     ViewData["Title"] = "Brand List";
 }
-<div class="brand-manager-page container">
-    <div class="card brand-manager-card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">Brand List</h2>
-            <a asp-action="Create" class="btn btn-danger">Create New</a>
+
+<style>
+    .brand-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        padding-top: 5rem;
+        background-color: #FF99FF;
+    }
+
+    .brand-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .brand-title {
+        font-size: 1.875rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .btn-create {
+        background-color: #3b82f6;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+        .btn-create:hover {
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+        }
+
+    .brand-table {
+        width: 100%;
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+        .brand-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .brand-table th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .brand-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #6b7280;
+        }
+
+        .brand-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .brand-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+    .brand-name {
+        font-weight: 500;
+        color: #1f2937;
+    }
+
+    .brand-description {
+        color: #6b7280;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-edit {
+        background-color: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+        .btn-edit:hover {
+            background-color: #d97706;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background-color: #ef4444;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .search-container {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background-color: white;
+    }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 1.1rem;
+    }
+
+    .search-clear {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        display: none;
+        transition: color 0.2s;
+    }
+
+        .search-clear:hover {
+            color: #374151;
+        }
+
+        .search-clear.show {
+            display: block;
+        }
+
+   
+</style>
+
+<div class="brand-container">
+    <div class="brand-header">
+        <h1 class="brand-title">Brand List</h1>
+        <a asp-action="Create" class="btn-create">+ Create New</a>
+    </div>
+
+    <div class="search-container">
+        <div style="position: relative; display: inline-block;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search brands by name...">
+            <button type="button" id="clearSearch" class="search-clear">✕</button>
         </div>
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0 brand-manager-table">
+    </div>
+
+    <div class="brand-table">
+        @if (Model != null && Model.Any())
+        {
+            <table>
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
-                        <th style="width:150px"></th>
+                        <th style="width: 150px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Description</td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                                <div class="brand-name">@item.Name</div>
+                            </td>
+                            <td>
+                                <div class="brand-description" title="@item.Description">
+                                    @item.Description
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete">Delete</a>
+                                </div>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <h3>No brands found</h3>
+                <p>Get started by creating your first brand.</p>
+            </div>
+        }
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearSearch');
+        const tableRows = document.querySelectorAll('.brand-table tbody tr');
+        const emptyState = document.querySelector('.empty-state');
+        const tableElement = document.querySelector('.brand-table table');
 
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleRows = 0;
+
+            tableRows.forEach(row => {
+                const brandName = row.querySelector('.brand-name');
+                if (brandName) {
+                    const name = brandName.textContent.toLowerCase();
+                    if (name.includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            // Show/hide empty state based on search results
+            if (visibleRows === 0 && searchTerm !== '') {
+                if (tableElement) tableElement.style.display = 'none';
+                showNoResultsMessage();
+            } else {
+                if (tableElement) tableElement.style.display = '';
+                hideNoResultsMessage();
+            }
+
+            // Show/hide clear button
+            if (searchTerm.length > 0) {
+                clearButton.classList.add('show');
+            } else {
+                clearButton.classList.remove('show');
+            }
+        }
+
+        function showNoResultsMessage() {
+            let noResultsDiv = document.querySelector('.no-results-message');
+            if (!noResultsDiv) {
+                noResultsDiv = document.createElement('div');
+                noResultsDiv.className = 'empty-state no-results-message';
+                noResultsDiv.innerHTML = `
+                    <div class="empty-state-icon">🔍</div>
+                    <h3>No brands found</h3>
+                    <p>No brands match your search criteria. Try a different search term.</p>
+                `;
+                document.querySelector('.brand-table').appendChild(noResultsDiv);
+            }
+            noResultsDiv.style.display = 'block';
+        }
+
+        function hideNoResultsMessage() {
+            const noResultsDiv = document.querySelector('.no-results-message');
+            if (noResultsDiv) {
+                noResultsDiv.style.display = 'none';
+            }
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            performSearch();
+            searchInput.focus();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', performSearch);
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+
+        clearButton.addEventListener('click', clearSearch);
+    });
+</script>
