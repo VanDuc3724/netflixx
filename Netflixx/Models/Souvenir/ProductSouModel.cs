@@ -12,10 +12,15 @@ namespace Netflixx.Models.Souvenir
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
         public string Name { get; set; } = null!;
 
+        [Required(ErrorMessage = "Vui lòng chọn danh mục")]
+        [Display(Name = "Danh mục")]
         public int? CategoryId { get; set; }
-
+        [Required(ErrorMessage = "Vui lòng chọn thương hiệu")]
+        [Display(Name = "Thương hiệu")]
         public int? BrandId { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn dòng sản phẩm")]
+        [Display(Name = "Dòng sản phẩm")]
         public int? SeriesId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập giá sản phẩm!")]
@@ -43,5 +48,6 @@ namespace Netflixx.Models.Souvenir
         public virtual ICollection<OrderDetailSouModel> OrderDetails { get; set; } = new List<OrderDetailSouModel>();
 
         public virtual ICollection<ProductImageSouModel> ProductImages { get; set; } = new List<ProductImageSouModel>();
+
     }
 }
