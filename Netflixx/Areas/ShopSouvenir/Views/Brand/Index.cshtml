@@ -37,11 +37,11 @@
                     <td>@brand.Description</td>
                     <td>
                         <div class="btn-group" role="group">
-                            <a asp-action="Edit" asp-route-BrandId="@brand.Id"
+                            <a asp-area="ShopSouvenir" asp-controller="Brand" asp-action="Edit" asp-route-BrandId="@brand.Id"
                                class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form asp-action="Remove" asp-route-BrandId="@brand.Id" method="post" class="d-inline">
+                            <form asp-area="ShopSouvenir" asp-controller="Brand" asp-action="Remove" asp-route-BrandId="@brand.Id" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-danger confirmDeletion">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -57,8 +57,8 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Xác nhận xóa
-            $('.confirmDeletion').click(function(e) {
+            // Xác nhận xóa với event delegation để hoạt động khi DataTables làm mới DOM
+            $(document).on('click', '.confirmDeletion', function(e) {
                 if (!confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) {
                     e.preventDefault();
                 }
