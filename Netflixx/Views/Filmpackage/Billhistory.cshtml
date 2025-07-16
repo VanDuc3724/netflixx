@@ -341,12 +341,16 @@
                                         <td>
                                             <button type="button" class="action-btn view-detail-btn"
                                                     data-bs-toggle="modal" data-bs-target="#transactionDetailModal"
+                                                    data-id="@t.TransactionID"
                                                     data-date="@t.TransactionDate.ToString("dd/MM/yyyy")"
                                                     data-ref="@t.ExternalTransactionRef"
                                                     data-status="@t.Status"
                                                     data-amount="@t.Amount.ToString("N0") @t.Currency"
                                                     data-provider="@t.Provider?.Name"
-                                                    data-environment="@t.Environment?.Name">
+                                                    data-environment="@t.Environment?.Name"
+                                                    data-films="@string.Join(", ", t.FilmPurchases.Select(fp => fp.Film?.Title ?? string.Empty))"
+                                                    data-points="@((t.RelatedPointsTransactions != null && t.RelatedPointsTransactions.Any()) ? t.RelatedPointsTransactions.Sum(pt => pt.PointsChange) : 0)"
+                                                    data-reason="@string.Join(", ", t.RelatedPointsTransactions.Select(pt => pt.Reason))">
                                                 Chi tiết
                                             </button>
                                         </td>
@@ -423,12 +427,16 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
+                        <p><strong>ID giao dịch:</strong> <span id="tdId"></span></p>
                         <p><strong>Ngày:</strong> <span id="tdDate"></span></p>
                         <p><strong>Mã giao dịch:</strong> <span id="tdRef"></span></p>
                         <p><strong>Trạng thái:</strong> <span id="tdStatus"></span></p>
                         <p><strong>Số tiền:</strong> <span id="tdAmount"></span></p>
                         <p><strong>Nhà cung cấp:</strong> <span id="tdProvider"></span></p>
                         <p><strong>Môi trường:</strong> <span id="tdEnv"></span></p>
+                        <p><strong>Phim liên quan:</strong> <span id="tdFilms"></span></p>
+                        <p><strong>Điểm thay đổi:</strong> <span id="tdPoints"></span></p>
+                        <p><strong>Ghi chú:</strong> <span id="tdReason"></span></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -514,12 +522,16 @@
 
             $('body').on('click', '.view-detail-btn', function () {
                 var btn = $(this);
+                $('#tdId').text(btn.data('id'));
                 $('#tdDate').text(btn.data('date'));
                 $('#tdRef').text(btn.data('ref'));
                 $('#tdStatus').text(btn.data('status'));
                 $('#tdAmount').text(btn.data('amount'));
                 $('#tdProvider').text(btn.data('provider'));
                 $('#tdEnv').text(btn.data('environment'));
+                $('#tdFilms').text(btn.data('films'));
+                $('#tdPoints').text(btn.data('points'));
+                $('#tdReason').text(btn.data('reason'));
             });
         });
     </script>
