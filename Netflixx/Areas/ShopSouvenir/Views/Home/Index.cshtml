@@ -1012,7 +1012,7 @@
 
                                 <div class="flex-w flex-r-m p-b-10">
                                     <div class="size-204 flex-w flex-m respon6-next">
-                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" data-product-id="">
                                             Thêm vào giỏ
                                         </button>
                                     </div>
@@ -1054,6 +1054,8 @@
                 e.preventDefault();
                 var productId = $(this).data('product-id');
                 var modal = $('.wrap-modal1');
+                // Lưu productId vào nút thêm giỏ hàng của modal
+                modal.find('.js-addcart-detail').data('product-id', productId);
 
                 // Hiển thị modal với hiệu ứng loading
                 modal.fadeIn();
@@ -1113,7 +1115,7 @@
             $(document).on('click', '.js-addcart-detail', function(e) {
                 e.preventDefault();
 
-                var productId = $('.js-show-modal1').data('product-id');
+                var productId = $(this).data('product-id');
                 var quantity = parseInt($('.num-product').val()) || 1;
 
                 $.ajax({
@@ -1257,16 +1259,6 @@
                 $(this).off('click');
             });
         });
-
-        /*---------------------------------------------*/
-
-        $('.js-addcart-detail').each(function(){
-            var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-            $(this).on('click', function(){
-                swal(nameProduct, "is added to cart !", "success");
-            });
-        });
-
     </script>
     <!--===============================================================================================-->
     <script src="~/souvenir/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
