@@ -1,4 +1,4 @@
-﻿﻿
+@model IEnumerable<Netflixx.Models.PackagesModel>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -18,14 +18,25 @@
         </div>
 
         <div class="package-container">
-            
+            @foreach (var pkg in Model)
+            {
+                <div class="package-card">
+                    <div class="package-header">
+                        <h2>@pkg.Name</h2>
+                    </div>
+                    @if (!string.IsNullOrEmpty(pkg.Description))
+                    {
+                        <div class="package-features">
+                            <div class="feature">
+                                <div class="feature-text">@pkg.Description</div>
+                            </div>
+                        </div>
+                    }
+                    <a class="basic-btn" asp-action="Buy" asp-route-packageId="@pkg.Id" asp-route-packageName="@pkg.Name" asp-route-packagePrice="0">Đăng ký ngay</a>
+                </div>
+            }
         </div>
-
-
-
-
 
     </main>
 </body>
-<script src="~/js/Filmpackage.js"></script>
 </html>
