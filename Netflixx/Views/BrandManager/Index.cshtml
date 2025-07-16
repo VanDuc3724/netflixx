@@ -245,7 +245,7 @@
                             <td>
                                 <div class="action-buttons">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete" data-id="@item.Id" data-name="@item.Name">Delete</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete" data-id="@item.Id" data-name="@item.Name" data-description="@item.Description">Delete</a>
                                 </div>
                             </td>
                         </tr>
@@ -356,6 +356,7 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete <strong id="brandNameToDelete"></strong>?</p>
+                <p id="brandDescriptionToDelete" class="text-muted"></p>
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" method="post" asp-action="Delete">
@@ -375,8 +376,10 @@
                 e.preventDefault();
                 const id = this.getAttribute('data-id');
                 const name = this.getAttribute('data-name');
+                const description = this.getAttribute('data-description');
                 document.getElementById('brandIdToDelete').value = id;
                 document.getElementById('brandNameToDelete').textContent = name;
+                document.getElementById('brandDescriptionToDelete').textContent = description || '';
                 document.getElementById('deleteForm').setAttribute('action', '/BrandManager/Delete/' + id);
                 const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
                 modal.show();
