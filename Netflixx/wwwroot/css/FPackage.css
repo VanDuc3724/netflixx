@@ -10,6 +10,24 @@ body {
     color: #ffffff;
 }
 
+.purchase-history-btn,
+.create-package-btn {
+    display: inline-block;
+    margin-right: 1rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #ffcc00;
+    color: #000;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.purchase-history-btn:hover,
+.create-package-btn:hover {
+    background-color: #e6b800;
+}
+
 main {
     padding: 40px 5%;
 }
