@@ -8,6 +8,7 @@ using Netflixx.Repositories;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Netflixx.Areas.ShopSouvenir.Controllers
 {
