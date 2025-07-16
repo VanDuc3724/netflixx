@@ -1,0 +1,12 @@
+.brand-manager-page {
+    min-height: calc(100vh - 80px);
+    padding-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-manager-card {
+    width: 100%;
+    max-width: 600px;
+}
