@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
 }
-<div class="main-content">
+@await Html.PartialAsync("_BrandManagerMenu")
+<div class="main-content" id="mainContent">
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="text-white">@ViewData["Title"]</h3>
@@ -49,6 +50,7 @@
         </table>
     </div>
 </div>
+@await Html.PartialAsync("_BrandManagerMenuScripts")
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
