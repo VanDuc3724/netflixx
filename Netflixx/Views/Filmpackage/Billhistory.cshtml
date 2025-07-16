@@ -524,8 +524,8 @@
                 purchasesTable.column(1).search(this.value).draw();
             });
 
-            $('body').on('click', '.view-detail-btn', function () {
-                var btn = $(this);
+            $('#transactionDetailModal').on('show.bs.modal', function (event) {
+                var btn = $(event.relatedTarget);
                 $('#tdId').text(btn.data('id'));
                 $('#tdDate').text(btn.data('date'));
                 $('#tdRef').text(btn.data('ref'));
