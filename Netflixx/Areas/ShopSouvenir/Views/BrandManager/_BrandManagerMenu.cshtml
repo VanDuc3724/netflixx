@@ -1,15 +1,11 @@
-﻿<style>
+<style>
     body {
         background-color: #1f1f1f;
         color: #fff;
         transition: margin-left 0.3s;
         overflow-x: hidden;
     }
-
-    .navbar {
-        z-index: 1100;
-    }
-
+    .navbar { z-index: 1100; }
     .sidebar {
         position: fixed;
         top: 70px;
@@ -24,35 +20,22 @@
         flex-direction: column;
         border-right: 1px solid #444;
     }
-
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 15px 20px;
-            color: #fff;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-            .sidebar a:hover {
-                background-color: #ff4d6d;
-            }
-
+    .sidebar.collapsed { transform: translateX(-100%); }
+    .sidebar a {
+        display: block;
+        padding: 15px 20px;
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar a:hover { background-color: #ff4d6d; }
     .main-content {
         margin-left: 230px;
         padding: 100px 20px 20px;
         transition: margin-left 0.3s ease;
     }
-
-        .main-content.expanded {
-            margin-left: 0;
-        }
-
-    .toggle-btn,
-    .show-sidebar-btn {
+    .main-content.expanded { margin-left: 0; }
+    .toggle-btn, .show-sidebar-btn {
         position: fixed;
         top: 75px;
         z-index: 1200;
@@ -62,39 +45,21 @@
         padding: 5px 10px;
         border-radius: 5px;
     }
-
-    .toggle-btn {
-        left: 10px;
-    }
-
-    .show-sidebar-btn {
-        left: 10px;
-        display: none;
-    }
-
-    .sidebar.collapsed ~ .show-sidebar-btn {
-        display: block;
-    }
+    .toggle-btn { left: 10px; }
+    .show-sidebar-btn { left: 10px; display: none; }
+    .sidebar.collapsed ~ .show-sidebar-btn { display: block; }
 </style>
-
-<!-- Sidebar only; navbar is provided by the main layout -->
 <div class="sidebar" id="sidebar">
     <div>
         <h5 class="px-3 py-2 mb-0 text-uppercase fw-semibold text-white text-center">Menu</h5>
-        <a asp-area="ShopSouvenir" asp-controller="BrandManager" asp-action="Index"><i class="fas fa-list"></i> Danh sách thương hiệu</a>
-        <a asp-area="ShopSouvenir" asp-controller="BrandManager" asp-action="Create"><i class="fas fa-plus"></i> Thêm thương hiệu</a>        
-        <a asp-area="ShopSouvenir" asp-controller="BrandManager" asp-action="HistoryAll"><i class="fas fa-history"></i> Lịch sử chỉnh sửa</a>
-        <a asp-area="ShopSouvenir" asp-controller="BrandManager" asp-action="Trash"><i class="fas fa-trash-alt"></i> Thùng rác</a>
+        <a asp-controller="BrandManager" asp-action="Index" asp-area="ShopSouvenir"><i class="fas fa-list"></i> Danh sách thương hiệu</a>
+        <a asp-controller="BrandManager" asp-action="Create" asp-area="ShopSouvenir"><i class="fas fa-plus"></i> Thêm thương hiệu</a>
     </div>
 </div>
-
-<!-- Nút thu gọn sidebar -->
 <div>
     <button id="toggleSidebar" class="toggle-btn">
         <i class="fas fa-angle-double-left"></i>
     </button>
-
-    <!-- Nút hiện lại sidebar khi bị ẩn -->
     <button id="showSidebar" class="show-sidebar-btn">
         <i class="fas fa-angle-double-right"></i>
     </button>

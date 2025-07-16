@@ -14,17 +14,7 @@ namespace Netflixx.Models
 
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
-
-        public bool IsDeleted { get; set; } = false;
-
-        public DateTime? DeletedAt { get; set; }
-
         public virtual ICollection<ProductSouModel> Products { get; set; } = new HashSet<ProductSouModel>();
-
-        public virtual ICollection<BrandHistory> Histories { get; set; } = new List<BrandHistory>();
 
     }
 }

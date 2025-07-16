@@ -1,66 +1,17 @@
 @model Netflixx.Models.BrandSouModel
 @{
-    bool isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-    if (isAjax)
-    {
-        Layout = null;
-    }
     ViewData["Title"] = "Xóa Thương Hiệu";
 }
-@if (!isAjax)
-{
-@section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <style>
-        body { background-color:#1f1f1f; color:#fff; transition:margin-left 0.3s; overflow-x:hidden; }
-        .navbar{ z-index:1100; }
-        .sidebar{ position:fixed; top:70px; left:0; height:calc(100vh - 70px); width:230px; background-color:#2c2c2c; overflow-y:auto; transition:transform 0.3s ease; z-index:1000; display:flex; flex-direction:column; border-right:1px solid #444; }
-        .sidebar.collapsed{ transform:translateX(-100%); }
-        .sidebar a{ display:block; padding:15px 20px; color:#fff; text-decoration:none; white-space:nowrap; }
-        .sidebar a:hover{ background-color:#ff4d6d; }
-        .main-content{ margin-left:230px; padding:100px 20px 20px; transition:margin-left 0.3s ease; }
-        .main-content.expanded{ margin-left:0; }
-        .toggle-btn,.show-sidebar-btn{ position:fixed; top:75px; z-index:1200; background-color:#ff4d6d; color:#fff; border:none; padding:5px 10px; border-radius:5px; }
-        .toggle-btn{ left:10px; }
-        .show-sidebar-btn{ left:10px; display:none; }
-        .sidebar.collapsed ~ .show-sidebar-btn{ display:block; }
-    </style>
-}
-}
-@if (!isAjax)
-{
-    @await Html.PartialAsync("_BrandManagerMenu")
-    <div class="main-content" id="mainContent">
-}
-<div class="modal-content">
-    <form asp-action="Delete" method="post">
-        <div class="modal-header">
-            <h5 class="modal-title">@ViewData["Title"]</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="modal-warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Bạn chắc chắn muốn xóa thương hiệu này?</p>
-            </div>
-            <div class="company-modal-info">
-                <h3 class="company-modal-name">@Model.Name</h3>
-                <p>@Model.Description</p>
-            </div>
-        </div>
-        <div class="modal-footer">
+@await Html.PartialAsync("_BrandManagerMenu")
+<div class="main-content" id="mainContent">
+    <div class="container">
+        <h3 class="text-white mb-4">@ViewData["Title"]</h3>
+        <h5 class="text-white">Bạn có chắc muốn xóa "@Model.Name"?</h5>
+        <form asp-action="Delete">
             <input type="hidden" asp-for="Id" />
-            <button type="submit" class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i> Xác nhận xóa
-            </button>
-            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                <i class="fas fa-times"></i> Hủy bỏ
-            </button>
-        </div>
-    </form>
-</div>
-@if (!isAjax)
-{
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </form>
     </div>
-    @await Html.PartialAsync("_BrandManagerMenuScripts")
-}
+</div>
+@await Html.PartialAsync("_BrandManagerMenuScripts")

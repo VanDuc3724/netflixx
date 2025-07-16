@@ -2,72 +2,24 @@
 @{
     ViewData["Title"] = "Chỉnh Sửa Thương Hiệu";
 }
-@section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-}
-<style>
-    body { background-color: #1f1f1f; color: #fff; transition: margin-left 0.3s; overflow-x: hidden; }
-    .navbar { z-index:1100; }
-    .sidebar { position:fixed; top:70px; left:0; height:calc(100vh - 70px); width:230px; background-color:#2c2c2c; overflow-y:auto; transition:transform 0.3s ease; z-index:1000; display:flex; flex-direction:column; border-right:1px solid #444; }
-    .sidebar.collapsed { transform:translateX(-100%); }
-    .sidebar a { display:block; padding:15px 20px; color:#fff; text-decoration:none; white-space:nowrap; }
-    .sidebar a:hover { background-color:#ff4d6d; }
-    .main-content { margin-left:230px; padding:100px 20px 20px; transition:margin-left 0.3s ease; }
-    .main-content.expanded { margin-left:0; }
-    .toggle-btn,.show-sidebar-btn{ position:fixed; top:75px; z-index:1200; background-color:#ff4d6d; color:#fff; border:none; padding:5px 10px; border-radius:5px; }
-    .toggle-btn{ left:10px; }
-    .show-sidebar-btn{ left:10px; display:none; }
-    .sidebar.collapsed ~ .show-sidebar-btn{ display:block; }
-    .card{ background:linear-gradient(135deg,#2c2c2c 0%,#383838 100%); border-radius:20px; border:1px solid #444; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); overflow:hidden; }
-    .card-header{ background:rgba(255,77,109,0.1); color:#fff; border-bottom:1px solid #444; padding:1.5rem; }
-    .form-control{ background-color:#3c3c3c; border:1px solid #555; color:#fff; }
-    .form-control:focus{ background-color:#3c3c3c; border-color:#ff4d6d; color:#fff; box-shadow:0 0 0 0.2rem rgba(255,77,109,0.25); }
-    .form-label{ font-weight:600; margin-bottom:8px; color:#fff; }
-    .required::after{ content:" *"; color:#ff4d6d; }
-    .btn-primary{ background-color:#ff4d6d; border-color:#ff4d6d; padding:10px 20px; font-weight:500; }
-    .btn-primary:hover{ background-color:#e63946; border-color:#e63946; }
-    .btn-secondary{ background-color:#6c757d; border-color:#6c757d; padding:10px 20px; font-weight:500; }
-    .btn-secondary:hover{ background-color:#5a6268; border-color:#545b62; }
-    .alert-danger{ background-color:#2c1618; border-color:#5c2125; color:#f8d7da; }
-    .text-danger{ color:#ff6b6b !important; }
-    .form-section{ background-color:#2a2a2a; border-radius:8px; padding:20px; margin-bottom:20px; border:1px solid #404040; }
-    .form-section-title{ color:#ff4d6d; font-weight:600; margin-bottom:15px; padding-bottom:8px; border-bottom:2px solid #ff4d6d; }
-    .page-header{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-    .page-title{ color:#fff; font-weight:600; font-size:1.75rem; }
-</style>
 @await Html.PartialAsync("_BrandManagerMenu")
 <div class="main-content" id="mainContent">
-    <div class="container-fluid px-4 py-3">
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="page-header">
-                    <h2 class="page-title mb-0">
-                        <i class="fas fa-edit me-2 text-primary"></i>
-                        Chỉnh Sửa Thương Hiệu
-                    </h2>
-                </div>
+    <div class="container">
+        <h3 class="text-white mb-4">@ViewData["Title"]</h3>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <form asp-action="Edit" method="post" novalidate>
-                            <input type="hidden" asp-for="Id" />
-                            @await Html.PartialAsync("_BrandManagerForm")
-                            <div class="form-group text-center">
-                                <a asp-action="Index" class="btn btn-secondary me-3">
-                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Lưu thay đổi
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </form>
     </div>
 </div>
 @await Html.PartialAsync("_BrandManagerMenuScripts")

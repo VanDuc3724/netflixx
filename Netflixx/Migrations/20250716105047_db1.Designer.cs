@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250716132010_db1")]
+    [Migration("20250716105047_db1")]
     partial class db1
     {
         /// <inheritdoc />
@@ -286,39 +286,6 @@ namespace Netflixx.Migrations
                     b.ToTable("BlogPosts");
                 });
 
-            modelBuilder.Entity("Netflixx.Models.BrandHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int?>("BrandId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BrandName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BrandId");
-
-                    b.ToTable("BrandHistories", (string)null);
-                });
-
             modelBuilder.Entity("Netflixx.Models.BrandSouModel", b =>
                 {
                     b.Property<int>("Id")
@@ -327,28 +294,14 @@ namespace Netflixx.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -1450,16 +1403,6 @@ namespace Netflixx.Migrations
                     b.Navigation("Film");
                 });
 
-            modelBuilder.Entity("Netflixx.Models.BrandHistory", b =>
-                {
-                    b.HasOne("Netflixx.Models.BrandSouModel", "Brand")
-                        .WithMany("Histories")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Brand");
-                });
-
             modelBuilder.Entity("Netflixx.Models.ChannelSubscriptionsModel", b =>
                 {
                     b.HasOne("Netflixx.Models.ChannelsModel", "Channel")
@@ -1875,8 +1818,6 @@ namespace Netflixx.Migrations
 
             modelBuilder.Entity("Netflixx.Models.BrandSouModel", b =>
                 {
-                    b.Navigation("Histories");
-
                     b.Navigation("Products");
                 });
 
