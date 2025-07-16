@@ -1,0 +1,31 @@
+@model IEnumerable<Netflixx.Models.BrandHistory>
+@{
+    ViewData["Title"] = "Lịch sử";
+}
+@await Html.PartialAsync("_BrandManagerMenu")
+<div class="main-content" id="mainContent">
+    <div class="container">
+        <h3 class="text-white mb-4">@ViewData["Title"]</h3>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Thao tác</th>
+                    <th>Chi tiết</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Action</td>
+                    <td><a asp-action="HistoryDetails" asp-route-id="@item.Id" asp-route-returnTo="History" asp-route-brandId="@ViewBag.BrandId">Xem</a></td>
+                    <td>@item.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>
+@await Html.PartialAsync("_BrandManagerMenuScripts")

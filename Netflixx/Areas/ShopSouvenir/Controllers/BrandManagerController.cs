@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         // GET: ShopSouvenir/BrandManager
         public async Task<IActionResult> Index(string? search)
         {
-            var query = _context.BrandSous.AsQueryable();
+            var query = _context.BrandSous.Where(b => !b.IsDeleted).AsQueryable();
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(b => b.Name.Contains(search));
@@ -63,8 +64,21 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
 
             if (ModelState.IsValid)
             {
+                brand.CreatedAt = DateTime.Now;
+                brand.UpdatedAt = DateTime.Now;
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
+
+                _context.BrandHistories.Add(new BrandHistory
+                {
+                    BrandId = brand.Id,
+                    BrandName = brand.Name,
+                    Action = "Create",
+                    Details = $"Created {brand.Name}",
+                    Timestamp = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
+
                 TempData["SuccessMessage"] = "Thêm thương hiệu thành công!";
                 return RedirectToAction(nameof(Index));
             }
@@ -105,8 +119,30 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             {
                 try
                 {
+                    var original = await _context.BrandSous.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+                    brand.UpdatedAt = DateTime.Now;
                     _context.Update(brand);
                     await _context.SaveChangesAsync();
+
+                    var changes = new System.Collections.Generic.List<string>();
+                    if (original != null)
+                    {
+                        if (original.Name != brand.Name)
+                            changes.Add($"Name: '{original.Name}' -> '{brand.Name}'");
+                        if (original.Description != brand.Description)
+                            changes.Add("Description updated");
+                    }
+                    var details = string.Join("; ", changes);
+                    _context.BrandHistories.Add(new BrandHistory
+                    {
+                        BrandId = brand.Id,
+                        BrandName = brand.Name,
+                        Action = "Edit",
+                        Details = details,
+                        Timestamp = DateTime.Now
+                    });
+                    await _context.SaveChangesAsync();
+
                     TempData["SuccessMessage"] = "Cập nhật thành công!";
                 }
                 catch (DbUpdateConcurrencyException)
@@ -148,9 +184,19 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             var brand = await _context.BrandSous.FindAsync(id);
             if (brand != null)
             {
-                _context.BrandSous.Remove(brand);
+                brand.IsDeleted = true;
+                brand.DeletedAt = DateTime.Now;
+                _context.Update(brand);
+                _context.BrandHistories.Add(new BrandHistory
+                {
+                    BrandId = brand.Id,
+                    BrandName = brand.Name,
+                    Action = "Delete",
+                    Details = "Moved to trash",
+                    Timestamp = DateTime.Now
+                });
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Đã xóa thành công!";
+                TempData["SuccessMessage"] = "Đã chuyển vào thùng rác!";
             }
             return RedirectToAction(nameof(Index));
         }
@@ -158,6 +204,116 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         private bool BrandExists(int id)
         {
             return _context.BrandSous.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Trash()
+        {
+            var list = await _context.BrandSous
+                .Where(b => b.IsDeleted)
+                .OrderByDescending(b => b.DeletedAt)
+                .ToListAsync();
+            return View("Trash", list);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var brand = await _context.BrandSous.FindAsync(id);
+            if (brand != null)
+            {
+                brand.IsDeleted = false;
+                brand.DeletedAt = null;
+                _context.Update(brand);
+                _context.BrandHistories.Add(new BrandHistory
+                {
+                    BrandId = brand.Id,
+                    BrandName = brand.Name,
+                    Action = "Restore",
+                    Details = "Restored from trash",
+                    Timestamp = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã khôi phục thành công!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HardDelete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var brand = await _context.BrandSous.FirstOrDefaultAsync(b => b.Id == id);
+            if (brand == null)
+            {
+                return NotFound();
+            }
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("HardDelete", brand);
+            }
+            return View("HardDelete", brand);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            var brand = await _context.BrandSous.FindAsync(id);
+            if (brand != null)
+            {
+                _context.BrandHistories.Add(new BrandHistory
+                {
+                    BrandId = brand.Id,
+                    BrandName = brand.Name,
+                    Action = "HardDelete",
+                    Details = "Permanent delete",
+                    Timestamp = DateTime.Now
+                });
+                _context.BrandSous.Remove(brand);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa vĩnh viễn!";
+            }
+            return RedirectToAction(nameof(Trash));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> History(int id)
+        {
+            var list = await _context.BrandHistories
+                .Where(h => h.BrandId == id)
+                .OrderByDescending(h => h.Timestamp)
+                .ToListAsync();
+            ViewBag.BrandId = id;
+            return View("History", list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HistoryAll()
+        {
+            var list = await _context.BrandHistories
+                .Include(h => h.Brand)
+                .OrderByDescending(h => h.Timestamp)
+                .ToListAsync();
+            return View("HistoryAll", list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HistoryDetails(int id, string returnTo = null)
+        {
+            var history = await _context.BrandHistories
+                .Include(h => h.Brand)
+                .FirstOrDefaultAsync(h => h.Id == id);
+            if (history == null)
+            {
+                return NotFound();
+            }
+            ViewBag.ReturnTo = returnTo;
+            return View("HistoryDetails", history);
         }
     }
 }
