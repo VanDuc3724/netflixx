@@ -45,7 +45,7 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         }
 
         [HttpPost("AddToCart")]
-        public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
+        public async Task<IActionResult> AddToCart(AddToCartRequest request)
         {
             try
             {
