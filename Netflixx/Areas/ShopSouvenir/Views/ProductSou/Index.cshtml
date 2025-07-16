@@ -1,377 +1,394 @@
 ﻿@model IEnumerable<Netflixx.Models.Souvenir.ProductSouModel>
 @{
     ViewData["Title"] = "Quản lý Sản phẩm";
+    Layout = null;
 }
 
-<style>
-    body {
-        background: #F5F6FA; /* Light Gray for body background */
-        color: #333333; /* Dark Gray for main text */
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 1rem;
-        background: #FFFFFF; /* White for card background */
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-        color: #2D2F3B; /* Charcoal Dark for headers */
-        margin-bottom: 1.5rem;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1rem;
-    }
-
-    .table-bordered {
-        border: 1px solid #E0E0E0;
-    }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #FFFFFF; /* White */
-    }
-
-    .table-striped tbody tr:nth-of-type(even) {
-        background-color: #F9F9F9; /* Slightly off-white */
-    }
-
-    .table th, .table td {
-        padding: 0.75rem;
-        vertical-align: middle;
-        border: 1px solid #E0E0E0;
-    }
-
-    .table th {
-        background-color: #4ECDB4; /* Teal for header */
-        color: #FFFFFF;
-        font-weight: 600;
-    }
-
-    .btn {
-        display: inline-block;
-        font-weight: 400;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        user-select: none;
-        border: 1px solid transparent;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        border-radius: 0.25rem;
-        transition: all 0.15s ease-in-out;
-        text-decoration: none;
-    }
-
-    .btn-primary {
-        color: #FFFFFF;
-        background-color: #4ECDB4; /* Teal */
-        border-color: #4ECDB4;
-    }
-
-        .btn-primary:hover {
-            background-color: #3ABBA1;
-            border-color: #3ABBA1;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #e0e0e0;
+            --table-header-bg: #f5f7fa;
+            --table-row-hover: #f8f9fa;
         }
 
-    .btn-info {
-        color: #FFFFFF;
-        background-color: #2D2F3B; /* Charcoal Dark */
-        border-color: #2D2F3B;
-    }
-
-        .btn-info:hover {
-            background-color: #1E2029;
-            border-color: #171920;
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
         }
 
-    .btn-warning {
-        color: #FFFFFF;
-        background-color: #F1C40F; /* Golden Yellow */
-        border-color: #F1C40F;
-    }
-
-        .btn-warning:hover {
-            background-color: #D9B10D;
-            border-color: #C1A00B;
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-    .btn-danger {
-        color: #FFFFFF;
-        background-color: #E74C3C; /* Alizarin Red */
-        border-color: #E74C3C;
-    }
-
-        .btn-danger:hover {
-            background-color: #D43A2A;
-            border-color: #C12F20;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-    .btn-success {
-        color: #FFFFFF;
-        background-color: #2ECC71; /* Emerald Green */
-        border-color: #2ECC71;
-    }
-
-        .btn-success:hover {
-            background-color: #25A55A;
-            border-color: #1E8F4D;
+        .page-title {
+            color: var(--dark-color);
+            font-weight: 600;
+            margin: 0;
         }
 
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.2rem;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    .actions {
-        white-space: nowrap;
-    }
-
-        .actions a {
-            margin-right: 5px;
+        .btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid transparent;
+            color: white;
+            text-align: center;
         }
 
-            .actions a:last-child {
-                margin-right: 0;
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+            .btn-primary:hover {
+                background-color: #3a56e0;
+                border-color: #3a56e0;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
             }
 
-    .price {
-        font-weight: 600;
-        color: #2ECC71; /* Emerald Green */
-    }
-
-    .stock-low {
-        color: #E74C3C; /* Alizarin Red */
-        font-weight: 600;
-    }
-
-    .stock-ok {
-        color: #2ECC71; /* Emerald Green */
-    }
-
-    .product-image {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 4px;
-        border: 1px solid #E0E0E0;
-    }
-
-    /* DataTables custom style */
-    .dataTables_wrapper {
-        color: #333333; /* Dark Gray */
-    }
-
-    .dataTables_filter input {
-        background-color: #FFFFFF;
-        color: #333333;
-        border: 1px solid #E0E0E0;
-        padding: 5px;
-        border-radius: 4px;
-    }
-
-    .dataTables_length select {
-        background-color: #FFFFFF;
-        color: #333333;
-        border: 1px solid #E0E0E0;
-        padding: 5px;
-        border-radius: 4px;
-    }
-
-    .dataTables_info {
-        color: #666666 !important;
-    }
-
-    .dataTables_paginate .paginate_button {
-        color: #333333 !important;
-        padding: 5px 10px;
-        margin: 0 2px;
-        border: 1px solid #E0E0E0;
-        background-color: #FFFFFF;
-        border-radius: 4px;
-    }
-
-        .dataTables_paginate .paginate_button:hover {
-            background-color: #F5F6FA !important;
-            color: #333333 !important;
-            border: 1px solid #CCCCCC;
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
         }
 
-        .dataTables_paginate .paginate_button.current {
-            background-color: #4ECDB4 !important; /* Teal */
-            color: white !important;
-            border: 1px solid #4ECDB4;
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
         }
 
-    /* Responsive table */
-    table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
-    table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
-        background-color: #4ECDB4;
-    }
-
-    div.dt-button-collection button.dt-button:active:not(.disabled),
-    div.dt-button-collection button.dt-button.active:not(.disabled) {
-        background-color: #4ECDB4;
-        border-color: #3ABBA1;
-    }
-
-    /* Tùy chỉnh nút export */
-    .dt-buttons .btn {
-        margin-right: 5px;
-        font-size: 0.875rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    
-</style>
-
-<div class="container">
-    <h1>Quản lý Sản phẩm</h1>
-
-    <p>
-        <a href="/ShopSouvenir/ProductSou/Create" class="btn btn-primary">Thêm mới</a>
-    </p>
-
-    <table id="productsTable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th class="text-center">Hình ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Danh mục</th>
-                <th>Thương hiệu</th>
-                <th>Series</th>
-                <th class="text-right">Giá</th>
-                <th class="text-center">Tồn kho</th>
-                <th class="text-center">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
-                <tr>
-                    <td class="text-center">
-                        @if (!string.IsNullOrEmpty(product.ImageUrl))
-                        {
-                            <!-- Thêm kiểm tra URL hợp lệ -->
-                            @if (Uri.IsWellFormedUriString(product.ImageUrl, UriKind.Absolute))
-                            {
-                                <img src="@product.ImageUrl" class="product-image" alt="@product.Name"
-                                     onerror="this.onerror=null;this.src='/images/default-product.jpg';" />
-                            }
-                            else
-                            {
-                                <img src="/images/default-product.jpg" class="product-image" alt="@product.Name" />
-                            }
-                        }
-                        else
-                        {
-                            <img src="/images/default-product.jpg" class="product-image" alt="Không có ảnh" />
-                        }
-                    </td>
-                    <td>@product.Name</td>
-                    <td>@(product.Category?.Name ?? "Chưa phân loại")</td>
-                    <td>@(product.Brand?.Name ?? "Không xác định")</td>
-                    <td>@(product.Series?.Name ?? "Không xác định")</td>
-                    <td class="text-right price" data-order="@product.Price">@product.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
-                    <td class="text-center @(product.StockQuantity < 10 ? "stock-low" : "stock-ok")" data-order="@product.StockQuantity">
-                        @product.StockQuantity
-                    </td>
-                    <td class="actions">
-                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-info btn-sm">Chi tiết</a>
-                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning btn-sm">Sửa</a>
-                        <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger btn-sm">Xóa</a>
-                    </td>
-                </tr>
+            .product-image:hover {
+                transform: scale(1.8);
+                z-index: 10;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             }
-        </tbody>
-    </table>
-</div>
 
-@section Scripts {
+        #productsTable {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            #productsTable thead th {
+                background-color: var(--table-header-bg);
+                color: var(--dark-color);
+                font-weight: 600;
+                padding: 1rem;
+                border-bottom: 2px solid var(--border-color);
+                text-align: left;
+            }
+
+            #productsTable tbody td {
+                padding: 0.85rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            #productsTable tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            #productsTable tbody tr:hover {
+                background-color: var(--table-row-hover);
+            }
+
+        .stock-low {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .stock-ok {
+            color: var(--success-color);
+        }
+
+        .price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+            .action-btns a {
+                display: inline-block !important;
+                visibility: visible !important;
+                text-decoration: none;
+            }
+
+        .btn-info {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Modal styles */
+        .modal-product-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-details-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .product-details-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .product-details-value {
+            color: var(--secondary-color);
+        }
+        /* Thêm vào phần style */
+        .product-description-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+            .product-description-content p {
+                margin-bottom: 1rem;
+            }
+
+            .product-description-content img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .product-description-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1rem;
+            }
+
+            .product-description-content table,
+            .product-description-content th,
+            .product-description-content td {
+                border: 1px solid #dee2e6;
+            }
+
+            .product-description-content th,
+            .product-description-content td {
+                padding: 0.75rem;
+                vertical-align: top;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Quản lý Sản phẩm</h1>
+            <div>
+                <a href="/ShopSouvenir/ProductSou/Create" class="btn btn-primary">
+                    <i class="fas fa-plus-circle mr-2"></i>Thêm mới
+                </a>
+            </div>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <p>Không có dữ liệu sản phẩm.</p>
+        }
+        else
+        {
+            <table id="productsTable">
+                <thead>
+                    <tr>
+                        <th class="text-center">Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Thương hiệu</th>
+                        <th>Series</th>
+                        <th class="text-right">Giá</th>
+                        <th class="text-center">Tồn kho</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? Url.Content("~/images/default-product.jpg") : product.ImageUrl)"
+                                     class="product-image" alt="@product.Name"
+                                     onerror="this.onerror=null;this.src='@Url.Content("~/images/default-product.jpg")';" />
+                            </td>
+                            <td>@product.Name</td>
+                            <td>@(product.Category?.Name ?? "Chưa phân loại")</td>
+                            <td>@(product.Brand?.Name ?? "Không xác định")</td>
+                            <td>@(product.Series?.Name ?? "Không xác định")</td>
+                            <td class="text-right price" data-order="@product.Price">@product.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
+                            <td class="text-center @(product.StockQuantity < 10 ? "stock-low" : "stock-ok")" data-order="@product.StockQuantity">
+                                @product.StockQuantity
+                            </td>
+                            <td class="text-center">
+                                <div class="action-btns">
+                                    <a href="#" class="btn btn-info btn-sm view-details"
+                                       data-id="@product.Id"
+                                       data-toggle="modal"
+                                       data-target="#productDetailsModal"
+                                       title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="/ShopSouvenir/ProductSou/Edit/@product.Id" class="btn btn-warning btn-sm" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/ShopSouvenir/ProductSou/Delete/@product.Id" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productDetailsModalLabel">Chi tiết sản phẩm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="productDetailsContent">
+                    <!-- Content will be loaded here via AJAX -->
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#productsTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json"
-                },
-                "responsive": true,
-                "columnDefs": [
-                    { "orderable": false, "targets": [0, 7] }, // Cột hình ảnh và thao tác không sort được
-                    { "className": "dt-center", "targets": [0, 6, 7] }, // Căn giữa các cột
-                    { "className": "dt-right", "targets": [5] } // Căn phải cột giá
-                ],
-                "order": [[1, 'asc']], // Mặc định sort theo tên sản phẩm
-                "dom": '<"row"<"col-md-6"l><"col-md-6"f>><"row"<"col-md-12"B>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
-                "buttons": [
-                    {
-                        extend: 'copy',
-                        text: 'Sao chép',
-                        className: 'btn btn-sm btn-secondary'
-                    },
-                    {
-                        extend: 'csv',
-                        text: 'Xuất CSV',
-                        className: 'btn btn-sm btn-info'
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Xuất Excel',
-                        className: 'btn btn-sm btn-success',
-                        title: 'Danh sách sản phẩm'
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'Xuất PDF',
-                        className: 'btn btn-sm btn-danger',
-                        title: 'Danh sách sản phẩm',
-                        customize: function (doc) {
-                            doc.content[1].table.widths =
-                                Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: 'In ấn',
-                        className: 'btn btn-sm btn-warning',
-                        title: 'Danh sách sản phẩm',
-                        customize: function (win) {
-                            $(win.document.body).css('font-size', '10pt');
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        }
-                    }
-                ],
-                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
-                "autoWidth": true,
-                "initComplete": function() {
-                    // Thêm class cho các input
-                    $('.dataTables_filter input').addClass('form-control form-control-sm');
-                    $('.dataTables_length select').addClass('form-control form-control-sm');
+            // Kiểm tra xem các button có click được không
+            $('.action-btns a').on('click', function(e) {
+                console.log('Button clicked:', $(this).attr('href'));
+            });
 
-                    // Thêm margin cho các button
-                    $('.dt-buttons button').css('margin-right', '5px');
-                }
+            // Xử lý khi hình ảnh bị lỗi
+            $('.product-image').on('error', function() {
+                $(this).attr('src', '@Url.Content("~/images/default-product.jpg")');
+            });
+
+            // Xử lý khi click vào nút xem chi tiết
+            $('.view-details').on('click', function(e) {
+                e.preventDefault();
+                var productId = $(this).data('id');
+                loadProductDetails(productId);
+            });
+
+            // Hàm tải chi tiết sản phẩm bằng AJAX
+            function loadProductDetails(productId) {
+                $.ajax({
+                    url: '/ShopSouvenir/ProductSou/DetailsPartial/' + productId,
+                    type: 'GET',
+                    success: function(response) {
+                        $('#productDetailsContent').html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#productDetailsContent').html(
+                            '<div class="alert alert-danger">Không thể tải chi tiết sản phẩm. Vui lòng thử lại.</div>'
+                        );
+                        console.error('Error loading product details:', error);
+                    }
+                });
+            }
+
+            // Tải lại nội dung modal mỗi khi mở
+            $('#productDetailsModal').on('show.bs.modal', function() {
+                $('#productDetailsContent').html(
+                    '<div class="text-center">' +
+                    '<div class="spinner-border text-primary" role="status">' +
+                    '<span class="sr-only">Loading...</span>' +
+                    '</div>' +
+                    '</div>'
+                );
             });
         });
     </script>
-}
+</body>
+</html>

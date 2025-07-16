@@ -1,0 +1,757 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\netflixx\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\areas\\shopsouvenir\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\areas\\shopsouvenir\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\areas\\shopsouvenir\\views\\brand\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\areas\\shopsouvenir\\views\\brand\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\areas\\shopsouvenir\\controllers\\brandcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\areas\\shopsouvenir\\controllers\\brandcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\models\\brandsoumodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\models\\brandsoumodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\filmpackage\\billhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\filmpackage\\billhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\filmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\filmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\filmpackage\\buy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\filmpackage\\buy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\filmpackage\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\filmpackage\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\filmpackage\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\filmpackage\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\payment\\recharge.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\payment\\recharge.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\_productionmanagermenuscripts.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\_productionmanagermenuscripts.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_toastpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_toastpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_notificationpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_notificationpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_loginlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_loginlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\trash.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\trash.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\historyall.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\historyall.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\historydetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\historydetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\_productionmanagermenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\_productionmanagermenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\productionmanager\\_productionmanagerform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\productionmanager\\_productionmanagerform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\netflixx\\Netflixx\\Migrations\\20250716074243_db1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Netflixx\\Migrations\\20250716074243_db1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\netflixx\\Netflixx\\Migrations\\20250716074206_db2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Netflixx\\Migrations\\20250716074206_db2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\netflixx\\Netflixx\\Migrations\\20250716072706_db2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Netflixx\\Migrations\\20250716072706_db2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\payment\\rechargeresult.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\payment\\rechargeresult.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\shared\\_profilemodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\shared\\_profilemodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\film\\detailsearch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\film\\detailsearch.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\wwwroot\\assets\\js\\counter.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\wwwroot\\assets\\js\\counter.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\wwwroot\\assets\\js\\custom.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\wwwroot\\assets\\js\\custom.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\wwwroot\\assets\\js\\isotope.min.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\wwwroot\\assets\\js\\isotope.min.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\wwwroot\\assets\\js\\owl-carousel.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\wwwroot\\assets\\js\\owl-carousel.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\film\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\film\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\film\\type.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\film\\type.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\views\\film\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\views\\film\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|d:\\netflixx\\netflixx\\controllers\\blogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{21909E6F-5226-46F4-8F59-F41C3291CEC5}|Netflixx\\Netflixx.csproj|solutionrelative:netflixx\\controllers\\blogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\netflixx\\Netflixx\\Migrations\\20250716072726_db1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Netflixx\\Migrations\\20250716072726_db1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Areas\\ShopSouvenir\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Netflixx\\Areas\\ShopSouvenir\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T10:32:03.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Views\\Brand\\Index.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Areas\\ShopSouvenir\\Views\\Brand\\Index.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Views\\Brand\\Index.cshtml",
+              "RelativeToolTip": "Netflixx\\Areas\\ShopSouvenir\\Views\\Brand\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T10:31:41.009Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BrandController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Controllers\\BrandController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Areas\\ShopSouvenir\\Controllers\\BrandController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Areas\\ShopSouvenir\\Controllers\\BrandController.cs",
+              "RelativeToolTip": "Netflixx\\Areas\\ShopSouvenir\\Controllers\\BrandController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T10:31:33.16Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PaymentController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\PaymentController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\PaymentController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\PaymentController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\PaymentController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T09:03:02.56Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T09:03:01.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ContactController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\ContactController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\ContactController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\ContactController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\ContactController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T09:03:00.966Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Index.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Filmpackage\\Index.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Index.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Filmpackage\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T09:02:20.8Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Billhistory.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Billhistory.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Filmpackage\\Billhistory.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Billhistory.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Filmpackage\\Billhistory.cshtml",
+              "ViewState": "AgIAAFMBAAAAAAAAAAAYwFYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T13:04:01.037Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Recharge.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Payment\\Recharge.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Payment\\Recharge.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Payment\\Recharge.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Payment\\Recharge.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:10:56.869Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Test.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\Test.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\Test.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\Test.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\Test.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T09:03:03.513Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BrandSouModel.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Models\\BrandSouModel.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Models\\BrandSouModel.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Models\\BrandSouModel.cs",
+              "RelativeToolTip": "Netflixx\\Models\\BrandSouModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T09:14:34.685Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "_ProductionManagerMenuScripts.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerMenuScripts.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\_ProductionManagerMenuScripts.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerMenuScripts.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\_ProductionManagerMenuScripts.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:36.502Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Create.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\Create.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Create.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:37.03Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Create.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Filmpackage\\Create.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Create.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Filmpackage\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T17:12:23.443Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Buy.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Buy.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Filmpackage\\Buy.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Filmpackage\\Buy.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Filmpackage\\Buy.cshtml",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T13:04:01.762Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FilmController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\FilmController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\FilmController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\FilmController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\FilmController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-15T10:13:56.472Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\Error.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:02.276Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:01.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "_ToastPartial.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ToastPartial.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_ToastPartial.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ToastPartial.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_ToastPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:00.873Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "_NotificationPartial.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_NotificationPartial.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_NotificationPartial.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_NotificationPartial.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_NotificationPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:10:59.669Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAwEwAAABeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:04.966Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "_LoginLayout.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_LoginLayout.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_LoginLayout.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_LoginLayout.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_LoginLayout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:00.307Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Trash.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Trash.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\Trash.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Trash.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\Trash.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:41.289Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Index.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\Index.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Index.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJICAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T16:05:35.28Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "HistoryAll.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\HistoryAll.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\HistoryAll.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\HistoryAll.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\HistoryAll.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:40.28Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "HistoryDetails.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\HistoryDetails.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\HistoryDetails.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\HistoryDetails.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\HistoryDetails.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:39.706Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Details.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\Details.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Details.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:38.087Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Delete.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\Delete.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\Delete.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:37.509Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "_ProductionManagerMenu.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerMenu.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\_ProductionManagerMenu.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerMenu.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\_ProductionManagerMenu.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:35.889Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "_ProductionManagerForm.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerForm.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\ProductionManager\\_ProductionManagerForm.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\ProductionManager\\_ProductionManagerForm.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\ProductionManager\\_ProductionManagerForm.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-16T07:48:34.724Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "20250716074243_db1.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Migrations\\20250716074243_db1.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Migrations\\20250716074243_db1.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Migrations\\20250716074243_db1.cs",
+              "RelativeToolTip": "Netflixx\\Migrations\\20250716074243_db1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T07:42:43.516Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "20250716074206_db2.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Migrations\\20250716074206_db2.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Migrations\\20250716074206_db2.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Migrations\\20250716074206_db2.cs",
+              "RelativeToolTip": "Netflixx\\Migrations\\20250716074206_db2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T07:42:06.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "20250716072726_db1.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Migrations\\20250716072726_db1.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Migrations\\20250716072726_db1.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Migrations\\20250716072726_db1.cs",
+              "RelativeToolTip": "Netflixx\\Migrations\\20250716072726_db1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T07:27:26.395Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "20250716072706_db2.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Migrations\\20250716072706_db2.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Migrations\\20250716072706_db2.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Migrations\\20250716072706_db2.cs",
+              "RelativeToolTip": "Netflixx\\Migrations\\20250716072706_db2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T07:27:06.681Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "_ProfileModal.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ProfileModal.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Shared\\_ProfileModal.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Shared\\_ProfileModal.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Shared\\_ProfileModal.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:11:03.502Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "RechargeResult.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Payment\\RechargeResult.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Payment\\RechargeResult.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Payment\\RechargeResult.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Payment\\RechargeResult.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:10:58.349Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "DetailSearch.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Film\\DetailSearch.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Film\\DetailSearch.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Film\\DetailSearch.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Film\\DetailSearch.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T15:31:47.275Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "counter.js",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\counter.js",
+              "RelativeDocumentMoniker": "Netflixx\\wwwroot\\assets\\js\\counter.js",
+              "ToolTip": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\counter.js",
+              "RelativeToolTip": "Netflixx\\wwwroot\\assets\\js\\counter.js",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-15T15:29:36.461Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "custom.js",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\custom.js",
+              "RelativeDocumentMoniker": "Netflixx\\wwwroot\\assets\\js\\custom.js",
+              "ToolTip": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\custom.js",
+              "RelativeToolTip": "Netflixx\\wwwroot\\assets\\js\\custom.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-15T15:29:36.917Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "isotope.min.js",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\isotope.min.js",
+              "RelativeDocumentMoniker": "Netflixx\\wwwroot\\assets\\js\\isotope.min.js",
+              "ToolTip": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\isotope.min.js",
+              "RelativeToolTip": "Netflixx\\wwwroot\\assets\\js\\isotope.min.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-15T15:29:38.691Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "owl-carousel.js",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\owl-carousel.js",
+              "RelativeDocumentMoniker": "Netflixx\\wwwroot\\assets\\js\\owl-carousel.js",
+              "ToolTip": "D:\\netflixx\\Netflixx\\wwwroot\\assets\\js\\owl-carousel.js",
+              "RelativeToolTip": "Netflixx\\wwwroot\\assets\\js\\owl-carousel.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-15T15:29:37.454Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\LoginController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\LoginController.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAwLwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-15T12:39:54.378Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "BlogController.cs",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Controllers\\BlogController.cs",
+              "RelativeDocumentMoniker": "Netflixx\\Controllers\\BlogController.cs",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Controllers\\BlogController.cs",
+              "RelativeToolTip": "Netflixx\\Controllers\\BlogController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-15T10:13:55.942Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "Type.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Film\\Type.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Film\\Type.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Film\\Type.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Film\\Type.cshtml",
+              "ViewState": "AgIAACwBAAAAAAAAAAAAwDUBAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:09:54.727Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Film\\Index.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Film\\Index.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Film\\Index.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Film\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKAAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T10:09:52.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "Detail.cshtml",
+              "DocumentMoniker": "D:\\netflixx\\Netflixx\\Views\\Film\\Detail.cshtml",
+              "RelativeDocumentMoniker": "Netflixx\\Views\\Film\\Detail.cshtml",
+              "ToolTip": "D:\\netflixx\\Netflixx\\Views\\Film\\Detail.cshtml",
+              "RelativeToolTip": "Netflixx\\Views\\Film\\Detail.cshtml",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAlwNQAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-15T11:30:23.024Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

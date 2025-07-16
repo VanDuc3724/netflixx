@@ -7,7 +7,7 @@ namespace Netflixx.Models.ViewModel
     // Đặt trong thư mục ViewModels hoặc Models
     public class ProductCreateViewModel
     {
-        public ProductSouModel Product { get; set; }
+        public ProductSouModel Product { get; set; } = new ProductSouModel();
         public SelectList Categories { get; set; }
         public SelectList Brands { get; set; }
         public SelectList Series { get; set; }

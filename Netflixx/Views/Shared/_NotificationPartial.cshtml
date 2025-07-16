@@ -1,13 +1,10 @@
-﻿@using System.Text.Json
-@{
-    string successMsg = TempData["success"] != null ? 
-        JsonSerializer.Deserialize<string>(TempData["success"].ToString()) : null;
-    
-    string errorMsg = TempData["error"] != null ? 
-        JsonSerializer.Deserialize<string>(TempData["error"].ToString()) : null;
+﻿@{
+    // Use null-coalescing operator to handle potential null values
+    string? successMsg = TempData["success"]?.ToString();
+    string? errorMsg = TempData["error"]?.ToString();
 }
 
-@if (errorMsg != null)
+@if (!string.IsNullOrEmpty(errorMsg))
 {
     <script>
         Swal.fire({
@@ -19,7 +16,7 @@
     </script>
 }
 
-@if (successMsg != null)
+@if (!string.IsNullOrEmpty(successMsg))
 {
     <script>
         Swal.fire({
