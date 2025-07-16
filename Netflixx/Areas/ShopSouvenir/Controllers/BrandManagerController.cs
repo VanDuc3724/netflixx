@@ -18,9 +18,15 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         }
 
         // GET: ShopSouvenir/BrandManager
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search)
         {
-            var list = await _context.BrandSous.AsNoTracking().ToListAsync();
+            var query = _context.BrandSous.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(b => b.Name.Contains(search));
+            }
+            ViewData["CurrentFilter"] = search;
+            var list = await query.AsNoTracking().ToListAsync();
             return View(list);
         }
 
@@ -50,6 +56,11 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] BrandSouModel brand)
         {
+            if (_context.BrandSous.Any(b => b.Name == brand.Name))
+            {
+                ModelState.AddModelError("Name", "Tên thương hiệu đã tồn tại");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(brand);
@@ -84,6 +95,12 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             {
                 return NotFound();
             }
+
+            if (_context.BrandSous.Any(b => b.Name == brand.Name && b.Id != brand.Id))
+            {
+                ModelState.AddModelError("Name", "Tên thương hiệu đã tồn tại");
+            }
+
             if (ModelState.IsValid)
             {
                 try
