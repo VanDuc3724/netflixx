@@ -41,10 +41,11 @@
                                class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a asp-action="Remove" asp-route-BrandId="@brand.Id"
-                               class="btn btn-sm btn-danger confirmDeletion">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <form asp-action="Remove" asp-route-BrandId="@brand.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger confirmDeletion">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -57,8 +58,10 @@
     <script>
         $(document).ready(function() {
             // Xác nhận xóa
-            $('.confirmDeletion').click(function() {
-                return confirm('Bạn có chắc chắn muốn xóa loại mô hình này?');
+            $('.confirmDeletion').click(function(e) {
+                if (!confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) {
+                    e.preventDefault();
+                }
             });
 
             // DataTable

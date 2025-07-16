@@ -84,6 +84,8 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int BrandId)
         {
             var brand = await _context.BrandSous.FindAsync(BrandId);
@@ -91,7 +93,7 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             {
                 _context.BrandSous.Remove(brand);
                 await _context.SaveChangesAsync();
-                TempData["error"] = "Xóa thương hiệu thành công";
+                TempData["success"] = "Xóa thương hiệu thành công";
             }
             else
             {
