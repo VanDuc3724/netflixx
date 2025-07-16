@@ -22,6 +22,13 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Manager()
+        {
+            var brands = await _context.BrandSous.ToListAsync();
+            return View(brands);
+        }
+
+        [HttpGet]
         public IActionResult Add()
         {
             return View();
