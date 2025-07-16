@@ -20,7 +20,7 @@
             @foreach (var film in Model.Films)
             {
                 <div class="col-md-4 form-check">
-                    <input class="form-check-input" type="checkbox" name="SelectedFilmIds" value="@film.Id" id="film_@film.Id" />
+                    <input class="form-check-input" type="checkbox" name="SelectedFilmIds[]" value="@film.Id" id="film_@film.Id" />
                     <label class="form-check-label" for="film_@film.Id">@film.Title</label>
                 </div>
             }
