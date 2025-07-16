@@ -15,6 +15,11 @@
         <span asp-validation-for="Package.Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
+        <label asp-for="Package.Price" class="form-label"></label>
+        <input asp-for="Package.Price" class="form-control" />
+        <span asp-validation-for="Package.Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
         <label class="form-label">Chọn phim</label>
         <div class="row">
             @foreach (var film in Model.Films)

@@ -11,6 +11,9 @@ namespace Netflixx.Models
         public string Name { get; set; }
         public string? Description { get; set; }
 
+        [Range(0, int.MaxValue)]
+        public int Price { get; set; }
+
         // Navigation properties
         public ICollection<PackageChannelsModel> PackageChannels { get; set; }
         public ICollection<PackageFilmsModel> PackageFilms { get; set; }
