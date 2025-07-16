@@ -1,4 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Netflixx.Models
+@using Netflixx.Repositories
+@inject UserManager<AppUserModel> UserManager
+@inject DBContext DBContext
+@using Netflixx.Areas.ShopSouvenir.Models
+@model CartViewModel
+@{
+    string accountName = "";
+    int coins = 0;
+    var currentUser = await UserManager.GetUserAsync(User);
+    if (currentUser != null)
+    {
+        accountName = currentUser.UserName ?? "";
+        var account = await DBContext.UserAccounts.FirstOrDefaultAsync(a => a.UserID == currentUser.Id);
+        if (account != null)
+        {
+            coins = account.PointsBalance;
+        }
+    }
+}
 <html lang="en">
 <head>
     <title>Shoping Cart</title>
@@ -244,7 +266,9 @@
                 <span class="mtext-103 cl2">
                     Your Cart
                 </span>
-
+                <div class="p-t-5">
+                    @accountName - <i class="zmdi zmdi-money"></i> @coins coins
+                </div>
                 <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
                     <i class="zmdi zmdi-close"></i>
                 </div>
@@ -337,9 +361,6 @@
 
 
     <!-- Shoping Cart -->
-    @using Netflixx.Areas.ShopSouvenir.Models
-    @model CartViewModel
-    <div class="bg0 p-t-75 p-b-85">
         <div class="container">
             @if (Model.CartItems != null && Model.CartItems.Count > 0)
             {
