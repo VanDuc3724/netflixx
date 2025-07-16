@@ -1,0 +1,85 @@
+﻿
+<!-- Main Avatar Selection Modal -->
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Chọn ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-3" id="avatarTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="defaultPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#defaultPhotosContent" type="button" role="tab"
+                                aria-controls="defaultPhotosContent" aria-selected="false">
+                            Ảnh mặc định
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="uploadedPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#uploadedPhotosContent" type="button" role="tab"
+                                aria-controls="uploadedPhotosContent" aria-selected="true">
+                            Ảnh đã tải lên
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation" style="display: none;">
+                        <!-- Ẩn tạm chức năng này -->
+                        <button class="nav-link" id="frameTab" data-bs-toggle="tab" data-bs-target="#frameContent"
+                                type="button" role="tab" aria-controls="frameContent" aria-selected="false">
+                            Thêm khung
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="avatarTabContent">
+                    <div class="tab-pane fade" id="defaultPhotosContent" role="tabpanel" aria-labelledby="defaultPhotosTab">
+                        <div class="photo-gallery" id="defaultPhotoGallery">
+                            <!-- JS sẽ chèn ảnh mặc định vào đây -->
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="uploadedPhotosContent" role="tabpanel" aria-labelledby="uploadedPhotosTab">
+                        <div id="uploadAreaContainer" class="mb-3 text-center">
+                            <button type="button" class="btn btn-outline-primary" id="triggerImagePromptModalBtn">
+                                <i class="fas fa-plus-circle me-1"></i> Tải ảnh mới lên
+                            </button>
+                        </div>
+                        <div class="photo-gallery" id="uploadedPhotoGallery">
+                            <!-- JS sẽ chèn ảnh đã tải lên vào đây -->
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="frameContent" role="tabpanel" aria-labelledby="frameTab">
+                        <p class="text-center text-muted">Chức năng 'Thêm khung' đang được phát triển.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <span id="modalMessage" class="text-start flex-grow-1"></span> <!-- Dùng flex-grow-1 để đẩy nút sang phải -->
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="selectAvatarBtn">Chọn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Upload Prompt Modal -->
+<div class="modal fade" id="imageUploadPromptModal" tabindex="-1" aria-labelledby="imageUploadPromptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageUploadPromptModalLabel">Tải ảnh lên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="imagePromptFileInput" accept="image/jpeg,image/png,image/gif" multiple hidden />
+                <div class="image-prompt-upload-area" id="imagePromptDropArea">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                    <p class="mb-1">Kéo thả ảnh vào đây hoặc nhấp để chọn file</p>
+                    <small class="text-muted">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 2MB.</small>
+                </div>
+                <div id="imagePromptError" class="text-danger text-center mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>

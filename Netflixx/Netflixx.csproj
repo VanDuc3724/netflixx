@@ -8,7 +8,11 @@
 
   <ItemGroup>
 
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
+
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
+
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
       <PrivateAssets>all</PrivateAssets>
@@ -27,13 +31,13 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Models\Souvenir\" />
     <Folder Include="wwwroot\css\adminDashboard\" />
     <Folder Include="wwwroot\image\logo\" />
     <Folder Include="wwwroot\image\avatars\" />
     <Folder Include="wwwroot\image\products\" />
     <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\js\adminDashboard\" />
   </ItemGroup>
 
 

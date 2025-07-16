@@ -76,6 +76,16 @@
                 padding: 0.75rem;
                 vertical-align: top;
             }
+        /* Filter active style */
+        .how-active1 {
+            background-color: #717fe0 !important;
+            color: white !important;
+        }
+
+        .filter-link-active {
+            color: #717fe0 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="animsition">
@@ -128,7 +138,7 @@
                             </li>
 
                             <li>
-                                <a asp-area="ShopSouvenir" asp-controller="Product" asp-action="Index">Shop</a>
+                                <a href="ShopSouvenir/Product/Index">Shop</a>
                             </li>
 
                             <li class="label1" data-label1="hot">
@@ -594,43 +604,43 @@
 
                         <div class="filter-col2 p-r-15 p-b-27">
                             <div class="mtext-102 cl2 p-b-15">
-                                Price
+                                Giá
                             </div>
 
                             <ul>
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                        All
+                                        Tất cả
                                     </a>
                                 </li>
 
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04">
-                                        $0.00 - $50.00
+                                        0₫ - 500.000₫
                                     </a>
                                 </li>
 
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04">
-                                        $50.00 - $100.00
+                                        500.000₫ - 1.000.000₫
                                     </a>
                                 </li>
 
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04">
-                                        $100.00 - $150.00
+                                        1.000.000₫ - 1.500.000₫
                                     </a>
                                 </li>
 
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04">
-                                        $150.00 - $200.00
+                                        1.500.000₫ - 2.000.000₫
                                     </a>
                                 </li>
 
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04">
-                                        $200.00+
+                                        2.000.000₫+
                                     </a>
                                 </li>
                             </ul>
@@ -1275,6 +1285,112 @@
             $(window).on('resize', function(){
                 ps.update();
             })
+        });
+    </script>
+
+    <script>
+                // Filter products
+        $(document).ready(function() {
+            // Initialize Isotope
+            var $grid = $('.isotope-grid').isotope({
+                itemSelector: '.isotope-item',
+                layoutMode: 'fitRows'
+            });
+
+            // Filter items on button click
+            $('.filter-tope-group').on('click', 'button', function() {
+                var filterValue = $(this).attr('data-filter');
+                $grid.isotope({ filter: filterValue });
+            });
+
+            // Change active class on filter buttons
+            $('.filter-tope-group button').click(function() {
+                $('.filter-tope-group button').removeClass('how-active1');
+                $(this).addClass('how-active1');
+            });
+
+            // Price filter (đã điều chỉnh cho VNĐ)
+            $('.filter-link').click(function(e) {
+                e.preventDefault();
+                var priceRange = $(this).text().trim();
+                var minPrice, maxPrice;
+
+                switch(priceRange) {
+                    case '0₫ - 500.000₫':
+                        minPrice = 0;
+                        maxPrice = 500000;
+                        break;
+                    case '500.000₫ - 1.000.000₫':
+                        minPrice = 500000;
+                        maxPrice = 1000000;
+                        break;
+                    case '1.000.000₫ - 1.500.000₫':
+                        minPrice = 1000000;
+                        maxPrice = 1500000;
+                        break;
+                    case '1.500.000₫ - 2.000.000₫':
+                        minPrice = 1500000;
+                        maxPrice = 2000000;
+                        break;
+                    case '2.000.000₫+':
+                        minPrice = 2000000;
+                        maxPrice = Number.MAX_VALUE;
+                        break;
+                    default: // All
+                        minPrice = 0;
+                        maxPrice = Number.MAX_VALUE;
+                }
+
+                $grid.isotope({
+                    filter: function() {
+                        var priceText = $(this).find('.stext-105').text();
+                        var price = parseInt(priceText.replace(/[^\d]/g, ''));
+                        return price >= minPrice && price <= maxPrice;
+                    }
+                });
+
+                // Update active class
+                $('.filter-link').removeClass('filter-link-active');
+                $(this).addClass('filter-link-active');
+            });
+        });
+    </script>
+
+    <script>
+                // Sort functionality
+        $('.sort-link').click(function(e) {
+            e.preventDefault();
+            var sortValue = $(this).data('sort');
+
+            var sortKey;
+            switch(sortValue) {
+                case 'price-low':
+                    sortKey = function(itemElem) {
+                        var priceText = $(itemElem).find('.stext-105').text();
+                        return parseInt(priceText.replace(/[^\d]/g, ''));
+                    };
+                    $grid.isotope({ sortBy: sortKey, sortAscending: true });
+                    break;
+                case 'price-high':
+                    sortKey = function(itemElem) {
+                        var priceText = $(itemElem).find('.stext-105').text();
+                        return parseInt(priceText.replace(/[^\d]/g, ''));
+                    };
+                    $grid.isotope({ sortBy: sortKey, sortAscending: false });
+                    break;
+                case 'name':
+                    sortKey = function(itemElem) {
+                        return $(itemElem).find('.js-name-b2').text().toLowerCase();
+                    };
+                    $grid.isotope({ sortBy: sortKey });
+                    break;
+                default: // default or newest
+                    $grid.isotope({ sortBy: 'original-order' });
+            }
+
+            // Update active class
+            $('.sort-link').removeClass('sort-link-active');
+            $(this).addClass('sort-link-active');
         });
     </script>
     <!--===============================================================================================-->

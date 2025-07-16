@@ -1,0 +1,360 @@
+﻿<link href="~/css/CreateUser.css" rel="stylesheet" />
+<div class="container py-5">
+    <div class="add-user-card">
+        <div class="add-user-card-header">
+            <!-- Tiêu đề này có thể thay đổi động bằng JS nếu muốn, hoặc để trống -->
+            <h2 id="addUserFormTitle">Thêm người dùng mới</h2>
+            <button type="button" class="btn-close-form" id="closeCreateUserFormBtnInPartial" aria-label="Đóng Form">
+                ×
+            </button>
+        </div>
+        <div class="add-user-card-body">
+            <div class="progress-container">
+                <div class="progress mb-1">
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                         aria-valuemin="0" aria-valuemax=" 100"></div>
+                </div>
+                <div class="step-labels">
+                    <span class="step-label" id="labelStep1">Vai trò</span>
+                    <span class="step-label" id="labelStep2">Tài khoản</span>
+                    <span class="step-label" id="labelStep3">Cá nhân</span>
+                </div>
+            </div>
+            <form id="addUserForm" novalidate>
+                @Html.AntiForgeryToken()
+                <div id="step1" class="form-step active">
+                    <div class="form-page-content">
+                        <h2>Chọn vai trò của bạn</h2>
+                        <div class="form-content-wrapper">
+                            <div class="row">
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="role-option" data-value="Manager">
+                                        <i class="fas fa-user-shield"></i>
+                                        <h5>Manager</h5>
+                                        <p>Dành cho người quản lý, có quyền truy cập và kiểm soát nhieeu.</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="role-option" data-value="User">
+                                        <i class="fas fa-user"></i>
+                                        <h5>Người dùng</h5>
+                                        <p>
+                                            Dành cho người dùng thông thường, có quyền truy cập và sử dụng dịch vụ cơ
+                                            bản.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="role" name="role" />
+                            <div id="roleError" class="add-user-error-message text-center mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step2" class="form-step">
+                    <div class="form-page-content">
+                        <h2>Tạo thông tin tài khoản</h2>
+                        <div class="page-right-form">
+                            <div class="form-content-wrapper">
+                                <div class="Add-user-form-group form-floating">
+                                    <input name="name" type="text" id="fullname" class="form-control" placeholder=" " />
+                                    <label for="fullname">Họ và tên <span class="text-danger">*</span></label>
+                                    <div id="fullnameError" class="add-user-error-message"></div>
+                                </div>
+
+                                <div class="Add-user-form-group form-floating">
+                                    <input name="email" type="email" id="email" class="form-control" placeholder=" "
+                                           pattern="^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$"
+                                           title="Vui lòng nhập địa chỉ email hợp lệ." />
+                                    <label for="email">Địa chỉ email <span class="text-danger">*</span></label>
+                                    <div id="emailError" class="add-user-error-message"></div>
+                                </div>
+
+                                <div class="row g-1">
+                                    <div class="col-md-6">
+                                        <div class="Add-user-form-group form-floating mb-0">
+                                            <input name="password" type="password" id="password" class="form-control"
+                                                   placeholder=" " />
+                                            <label for="password">
+                                                Mật khẩu <span class="text-danger">*</span>
+                                            </label>
+                                            <div id="passwordError" class="add-user-error-message"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="Add-user-form-group form-floating mb-0">
+                                            <input type="password" id="confirmPassword" class="form-control"
+                                                   placeholder=" " />
+                                            <label for="confirmPassword">
+                                                Xác nhận mật khẩu <span class="text-danger">*</span>
+                                            </label>
+                                            <div id="confirmPasswordError" class="add-user-error-message"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div class="form-check text-start">
+                                        <input class="form-check-input" type="checkbox" id="showPassword">
+                                        <label class="form-check-label" for="showPassword">
+                                            Hiển thị mật khẩu
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted text-end flex-grow-1 ms-3">
+                                        Mật khẩu cần ít
+                                        nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+                                    </small>
+                                </div>
+
+                                <div class="Add-user-form-group">
+                                    <label class="form-label mb-2"
+                                           style="font-size: 0.9rem; color: #67748e; text-align: left; width: 100%;">
+                                        Mã
+                                        xác nhận <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="d-flex align-items-end g-1">
+                                        <div class="me-2">
+                                            <div id="captchaDisplay" class="text-center"></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" id="captchaInput" class="form-control"
+                                                   placeholder="Nhập mã" />
+                                        </div>
+                                        <button type="button" id="refreshCaptchaBtn"
+                                                class="btn btn-outline-secondary ms-2"
+                                                title="Làm mới mã xác nhận">
+                                            🔄
+                                        </button>
+                                    </div>
+                                    <div id="captchaInputError" class="add-user-error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step3" class="form-step">
+                    <div class="form-page-content">
+                        <div class="page-left-info">
+                            <div class="avatar-wrapper" id="avatar-input-wrapper">
+                                <img id="step3-avatar-preview" src="" alt="Ảnh đại diện"
+                                     class="avatar-display-large" style="display: none;" />
+                                <i id="step3-default-avatar-icon" class="fas fa-camera avatar-upload-icon"></i>
+                                <input type="file" id="avatar-upload" accept="image/*" hidden />
+                            </div>
+                            <p class="avatar-description">
+                                Thêm ảnh để cá nhân hóa tài khoản của bạn. Đây là tùy chọn
+                                và có thể thay đổi sau.
+                            </p>
+                            <button type="button" class="btn btn-outline-primary mt-2" id="openAvatarModalBtn">
+                                <i class="fas fa-image me-2"></i>Chọn ảnh đại diện
+                            </button>
+                            <div id="avatarError" class="add-user-error-message mt-2"></div>
+                        </div>
+
+
+                        <div class="page-right-form">
+                            <h2 style="font-size:1.25rem; margin-bottom:6px;  color: #495057; ">
+                                Thông tin cá nhân
+                            </h2>
+                            <div class="form-content-wrapper">
+                                <div class="Add-user-form-group">
+                                    <label for="dobDay" class="form-label"
+                                           style="font-size: 0.9rem; color: #67748e;">
+                                        Ngày sinh <span class="text-danger" id="dobRequiredMark"></span>
+                                    </label>
+                                    <div  class="row g-1 date-input-group">
+                                        <div class="col">
+                                            <input name="date-birth" type="text" id="dobDay" class="form-control" placeholder="Ngày"
+                                                   pattern="\d{1,2}" title="Vui lòng nhập ngày (1-31)." />
+                                        </div>
+                                        <div class="col">
+                                            <select name="month-birth" id="dobMonth" class="form-select">
+                                                <option value="">Tháng</option>
+                                                <option value="1">Tháng 1</option>
+                                                <option value="2">Tháng 2</option>
+                                                <option value="3">Tháng 3</option>
+                                                <option value="4">Tháng 4</option>
+                                                <option value="5">Tháng 5</option>
+                                                <option value="6">Tháng 6</option>
+                                                <option value="7">Tháng 7</option>
+                                                <option value="8">Tháng 8</option>
+                                                <option value="9">Tháng 9</option>
+                                                <option value="10">Tháng 10</option>
+                                                <option value="11">Tháng 11</option>
+                                                <option value="12">Tháng 12</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <input name="year-birth" type="text" id="dobYear" class="form-control" placeholder="Năm"
+                                                   pattern="\d{4}" title="Vui lòng nhập năm (YYYY)." />
+                                        </div>
+                                    </div>
+                                    <div id="dobError" class="add-user-error-message"></div>
+                                </div>
+
+                                <div class="Add-user-form-group form-floating">
+                                    <input name="phoneNumber" type="tel" id="phone" class="form-control" placeholder=" "
+                                           pattern="^0\d{9}$"
+                                           title="Số điện thoại phải có 10 chữ số và bắt đầu bằng 0." />
+                                    <label for="phone">
+                                        Số điện thoại <span class="text-danger"
+                                                            id="phoneRequiredMark"></span>
+                                    </label>
+                                    <div id="phoneError" class="add-user-error-message"></div>
+                                </div>
+
+                                <div class="row g-1">
+                                    <label for="address" class="form-label"
+                                           style="padding-left: 3px; padding-top:0; padding-bottom:0; margin:0; font-size: 0.9rem; color: #67748e;">
+                                        Địa
+                                        chỉ <span class="text-danger" id="addressRequiredMark"></span>
+                                    </label>
+                                    <div class="row g-1 date-input-group">
+
+                                        <div class="Add-user-form-group col-md-4 form-floating">
+
+                                            <select name="country" id="country" class="form-select" placeholder=" ">
+                                                <option value="">Quốc gia</option>
+                                                <option value="vn">Việt Nam</option>
+                                                <option value="us">Mỹ</option>
+                                                <option value="other">Khác</option>
+                                            </select>
+
+                                            <div id="countryError" class="add-user-error-message"></div>
+                                        </div>
+
+                                        <div class="Add-user-form-group col-md-4 form-floating">
+                                            <select name ="province" id="province" class="form-select" disabled placeholder=" ">
+                                                <option value="">Thành phố</option>
+                                            </select>
+
+                                            <div id="provinceError" class="add-user-error-message"></div>
+                                        </div>
+                                        <div class="Add-user-form-group col-md-4 form-floating">
+                                            <select name="district" id="district" class="form-select" disabled placeholder=" ">
+                                                <option value=""></option>
+                                            </select>
+
+                                            <div id="districtError" class="add-user-error-message"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="Add-user-form-group form-floating">
+                                        <textarea name="address_detail" id="address" class="form-control" rows="2" placeholder=" "
+                                                  style="min-height: 45px;"></textarea>
+                                        <label for="address">Địa chỉ chi tiết</label>
+                                        <div id="addressError" class="add-user-error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="add-user-card-footer-buttons">
+                    <button type="button" class="btn btn-secondary prev-step">Quay lại</button>
+                    <span id="Add-user-form-feedback" class="me-3 align-self-center"></span>
+                    <div class="next-button-wrapper">
+                        <button type="button" class="btn btn-primary next-step">Tiếp theo</button>
+                    </div>
+                    <div class="submit-button-wrapper" style="display: none;">
+                        <button type="submit" id="addUserSubmitBtn" class="btn btn-primary submit-form">Thêm người dùng</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Chọn ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-3" id="avatarTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="defaultPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#defaultPhotosContent" type="button" role="tab"
+                                aria-controls="defaultPhotosContent" aria-selected="false">
+                            Ảnh mặc định
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="uploadedPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#uploadedPhotosContent" type="button" role="tab"
+                                aria-controls="uploadedPhotosContent" aria-selected="true">
+                            Ảnh đã tải lên
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="frameTab" data-bs-toggle="tab" data-bs-target="#frameContent"
+                                type="button" role="tab" aria-controls="frameContent" aria-selected="false">
+                            Thêm
+                            khung
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="avatarTabContent">
+                    <div class="tab-pane fade" id="defaultPhotosContent" role="tabpanel"
+                         aria-labelledby="defaultPhotosTab">
+                        <div class="photo-gallery" id="defaultPhotoGallery">
+                        </div>
+                    </div>
+
+                    <!-- Dán đoạn mã mới này vào -->
+                    <div class="tab-pane fade show active" id="uploadedPhotosContent" role="tabpanel"
+                         aria-labelledby="uploadedPhotosTab">
+                        <!-- START: NỘI DUNG MỚI -->
+                        <div id="uploadAreaContainer" class="mb-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="triggerImagePromptModalBtn">
+                                <i class="fas fa-plus-circle me-1"></i> Tải ảnh mới
+                            </button>
+                        </div>
+                        <div class="photo-gallery" id="uploadedPhotoGallery">
+                            <!-- Ảnh đã tải lên sẽ được JS chèn vào đây -->
+                        </div>
+                        <!-- END: NỘI DUNG MỚI -->
+                    </div>
+
+                    <div class="tab-pane fade" id="frameContent" role="tabpanel" aria-labelledby="frameTab">
+                        <p class="text-center text-muted">Chức năng 'Thêm khung' đang được phát triển.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="modalMessage" class="text-start"></span>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="selectAvatarBtn">Chọn</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- START: THÊM 2 MODAL MỚI VÀO CUỐI BODY -->
+<!-- Modal nhỏ để tải ảnh (Prompt Modal) -->
+<div class="modal fade" id="imageUploadPromptModal" tabindex="-1" aria-labelledby="imageUploadPromptModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageUploadPromptModalLabel">Tải ảnh lên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="imagePromptFileInput" accept="image/*" multiple hidden />
+                <div class="image-prompt-upload-area" id="imagePromptDropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Kéo thả ảnh vào đây hoặc nhấp để chọn file</p>
+                    <small class="text-muted">JPG, PNG, GIF. Tối đa 2MB.</small>
+                </div>
+                <div id="imagePromptError" class="add-user-error-message text-center mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-disamiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+

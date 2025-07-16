@@ -1,6 +1,6 @@
 ﻿:root {
     /* Màu sắc chính */
-    --black: #000;
+    --black: #2D2F3B;
     --white: #fff;
     --pink: #E5098F;
     --gray-dark: #222;
@@ -17,10 +17,10 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: var(--white);
-    color: var(--black); /* Trước đây là trắng trên trắng */
+    background-color: #D3D3D3;
+    color: #bdbdbd; /* Trước đây là trắng trên trắng */
     line-height: 1.6;
-    padding-top: 200px; /* Để tránh header che nội dung */
+    padding-top: 160px; /* Để tránh header che nội dung */
 }
 
 /* ==== HEADER & NAVBAR ==== */
@@ -43,7 +43,7 @@ header {
 
 
 .topbar {
-    background-color: var(--black);
+    background-color: #2D2F3B;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -210,7 +210,7 @@ nav.navbar {
             .nav-menu > li:not(:first-child) > a {
                 display: block;
                 padding: 8px 10px;
-                font-weight: bold;
+                font-weight: 500;
                 color: var(--black);
                 text-decoration: none;
                 transition: opacity 0.3s;
@@ -413,4 +413,45 @@ nav.navbar {
 /* Ẩn sản phẩm (dùng JS) */
 .hidden {
     display: none !important;
+}
+.site-footer {
+    background-color: #1f2937; /* màu tối (xám xanh đậm) */
+    color: #ffffff;
+    padding: 20px 40px;
+    text-align: center;
+    font-size: 14px;
+}
+
+    .site-footer .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .site-footer .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+        .site-footer .footer-links li a {
+            color: #9ca3af; /* màu chữ xám nhạt */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+            .site-footer .footer-links li a:hover {
+                color: #ffffff;
+                text-decoration: underline;
+            }
+
+.product-List {
+
+    margin: 40px auto;
+    width: 1200px;
+    
+    background-color: var(--white);
 }

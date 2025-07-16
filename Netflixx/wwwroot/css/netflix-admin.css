@@ -3,7 +3,7 @@
 :root {
     --teal: #4ECDB4;
     --charcoal-dark: #2D2F3B;
-    --light-gray: #F5F6FA;
+    --light-gray: #E9EAEE;
     --dark-gray: #333333;
     --golden-yellow: #F1C40F;
     --emerald-green: #2ECC71;
@@ -186,16 +186,17 @@ body {
         }
 
 /* Main Content */
+
 .admin-main {
     margin-left: 230px; /* Matches sidebar width */
-    padding-top: 80px; /* Space for fixed navbar */
+    padding-top: 60px; /* Space for fixed navbar */
     min-height: 100vh;
     background-color: var(--light-gray);
     color: var(--dark-gray);
+    flex-grow: 1;
 }
-
-.admin-content {
-    padding: 2rem;
+.admin-content{
+/*    margin-bottom:100px;*/
 }
 
 /* Dashboard Styles */
@@ -447,4 +448,20 @@ body {
     border: 1px solid var(--teal) !important;
     color: var(--dark-gray) !important;
     border-radius: 4px !important;
+}
+
+
+.admin-footer {
+    height: 80px;
+    background-color: #4ECDB4;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+.dropdown-toggle:hover {
+    cursor: pointer;
 }

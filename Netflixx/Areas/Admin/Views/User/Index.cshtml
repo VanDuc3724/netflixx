@@ -1,53 +1,35 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Dashboard Overview";
     Layout = "_AdminLayout";
 }
-@{
-    var AllUsersCount = ViewBag.AllUsersCount ?? 0;
-    var NewUsersCount = ViewBag.NewUsersCount ?? 0;
-    var totalUsers = ViewBag.TotalUsers ?? 0;
-    var page = ViewBag.Page ?? 1;
-    var pageSize = ViewBag.PageSize ?? 10;
-}
-<div class="header-green">
-    <div class="left">
-        <div class="breadcrumb">Netflixx &gt; User Management &gt</div>
-        <div class="title">User Management</div>
-    </div>
-    <div class="actions">
-        <button>Create Report</button>
-    </div>
-</div>
-<div class="user-admin-panel">
-    <div class="metrics-grid">
-        <div class="metric-card metric-1">
-            <h4>Tổng số người dùng</h4>
-            <div class="line" id="totalUsersMetricLine1">492</div>
-            <div class="subline" id="totalUsersMetricLine2">tăng 20%</div>
-
+@Html.AntiForgeryToken()
+<div>
+    <div class="header-green">
+        <div class="left">
+            <div class="breadcrumb">Quản lý người dùng > Tổng quan người dùng </div>
+            <div class="title">Tổng quan người dùng</div>
         </div>
-        <div class="metric-card metric-3">
-            <h4>Người dùng mới tuần này</h4>
-            <div class="line" id="newUsersMetricLine1">--</div>
-            <div class="subline" id="newUsersMetricLine2">--</div>
+        <div class="actions">
+            <button id="add-user-btn" class="btn btn-primary">Thêm Người Dùng</button> <!-- Sử dụng class Bootstrap nếu có -->
         </div>
-        <div class="metric-card metric-4">
-            <h4>Người dùng Vip</h4>
-            <div class="line" id="PaidUsersMetricLine1">--</div>
-            <div class="subline" id="PaidUsersMetricLine2">--</div>
+    </div>
+    <div class="user-admin-panel">
+        <div class="metrics-grid">
+            <div class="metric-card metric-1">
+                <h4>Tổng số người dùng</h4>
+                <div class="line" id="totalUsersMetricLine1">--</div>
+                <div class="subline" id="totalUsersMetricLine2"></div>
+            </div>
+            <div class="metric-card metric-2">
+                <h4>Người dùng mới tuần này</h4>
+                <div class="line" id="newUsersMetricLine1">--</div>
+                <div class="subline" id="newUsersMetricLine2"></div>
+            </div>
         </div>
-        <div class="metric-card metric-2">
-        <h4>Người dùng hoạt động</h4>
-        <div class="line" id="activeUsersMetricLine1">--</div>
-        <div class="subline" id="activeUsersMetricLine2">--</div>
-
     </div>
-    </div>
-
-
 
     <div class="charts-grid">
+        <!-- Chart cards giữ nguyên -->
         <div class="chart-card row-1-large" data-chart-id="totalUsersChart-card">
             <div class="chart-header">
                 <h3>Tổng số user theo tháng</h3>
@@ -55,7 +37,7 @@
                     <button class="btn-maximize" title="Fullscreen"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" /></svg></button>
                 </div>
             </div>
-            <canvas style="max-height:250px"  id="totalUsersChart"></canvas>
+            <canvas style="max-height:250px" id="totalUsersChart"></canvas>
         </div>
         <div class="chart-card row-1-small" data-chart-id="rolePieChart-card">
             <div class="chart-header">
@@ -84,7 +66,6 @@
             </div>
             <canvas style="max-height:250px" id="usageTimeChart"></canvas>
         </div>
-       
     </div>
 
     <div class="card">
@@ -93,81 +74,102 @@
                 <svg class="icon" viewBox="0 0 24 24">
                     <path d="M21 20l-5.9-5.9A7 7 0 1 0 4 10a7 7 0 0 0 11.1 5.1L20 21z" />
                 </svg>
-                <input type="text" placeholder="Search users..." id="searchInput">
+                <input type="text" placeholder="Tìm kiếm người dùng..." id="searchInput" class="form-control form-control-sm">
             </div>
-            <button  class="btn-add" id="addUserBtn">Add New User</button>
+            <button class="btn-add" id="add-user-btn-toolbar">Người dùng mới</button> <!-- Sửa text cho nhất quán -->
         </div>
+        <div id="bulkActionToolbar" class="bulk-action-toolbar" style="display: none; padding: 0.5rem 1rem; background-color: #f0f8ff; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; gap: 1rem;">
+            <span id="selectionCount" style="font-weight: bold;"></span>
+            <button id="bulkLockButton" class="btn btn-warning btn-sm">Khóa Tài Khoản</button>
+            <!-- Bạn có thể thêm các nút hành động hàng loạt khác ở đây, ví dụ: Xóa, Gửi Email... -->
+        </div>
+        <!-- ***** THÊM PHẦN NÀY ĐỂ CHỌN SỐ LƯỢNG DÒNG/TRANG ***** -->
+        <div class="table-controls-top" style="display: flex; align-items: center; margin-bottom: 1rem; padding: 0 1rem;">
+            <label for="itemsPerPageSelect" style="margin-right: 0.5rem; white-space: nowrap;">Hiển thị:</label>
+            <select id="itemsPerPageSelect" class="form-select form-select-sm" style="width: auto; margin-right: 0.5rem;">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        
+        </div>
+        <!-- ***** KẾT THÚC PHẦN THÊM ***** -->
+
 
         <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                      
-                        <th>Full Name</th>
+                        <th style="width: 1%;"><input type="checkbox" id="selectAllCheckbox" title="Chọn tất cả" /></th>
+                        <th>Họ và Tên</th> <!-- Thay đổi text cho nhất quán -->
                         <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
-                <tbody id="usersTbody">
-                   
-                        <tr>
-                        
-                            @* <td>@user.Name</td>
-                            <td>@user.Email</td>
-                            <td>@user.Role</td>
-                            @if (user.IsActive)
-                            {
-                                <td><span class="status-pill">Active</span></td>
-                            }
-                            else
-                            {
-
-                                <td><span class="status-pill">InActive</span></td>
-                            }
-                            <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
-                            <td>
-
-                                <button class="action-icon edit" onclick="submitForm()" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24">
-                                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.66l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a6.98 6.98 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 14.3 2h-4.6a.5.5 0 0 0-.49.42l-.36 2.54a7.03 7.03 0 0 0-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.7 8.48a.5.5 0 0 0 .12.66l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58a.5.5 0 0 0-.12.66l1.92 3.32c.14.25.43.34.68.22l2.39-.96c.5.38 1.04.7 1.62.94l.36 2.54c.05.27.26.46.49.46h4.6c.24 0 .44-.19.49-.46l.36-2.54c.58-.24 1.12-.56 1.62-.94l2.39.96c.25.12.54.03.68-.22l1.92-3.32a.5.5 0 0 0-.12-.66l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
-                                    </svg>
-                                </button>
-
-                                <button class="action-icon delete" onclick="submitForm()" title="Delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M15 7V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3" />
-                                    </svg>
-                                </button>
-
-
-                            </td> *@
-                        </tr>
-
-                    
-
+                <tbody id="userTableBody">
+                    <!-- Dữ liệu sẽ được tải vào đây bởi JavaScript -->
                 </tbody>
             </table>
         </div>
 
         <div class="table-footer">
-            <div id="tableInfo">Showing 1 to 10 of 42 users</div> 
+            <div id="paginationInfo">Hiển thị 0-0 trên 0 người dùng</div> <!-- Giá trị khởi tạo -->
             <div class="pagination" id="pagination">
-                <button>&larr;</button>
-                <button class="current">1</button>
-                <button>2</button>
-                <button>3</button>
-                <button>&rarr;</button>
+                <!-- Các nút phân trang sẽ được tạo bởi JavaScript -->
             </div>
         </div>
     </div>
-
 </div>
 
-<div id="overlay" class="overlay" style="display: none;"></div>
-<script src="~/js/User.js"></script>
+<!-- Overlay cho Popup và Fullscreen Chart -->
+<div id="overlay" class="overlay" style="display: none;">
+    @* Container cho form thêm người dùng (bạn đã có) *@
+    <div id="addUserFormContainer" class="popup-form-container" style="display:none;">
+        @* Nội dung form thêm user sẽ được load vào đây *@
+    </div>
+
+    @* !! THÊM HOẶC KIỂM TRA PHẦN NÀY !! *@
+    <div id="userDetailModalContainer" class="popup-form-container" style="display:none;">
+        @* Nội dung modal chi tiết người dùng sẽ được load vào đây *@
+    </div>
+</div>
+<div class="modal fade" id="adminPasswordConfirmModal" tabindex="-1"
+     aria-labelledby="adminPasswordConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static"
+     data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminPasswordConfirmModalLabel">Xác nhận mật khẩu Admin</h5>
+            </div>
+            <div class="modal-body">
+                <p>Vui lòng nhập mật khẩu quản trị viên của bạn để hoàn tất việc thêm người dùng.</p>
+                <div class="Add-user-form-group form-floating">
+                    <input type="password" id="adminPasswordInput" class="form-control" placeholder=" " />
+                    <label for="adminPasswordInput">Mật khẩu Admin</label>
+                    <div id="adminPasswordError" class="add-user-error-message"></div>
+                </div>
+            </div>
+            <a href="/Account/ChangePassword">Quên mật khẩu?</a>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelAdminConfirmBtn"
+                        data-bs-dismiss="modal">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" id="submitAdminConfirmBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- Link đến thư viện Chart.js (nếu bạn chưa có ở _AdminLayout) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Link đến file JavaScript của trang User Management -->
+    <script src="~/js/user-manager/adminAuth.js" asp-append-version="true"></script> <!-- Sử dụng asp-append-version -->
+
+    <script src="~/js/user-manager/User.js" asp-append-version="true"></script> <!-- Sử dụng asp-append-version -->
+}

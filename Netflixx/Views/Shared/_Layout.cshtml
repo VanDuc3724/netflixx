@@ -116,7 +116,7 @@
             });
         </script>
     }
-
+    @await Component.InvokeAsync("Chat")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

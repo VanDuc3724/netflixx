@@ -112,6 +112,7 @@ body {
     font-weight: 500;
 }
 
+<<<<<<< HEAD
     .coins-display i {
         margin-right: 4px;
     }
@@ -123,7 +124,26 @@ body {
     }
     .navbar-text:hover {
         color: #e50914 !important;
+=======
+.coins-display {
+    color: #ffdd57;
+    font-weight: 500;
+}
+
+    .coins-display i {
+        margin-right: 4px;
+>>>>>>> ff4b8f2fdf22235a218b8486203d423e47b339ff
     }
+
+    .coins-display .btn {
+        padding: 0.1rem 0.5rem;
+        font-size: 0.8rem;
+        margin-left: 4px;
+    }
+
+.navbar-text:hover {
+    color: #e50914 !important;
+}
 
 /* ===== Netflix Dark Theme ===== */
 .netflix-bg {
@@ -432,11 +452,13 @@ footer {
             box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
         }
 
-.dropdown-menu {
-    z-index: 1200;
-}
-        border-top: 1px solid #333;
+    .dropdown-menu {
+        z-index: 1200;
     }
+
+    border-top: 1px solid #333;
+}
+
 }
 
 /* Smooth transitions for all interactive elements */

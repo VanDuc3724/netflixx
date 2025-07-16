@@ -1,346 +1,245 @@
-﻿@using Netflixx.Models
-@model UserViewModel
-
-<style>
-    .user-detail-container {
-        background: #1A1A1A;
-        color: #E0E0E0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        width: 100%;
-        max-width: 380px;
-        margin: 8px auto;
-        display: flex;
-
-        flex-direction: column;
-        box-sizing: border-box;
-        overflow: hidden;
-    }
-
-    .profile-header,
-    .profile-details,
-    .profile-status,
-    .profile-body-1,
-    .profile-body-2,
-    .profile-summary {
-        margin: 0 5px;
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-        padding: 12px 10px 14px;
-    }
-
-        .profile-header .avatar {
-            flex-shrink: 0;
-            width: 80px;
-            height: 80px;
-            background: #2C2C2C;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid #3A3A3A;
-        }
-
-            .profile-header .avatar img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-        .profile-header .name {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0;
-            color: #FFFFFF;
-        }
-
-    .profile-details {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 3px 18px;
-        padding: 0 10px 14px;
-    }
-
-        .profile-details .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 12px;
-            color: #E0E0E0;
-            min-width: calc(50% - 9px);
-        }
-
-            .profile-details .detail-item .icon {
-                width: 20px;
-                text-align: center;
-                font-size: 14px;
-                color: #4DB6AC; /* xanh ngọc dịu */
-            }
-
-            .profile-details .detail-item .text {
-                line-height: 1.4;
-                font-weight: 500;
-                font-size: 12px;
-                color: #F5F5F5;
-            }
-
-    .profile-status {
-        display: flex;
-        justify-content: space-between;
-        gap: 5px;
-        padding: 0 10px 14px;
-        margin: 0 10px 14px;
-        box-shadow:none;
-    }
-
-        .profile-status .box-user-detail
-        {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 14px;
-            min-width: calc(50% - 9px);
-        }
-
-            .profile-status .box-user-detail.label {
-                color: #81D4FA; /* xanh dương pastel */
-                font-weight: 700;
-            }
-
-                .profile-status .box-user-detail .label::after {
-                    content: ":";
-                    margin-right: 2px;
-                    color: #81D4FA;
-                }
-
-            .profile-status .box-user-detail.value {
-                font-size: 14px;
-                font-weight: 600;
-                color: #FAFAFA;
-            }
-
-                .profile-status .box-user-detail .value.active {
-                    color: #66BB6A; /* xanh lá tươi */
-                }
-
-    .separator {
-        height: 1px;
-        background: #333;
-        width: calc(100% - 20px);
-        margin: 0 auto;
-    }
-
-    .profile-body-1 {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        padding: 14px 0;
-    }
-
-        .profile-body-1 .likes {
-            background: #1A1A1A;
-            border: 1px solid #2E2E2E;
-            padding: 14px 10px;
-            margin: 0 10px;
-            border-radius: 5px;
-        }
-
-            .profile-body-1 .likes h3 {
-                margin: 0 0 6px;
-                font-size: 14px;
-                font-weight: 600;
-                color: #FFB74D; /* cam nhạt */
-            }
-
-            .profile-body-1 .likes ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-
-            .profile-body-1 .likes li {
-                background: #2C2C2C;
-                padding: 4px 8px;
-                font-size: 12px;
-                white-space: nowrap;
-                color: #EEEEEE;
-                border: 1px solid #FFB74D;
-                border-radius: 4px;
-            }
-
-    .profile-body-2 {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        padding: 12px 0;
-    }
-
-        .profile-body-2 .stats {
-            padding: 12px 10px;
-            margin: 0 10px;
-            width: fit-content;
-        }
-
-            .profile-body-2 .stats .item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                margin-bottom: 6px;
-                font-size: 14px;
-            }
-
-                .profile-body-2 .stats .item:last-child {
-                    margin-bottom: 0;
-                }
-
-                .profile-body-2 .stats .item .label {
-                    color: #BA68C8; /* tím pastel */
-                    font-weight: 700;
-                }
-
-                    .profile-body-2 .stats .item .label::after {
-                        content: ":";
-                        margin-right: 4px;
-                        color: #BA68C8;
-                    }
-
-                .profile-body-2 .stats .item .value {
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #FFFFFF;
-                }
-
-    .profile-summary {
-        background: #1A1A1A;
-        border: 1px solid #2E2E2E;
-        border-radius: 5px;
-        padding: 14px 10px;
-        margin: 14px 10px;
-    }
-
-        .profile-summary h3 {
-            margin: 0 0 6px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #4FC3F7; /* xanh dương nhạt */
-        }
-
-        .profile-summary p {
-            margin: 0;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #BDBDBD;
-        }
-
-    
-        @@media (max-width: 480px) {
-        .profile-details .detail-item, .profile-status .box-user-detail, .profile-body-1 .likes, .profile-body-2 .stats
-
-    {
-        min-width: 100%;
-    }
-
-    .profile-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .separator {
-        width: calc(100% - 12px);
-    }
-
-    }
-</style>
-
-<div class="user-detail-container">
-    <!-- AVATAR + TÊN -->
-    <div class="profile-header">
-        <div class="avatar">
-             <img src="~/image/logo/avatar_default.jpg" alt="Avatar">
-        </div>
-        <h2 class="name">@Model.Name</h2>
-    </div>
-
-    <!-- NGÀY SINH – TUỔI – EMAIL – ĐỊA CHỈ -->
-    <div class="profile-details">
-        <div class="detail-item">
-            <span class="icon">🎂</span>
-            <span class="text">02/03/1977</span>
-        </div>
-        <div class="detail-item">
-            <span class="icon">⌛</span>
-            <span class="text">30 tuổi</span>
-        </div>
-        <div class="detail-item">
-            <span class="icon">✉️</span>
-            <span class="text">@Model.Email</span>
-        </div>
-        <div class="detail-item">
-            <span class="icon">📍</span>
-            <span class="text">Đường 123, Phố 123</span>
-        </div>
-    </div>
-
-    <!-- VAI TRÒ & TRẠNG THÁI -->
-    <div class="profile-status">
-        <div class="box-user-detail">
-            <span class="label">Vai trò</span>
-            <span class="value">@Model.Role</span>
-        </div>
-        <div class="box-user-detail">
-            <span class="label">Trạng thái</span>
-            <span class="value active">Hoạt động</span>
-        </div>
-    </div>
-
-    <div class="separator"></div>
-
-    <!-- SỞ THÍCH -->
-    <div class="profile-body-1">
-        <div class="likes">
-            <h3>Sở thích</h3>
-            <ul>
-                <li>Phim viễn tưởng</li>
-                <li>Phim lãng mạn</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="separator"></div>
-
-    <!-- GÓI ĐÃ MUA & PHIM ĐÃ XEM -->
-    <div class="profile-body-2">
-        <div class="stats">
-            <div class="item">
-                <span class="label">Gói đã mua</span>
-                <span class="value">2</span>
+﻿<link rel="stylesheet" href="~/css/UserDetail.css">
+@Html.AntiForgeryToken()
+@* The main modal container/overlay *@
+<div id="userModal" class="user-detail-modal" data-user-id="@ViewContext.HttpContext.Request.Query["userId"]">
+    <div class="user-detail-modal__content">
+        <div class="user-detail-modal__header">
+            <div class="user-detail-modal__user-info">
+                <div class="user-detail-modal__avatar">
+                    <img id="avatarImage" src="/img/default-avatar.png" alt="User Avatar" />
+                    <div class="user-detail-modal__avatar-overlay" id="btnChangeAvatar">
+                        <span>Thay đổi</span>
+                    </div>
+                </div>
+               
+                <div class="user-detail-modal__header-text">
+                    <div class="user-detail-modal__name" id="userName"></div>
+                    <div class="user-detail-modal__email" id="userEmail"></div>
+                    <div class="user-detail-modal__status" id="userStatus">
+                        <div class="user-detail-modal__status-dot"></div>
+                        <span id="userStatusText"></span>
+                    </div>
+                </div>
             </div>
-            <div class="item">
-                <span class="label">Phim đã xem</span>
-                <span class="value">10</span>
+            <div class="user-detail-modal__actions">
+                <button class="user-detail-modal__dropdown-button" id="mainActionDropdownButton">Hành động</button>
+                <div class="user-detail-modal__dropdown-content" id="actionDropdown">
+                    <button class="user-detail-modal__dropdown-action-button" id="actionDropdownSendEmail">Gửi email</button>
+                    <button class="user-detail-modal__dropdown-action-button" id="actionDropdownLockUser">Khóa/Mở khóa</button>
+                </div>
+                <button class="user-detail-modal__edit-button" id="btnEdit">Chỉnh sửa</button>
+                <button class="user-detail-modal__save-button" id="btnSave" style="display: none;">Lưu</button>
+                @* Removed the header close button (id="headerCloseButton") *@
+            </div>
+        </div>
+
+        <div class="user-detail-modal__body">
+            <div class="user-detail-modal__grid-item"><label for="fName">Họ và tên</label><input id="fName" type="text" disabled /></div>
+            <div class="user-detail-modal__grid-item"><label for="fEmail">Email</label><input id="fEmail" type="email" disabled /></div>
+            <div class="user-detail-modal__grid-item">
+                <label for="fRole">Vai trò</label>
+                <select id="fRole" disabled></select>
+            </div>
+            <div class="user-detail-modal__grid-item"><label for="fPass">Mật khẩu mới</label><input id="fPass" type="password" placeholder="Thay đổi mật khẩu" disabled /></div>
+            <div class="user-detail-modal__grid-item"><label for="fPhone">Số điện thoại</label><input id="fPhone" type="text" disabled /></div>
+            <div class="user-detail-modal__grid-item"><label for="fDob">Ngày sinh</label><input id="fDob" type="date" disabled /></div>
+            <div class="user-detail-modal__grid-item user-detail-modal__grid-item--full"><label for="fAddress">Địa chỉ</label><input id="fAddress" type="text" disabled /></div>
+            <div class="user-detail-modal__grid-item"><label for="fRegister">Ngày đăng ký</label><input id="fRegister" type="text" disabled /></div>
+            <div class="user-detail-modal__grid-item"><label for="fRated">Số phim đã đánh giá</label><input id="fRated" type="number" disabled /></div>
+            <div class="user-detail-modal__grid-item user-detail-modal__grid-item--full">
+                <label>Phim yêu thích</label>
+                <div class="user-detail-modal__list-box" id="fMovies"></div>
+            </div>
+            <div class="user-detail-modal__grid-item user-detail-modal__grid-item--full">
+                <label>Bài viết</label>
+                <div class="user-detail-modal__list-box" id="fBlogs"></div>
+            </div>
+        </div>
+
+        <div class="user-detail-modal__footer">
+            <button class="user-detail-modal__close-button" id="footerCloseButton">Đóng</button>
+        </div>
+    </div>
+</div>
+
+@* Sub-modals (email, lock) - vẫn trong cùng file HTML *@
+
+<div id="emailModal" class="email-modal">
+    <div class="email-modal__content">
+        <div class="email-modal__header">
+            <h4 class="email-modal__title">Thư mới</h4>
+            <div class="email-modal__header-actions">
+                <button class="email-modal__action-icon" title="Thu nhỏ">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 11h16v2H4z" /></svg>
+                </button>
+                <button class="email-modal__action-icon" title="Phóng to">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6z" /></svg>
+                </button>
+                <button class="email-modal__action-icon" id="emailModalCloseButton" title="Đóng">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="email-modal__body">
+            <div class="email-modal__input-group email-modal__input-group--border-bottom">
+                <label for="emailTo" class="sr-only">Người nhận</label>
+                <input type="email" id="emailTo" readonly placeholder="Người nhận" />
+            </div>
+
+            <div class="email-modal__input-group email-modal__input-group--border-bottom">
+                <label for="emailSubject" class="sr-only">Tiêu đề</label>
+                <input type="text" id="emailSubject" placeholder="Tiêu đề" />
+            </div>
+
+            <div id="quill-editor-content" class="email-modal__editor-content-wrapper"></div>
+        </div>
+
+        <div class="email-modal__footer">
+            <div class="email-modal__footer-left">
+                <button class="email-modal__send-button" id="btnSendEmailInternal">
+                    Gửi
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="white" style="margin-left: 5px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
+                </button>
+            </div>
+
+            <div class="email-modal__footer-right">
+               
+                <button class="email-modal__icon-button" id="btnInsertEmoji" title="Chèn biểu tượng cảm xúc">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3.5-2.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm7 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5z" /></svg>
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="separator"></div>
-
-    <!-- TÓM TẮT BẢN THÂN -->
-    <div class="profile-summary">
-        <h3>Tóm tắt bản thân</h3>
-        <p>
-            Tôi là Nguyễn Văn A – một người mê phim điện ảnh với nhiều năm kinh nghiệm
-            đánh giá và chia sẻ cảm nhận. Tôi luôn tìm kiếm những câu chuyện sâu sắc
-            và giàu cảm xúc để truyền tải tới cộng đồng.
-        </p>
+@* Emoji Picker Modal (NEW) - Đặt ngoài emailModal để dễ định vị *@
+<div id="emojiPickerModal" class="emoji-picker-modal">
+    <div class="emoji-picker-modal__content">
+        <div class="emoji-picker-modal__header">
+            <h5 class="emoji-picker-modal__title">Chọn Biểu tượng cảm xúc</h5>
+            <button class="emoji-picker-modal__close-button" id="emojiPickerCloseButton">×</button>
+        </div>
+        <div class="emoji-picker-modal__grid" id="emojiPickerGrid">
+        </div>
     </div>
-    <form  asp-area="admin" asp-controller="user" asp-action="Detail"  method="get">
+</div>
 
-        <input type="hidden" name="id" value="@Model.Id" />
-        <input type="submit"value="update" /> 
-    </form>
+<div id="lockTimeModal" class="lock-modal">
+    <div class="lock-modal__content">
+        <div class="lock-modal__header">
+            <h4 class="lock-modal__title">Khóa/Mở khóa tài khoản: <span id="lockUserName"></span></h4>
+            <button class="lock-modal__close-button" id="lockTimeModalCloseButton">×</button>
+        </div>
+        <div class="lock-modal__body">
+            <p class="lock-modal__current-status" id="lockCurrentStatus"></p>
+            <div class="lock-modal__input-group" id="lockInputGroup" style="display: none;">
+                <label style="width:150px" for="lockAmount">Thời gian:</label>
+                <input type="number" id="lockAmount" value="7" />
+                <select id="lockUnit">
+                    <option value="days" selected>Ngày</option>
+                    <option value="hours">Giờ</option>
+                    <option value="minutes">Phút</option>
+                </select>
+            </div>
+            <div class="lock-modal__checkbox-group" id="permanentLockOption" style="display: none;">
+                <input type="checkbox" id="lockPermanent" /> <label for="lockPermanent">Khóa vĩnh viễn</label>
+            </div>
+        </div>
+        <div class="lock-modal__footer">
+            <button class="lock-modal__apply-button" id="btnApplyLock">Áp dụng</button>
+            <button class="lock-modal__cancel-button" id="btnCancelLock">Hủy</button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Chọn ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-3" id="avatarTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="defaultPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#defaultPhotosContent" type="button" role="tab"
+                                aria-controls="defaultPhotosContent" aria-selected="false">
+                            Ảnh mặc định
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="uploadedPhotosTab" data-bs-toggle="tab"
+                                data-bs-target="#uploadedPhotosContent" type="button" role="tab"
+                                aria-controls="uploadedPhotosContent" aria-selected="true">
+                            Ảnh đã tải lên
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="frameTab" data-bs-toggle="tab" data-bs-target="#frameContent"
+                                type="button" role="tab" aria-controls="frameContent" aria-selected="false">
+                            Thêm
+                            khung
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="avatarTabContent">
+                    <div class="tab-pane fade" id="defaultPhotosContent" role="tabpanel"
+                         aria-labelledby="defaultPhotosTab">
+                        <div class="photo-gallery" id="defaultPhotoGallery">
+                        </div>
+                    </div>
+
+                    <!-- Dán đoạn mã mới này vào -->
+                    <div class="tab-pane fade show active" id="uploadedPhotosContent" role="tabpanel"
+                         aria-labelledby="uploadedPhotosTab">
+                        <!-- START: NỘI DUNG MỚI -->
+                        <div id="uploadAreaContainer" class="mb-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="triggerImagePromptModalBtn">
+                                <i class="fas fa-plus-circle me-1"></i> Tải ảnh mới
+                            </button>
+                        </div>
+                        <div class="photo-gallery" id="uploadedPhotoGallery">
+                            <!-- Ảnh đã tải lên sẽ được JS chèn vào đây -->
+                        </div>
+                        <!-- END: NỘI DUNG MỚI -->
+                    </div>
+
+                    <div class="tab-pane fade" id="frameContent" role="tabpanel" aria-labelledby="frameTab">
+                        <p class="text-center text-muted">Chức năng 'Thêm khung' đang được phát triển.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="modalMessage" class="text-start"></span>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="selectAvatarBtn">Chọn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal nhỏ để tải ảnh (Prompt Modal) -->
+<div class="modal fade" id="imageUploadPromptModal" tabindex="-1" aria-labelledby="imageUploadPromptModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageUploadPromptModalLabel">Tải ảnh lên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="imagePromptFileInput" accept="image/*" multiple hidden />
+                <div class="image-prompt-upload-area" id="imagePromptDropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Kéo thả ảnh vào đây hoặc nhấp để chọn file</p>
+                    <small class="text-muted">JPG, PNG, GIF. Tối đa 2MB.</small>
+                </div>
+                <div id="imagePromptError" class="add-user-error-message text-center mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-disamiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -2,7 +2,7 @@
 /* Global Variables (Biến toàn cục) */
 /* ===================================== */
 :root {
-    --sidebar-width 240px : 240px;
+    --sidebar-width: 240px; /* Sửa lỗi cú pháp ở đây */
     --color-primary: #4ECDB4;
     --color-primary-dark: #3aa893;
     --color-accent: #4F46E5;
@@ -14,9 +14,43 @@
     --bg-header: #EFF6FF;
     --metric-bg: #E0F7FA;
     --metric-color: #fff;
+    /* Biến cho Popup Form */
+    --form-bg-color: #FFFFFF;
+    --form-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --form-header-color: #0D9488;
+    --column-title-color: #4F46E5;
+    --label-color: #0F172A;
+    --input-border: #CBD5E1;
+    --input-bg: #F9FAFB;
+    --input-focus-border: #0D9488;
+    --input-focus-shadow: rgba(13, 148, 136, 0.2);
+    --error-color: #DC2626;
+    --error-bg: #FEF2F2;
+    --btn-cancel-bg: #F1F5F9;
+    --btn-cancel-color: #334155;
+    --btn-cancel-hover-bg: #E2E8F0;
+    --btn-submit-bg: #0D9488;
+    --btn-submit-color: #FFFFFF;
+    --btn-submit-hover-bg: #0F766E;
 }
 
 
+/* General Body & Layout */
+body {
+    font-family: 'Inter', sans-serif; /* Hoặc font bạn chọn */
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex; /* Ví dụ nếu có sidebar cố định */
+    min-height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
 
 .user-admin-panel {
     padding: 32px;
@@ -24,7 +58,7 @@
 }
 
 .header-green {
-    background: #4ECDB4;
+    background: var(--color-primary);
     color: #FFF;
     padding: 24px;
     display: flex;
@@ -51,7 +85,7 @@
 
     .header-green .actions button {
         background: #FFF;
-        color: #4ECDB4;
+        color: var(--color-primary);
         border: none;
         border-radius: 8px;
         padding: 10px 20px;
@@ -76,10 +110,10 @@
 .card {
     background: var(--card-bg);
     border-radius: 8px;
- box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     overflow: hidden;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 32px; /* Áp dụng margin 32px cho tất cả các phía */
 }
 
 .toolbar {
@@ -92,7 +126,6 @@
 }
 
     .toolbar .search-box {
-
         position: relative;
         flex: 1;
         min-width: 200px;
@@ -104,15 +137,15 @@
             padding: 10px 16px 10px 44px;
             border: 1.5px solid var(--color-accent);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 17px;
             color: var(--text-main);
             background-color: #f1f3f5;
             outline: none;
         }
 
-        .toolbar .search-box input[type="text"]::placeholder {
-            color: #adb5bd;
-        }
+            .toolbar .search-box input[type="text"]::placeholder {
+                color: #adb5bd;
+            }
 
         .toolbar .search-box .icon {
             position: absolute;
@@ -132,7 +165,7 @@
         color: #FFFFFF;
         border: none;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 17px;
         font-weight: 500;
         cursor: pointer;
         transition: background .2s;
@@ -153,7 +186,7 @@ table {
 }
 
 thead {
-    background: var(--bg-header);
+    background: #E3E9F2;
 }
 
     thead th:first-child {
@@ -167,7 +200,7 @@ thead {
 th, td {
     padding: 16px 12px;
     text-align: left;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.5;
 }
 
@@ -189,15 +222,26 @@ tbody td {
 }
 
 .status-pill {
+
     display: inline-block;
     padding: 6px 14px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     color: #FFFFFF;
-    background: #10B981;
-}
 
+}
+     .status-online {
+        background-color: #10B981; /* Xanh lá cây - Đang hoạt động */
+    
+    }
+
+    /* --- Trạng thái "Off" --- */
+    /* (Trùng với class status-off bạn sẽ tạo bằng JS) */
+     .status-offline {
+        background-color: #6B7280; /* Màu xám - Không hoạt động */
+
+    }
 .action-icon {
     background: none;
     border: none;
@@ -206,38 +250,38 @@ tbody td {
     border-radius: 4px;
     transition: background 0.2s;
     display: inline-flex;
-    padding :5px;
+    padding: 5px;
 }
 
     .action-icon svg {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
         stroke-width: 2;
         stroke: currentColor;
     }
 
-        .action-icon.edit {
-            color: var(--color-accent);
-        }
+    .action-icon.detail {
+        color: var(--color-accent);
+    }
 
-        .action-icon.delete {
-            color: #EF4444;
-        }
+    .action-icon.delete {
+        color: #EF4444;
+    }
 
-        .action-icon.edit:hover {
-            background: rgba(79,70,229,0.1);
-        }
+    .action-icon.detail:hover {
+        background: rgba(79,70,229,0.2);
+    }
 
-        .action-icon.delete:hover {
-            background: rgba(239,68,68,0.1);
-        }
+    .action-icon.delete:hover {
+        background: rgba(239,68,68,0.2);
+    }
 
 .table-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
-    font-size: 13px;
+    font-size: 15px;
     color: #2563EB;
 }
 
@@ -247,33 +291,45 @@ tbody td {
     gap: 8px;
 }
 
+    /* Các nút ở giữa (ngoại trừ nút đầu và nút cuối) */
     .pagination button {
-        width: 32px;
+        text-align: center;
         height: 32px;
         background: transparent;
         border: none;
-        font-size: 14px;
+        font-size: 16px;
         cursor: pointer;
         color: var(--text-main);
         border-radius: 6px;
         transition: background .2s;
     }
 
+        .pagination button:not(:first-child):not(:last-child) {
+            width: 32px;
+        }
+
+        /* Nút đầu và nút cuối */
+        .pagination button:first-child,
+        .pagination button:last-child {
+            width: 60px;
+        }
+
         .pagination button.current {
             background: var(--color-accent);
             color: #FFFFFF;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      
         }
 
         .pagination button:hover:not(.current) {
-            background: #F3F4F6;
+            background-color: rgba(79, 70, 229, 0.4);
         }
 /* Charts Grid */
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin-bottom: 24px;
+    margin: 32px;
 }
 
 .row-1-large {
@@ -283,9 +339,11 @@ tbody td {
 .row-1-small {
     grid-column: span 1;
 }
+
 .row-2-small {
     grid-column: span 1;
 }
+
 .row-2-large {
     grid-column: span 2;
 }
@@ -361,6 +419,7 @@ tbody td {
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+/* Styles cho Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -368,14 +427,34 @@ tbody td {
     width: 100vw;
     height: 100vh;
     background: rgba(0,0,0,0.5);
-    z-index: 999;
+    z-index: 1000;
+    display: flex; /* Để căn giữa nội dung bên trong */
+    align-items: center;
+    justify-content: center;
+    overflow-y: hidden; /* Cho phép cuộn overlay nếu nội dung quá cao */
 }
+
+/* Styles cho Popup Form Container (CẬP NHẬT) */
+.popup-form-container {
+    background: transparent; /* addUser-container đã có nền trắng */
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    width: 100%; /* Cho phép chiếm toàn bộ chiều rộng của overlay khi cần */
+    max-width: 1200px; /* Điều chỉnh phù hợp với addUser-container */
+    max-height: 98vh; /* Cao hơn một chút để chứa form đầy đủ */
+    overflow-y: hidden; /* Quan trọng: Cho phép container cuộn nếu form quá dài */
+    z-index: 1000;
+    display: none;
+}
+
+
 /* Metrics Grid 2x2 with stronger padding, left-aligned and 3 lines */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-bottom: 24px;
+    margin: 0;
 }
 
 .metric-card {
@@ -391,20 +470,12 @@ tbody td {
 }
 
 .metric-1 {
-    background: #7282f7;
-    color: #ffffff; /* Light blue */
+    background: #0D9488;
+    color: #ffffff;
 }
 
 .metric-2 {
-    background-color: #32a9e9;
-}
-
-.metric-3 {
-    background-color: #b36bfc;
-}
-
-.metric-4 {
-    background-color: #6bf391; /* Light red */
+    background-color: #10B981;
 }
 
 .metric-card h4 {
@@ -426,3 +497,400 @@ tbody td {
     color: var(--metric-color);
     margin-bottom: 4px;
 }
+
+/* Styles cho Popup Form (addUser-container) */
+.addUser-container {
+    background-color: var(--form-bg-color);
+    border-radius: 12px;
+    box-shadow: var(--form-shadow);
+    padding: 30px; /* Giảm padding tổng thể */
+    max-width: 100%; /* Sẽ được giới hạn bởi popup-form-container */
+    width: 100%;
+    box-sizing: border-box; /* Quan trọng để padding không làm tràn width */
+}
+
+h1 {
+    margin: 0 0 24px; /* Giảm margin dưới */
+    font-size: clamp(1.5rem, 4vw, 2rem); /* Giảm kích thước tiêu đề */
+    text-align: center;
+    color: var(--form-header-color); /* Dùng biến mới */
+}
+
+/* --- Main Grid Layout: 3 columns on large screens --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default 1 column on mobile */
+    gap: 20px; /* Giảm khoảng cách giữa các cột/hàng */
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for tablet */
+    }
+}
+
+@media (min-width: 1024px) {
+    .form-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for desktop */
+    }
+}
+
+/* Individual columns within the main grid */
+.grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Giảm khoảng cách giữa các form-group trong cùng một cột */
+}
+
+.column-title {
+    font-size: 1.1rem; /* Giảm kích thước tiêu đề cột */
+    font-weight: 600;
+    color: var(--column-title-color); /* Dùng biến mới */
+    margin-bottom: 12px; /* Giảm margin dưới */
+}
+
+/* Fieldset for Address (if used as a separate grid-item) */
+fieldset {
+    grid-column: 1 / -1; /* Fieldset default spans entire grid */
+    border: none;
+    padding: 0;
+    background: transparent;
+    margin-bottom: 20px; /* Giảm margin dưới */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Giảm khoảng cách giữa các form-group trong fieldset */
+}
+
+@media (min-width: 1024px) {
+    fieldset {
+        /* grid-column: 2 / 3; */ /* Đặt fieldset vào cột thứ 2 (nếu nó là một cột riêng) */
+    }
+}
+
+legend {
+    font-size: 1.1rem; /* Giảm kích thước tiêu đề legend */
+    font-weight: 600;
+    color: var(--form-header-color); /* Dùng biến mới */
+    padding: 0;
+    margin-bottom: 12px; /* Giảm margin dưới */
+}
+
+fieldset .form-group {
+    margin-bottom: 0; /* Đã có gap trên fieldset */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Span 2 columns for specific form groups on larger screens */
+@media (min-width: 1024px) {
+    .form-group.span-2-columns {
+        /* Nếu bạn muốn một trường cụ thể trải dài 2 cột, đặt class này vào form-group */
+        /* grid-column: span 2; */
+    }
+}
+
+.form-group label {
+    margin-bottom: 6px; /* Giảm margin dưới */
+    font-weight: 600;
+    color: var(--label-color); /* Dùng biến mới */
+    font-size: 0.95rem; /* Hơi nhỏ hơn */
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px; /* Giảm padding cho input và select */
+    border: 1px solid var(--input-border); /* Giảm độ dày border */
+    border-radius: 6px; /* Hơi bo tròn ít hơn */
+    font-size: 0.95rem; /* Giảm font-size */
+    background-color: var(--input-bg); /* Dùng biến mới */
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng width */
+}
+
+.form-group textarea#address {
+    padding: 12px 14px; /* Giảm padding cho textarea */
+    min-height: 100px; /* Giảm chiều cao tối thiểu cho textarea */
+    resize: vertical;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: var(--input-bg);
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--input-focus-border); /* Dùng biến mới */
+    background-color: var(--form-bg-color); /* Dùng biến mới */
+    box-shadow: 0 0 0 2px var(--input-focus-shadow); /* Giảm độ dày shadow */
+}
+
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--input-focus-border); /* Dùng biến mới */
+    outline-offset: 2px;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: var(--error-color); /* Dùng biến mới */
+    background-color: var(--error-bg); /* Dùng biến mới */
+}
+
+.error-message {
+    color: var(--error-color); /* Dùng biến mới */
+    font-size: 0.8rem; /* Giảm font-size */
+    margin-top: 4px; /* Giảm margin */
+    min-height: 16px; /* Giảm min-height */
+    position: absolute;
+    bottom: -18px; /* Điều chỉnh vị trí */
+    left: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Actions button section --- */
+.actions {
+    grid-column: 1 / -1; /* Luôn trải dài toàn bộ chiều rộng của form-grid */
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px; /* Giảm khoảng cách giữa các nút */
+    margin-top: 24px; /* Giảm margin trên */
+}
+
+.btn {
+    padding: 10px 24px; /* Giảm padding nút */
+    border: none;
+    border-radius: 6px; /* Giảm bo tròn nút */
+    font-size: 0.95rem; /* Giảm font-size nút */
+    cursor: pointer;
+    font-weight: 600;
+    position: relative;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-cancel {
+    background-color: var(--btn-cancel-bg); /* Dùng biến mới */
+    color: var(--btn-cancel-color); /* Dùng biến mới */
+}
+
+.btn-submit {
+    background-color: var(--btn-submit-bg); /* Dùng biến mới */
+    color: var(--btn-submit-color); /* Dùng biến mới */
+}
+
+    .btn-submit:hover {
+        background-color: var(--btn-submit-hover-bg); /* Dùng biến mới */
+    }
+
+.btn-cancel:hover {
+    background-color: var(--btn-cancel-hover-bg); /* Dùng biến mới */
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinner {
+    width: 16px; /* Giảm kích thước spinner */
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Giảm độ dày border */
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.btn-submit.loading .spinner {
+    display: block;
+}
+
+.btn-submit.loading span {
+    visibility: hidden;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Avatar Upload and Preview Styles */
+.avatar-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px; /* Giảm khoảng cách */
+}
+
+    .avatar-group label {
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+#avatar-input-wrapper {
+    position: relative;
+    width: 100px; /* Giảm kích thước avatar */
+    height: 100px;
+    border-radius: 50%;
+    border: 1px solid var(--input-border); /* Giảm độ dày border */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    margin: 0; /* Loại bỏ margin auto */
+}
+
+    #avatar-input-wrapper:hover {
+        border-color: var(--input-focus-border);
+        background-color: #E0F2F1;
+    }
+
+#avatar-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none;
+}
+
+#default-avatar-icon {
+    width: 50%; /* Giảm kích thước icon mặc định */
+    height: 50%;
+    fill: #64748B;
+}
+
+.camera-icon {
+    position: absolute;
+    bottom: 3px; /* Điều chỉnh vị trí */
+    right: 3px; /* Điều chỉnh vị trí */
+    background-color: var(--form-bg-color); /* Dùng biến mới */
+    border-radius: 50%;
+    width: 24px; /* Giảm kích thước camera icon */
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--input-border);
+    fill: #334155;
+    z-index: 2;
+}
+
+    .camera-icon svg {
+        width: 60%;
+        height: 60%;
+    }
+
+/* Input file ẩn hoàn toàn */
+#avatar-upload {
+    display: none;
+}
+
+/* Form submission feedback message */
+#form-feedback {
+    grid-column: 1 / -1;
+    padding: 12px; /* Giảm padding */
+    border-radius: 8px;
+    margin-top: 15px; /* Giảm margin */
+    text-align: center;
+    font-weight: 600;
+    display: none;
+    font-size: 0.9rem; /* Giảm font-size */
+}
+
+    #form-feedback.success {
+        background-color: #D1FAE5;
+        color: #065F46;
+    }
+
+    #form-feedback.error {
+        background-color: #FEE2E2;
+        color: #991B1B;
+    }
+
+/* CAPTCHA specific styles */
+.captcha-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px; /* Giảm khoảng cách */
+    width: 100%;
+}
+
+.captcha-display-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #E2E8F0;
+    border: 1px solid var(--input-border);
+    border-radius: 6px; /* Hơi bo tròn ít hơn */
+    overflow: hidden;
+}
+
+#captchaDisplay {
+    padding: 6px 10px; /* Giảm padding */
+    font-size: 1rem; /* Giảm font-size */
+    font-weight: bold;
+    letter-spacing: 1px; /* Giảm letter-spacing */
+    user-select: none;
+    text-align: center;
+    flex-grow: 1;
+    white-space: nowrap;
+    min-width: 80px; /* Hơi giảm min-width */
+}
+
+.captcha-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Giảm khoảng cách */
+    flex-grow: 1;
+}
+
+    .captcha-input-group input {
+        flex-grow: 1;
+        min-width: 0;
+        font-size: 0.95rem; /* Đồng bộ font-size */
+    }
+
+.captcha-refresh-btn {
+    background-color: #E2E8F0;
+    color: #0F766E;
+    border: none;
+    border-radius: 0 6px 6px 0; /* Bo tròn chỉ phía bên phải */
+    padding: 8px; /* Giảm padding */
+    cursor: pointer;
+    font-size: 0.85rem; /* Giảm font-size */
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 100%; /* Đảm bảo nút có chiều cao bằng captcha display */
+}
+
+    .captcha-refresh-btn:hover {
+        background-color: #DAE2E8;
+    }
+
+    .captcha-refresh-btn svg {
+        fill: currentColor;
+        width: 18px; /* Giảm kích thước icon */
+        height: 18px;
+    }

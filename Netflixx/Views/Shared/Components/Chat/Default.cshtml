@@ -1,0 +1,38 @@
+﻿@{
+    // Dữ liệu và Layout được truyền từ Controller.
+    // Đảm bảo rằng bạn truyền một UserViewModel (hoặc đối tượng tương tự) có thuộc tính Id và AvatarUrl.
+    ViewData["Title"] = "UserChat";
+    Layout = null;
+}
+@model UserViewModel
+
+
+
+<!-- Thư viện CSS bên ngoài -->
+<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+
+<!-- Liên kết tới tệp CSS tùy chỉnh của bạn -->
+<!-- Đảm bảo đường dẫn này chính xác với cấu trúc thư mục của bạn (vd: /css/chat.css) -->
+<link rel="stylesheet" href="~/css/chat.css" />
+
+
+<div id="body">
+    <div id="chat-circle" class="btn btn-raised"><i class="material-icons">speaker_phone</i></div>
+    <div class="chat-box"></div>
+</div>
+
+<!-- JS Libraries bên ngoài -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+<script>
+    // Các biến này cần được khởi tạo ở đây để nhận giá trị từ Model của Razor.
+    // Tệp JS bên ngoài sẽ sử dụng các biến toàn cục này.
+    const conversationId = '@Model.Id';
+    const selfAvatarUrl = "@(string.IsNullOrEmpty(Model.AvatarUrl) ? "https://i.pravatar.cc/40?u=" + Model.Id : Model.AvatarUrl)";
+    const chatbotAvatarUrl = "https://cdn-icons-png.flaticon.com/512/8649/8649595.png";
+</script>
+
+<!-- Liên kết tới tệp JavaScript tùy chỉnh của bạn -->
+<!-- Đảm bảo đường dẫn này chính xác với cấu trúc thư mục của bạn (vd: /js/chat.js) -->
+<script src="~/js/chat.js"></script>

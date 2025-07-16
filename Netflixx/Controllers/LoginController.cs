@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Models.Binding;
 using Netflixx.Models.ViewModel;
@@ -90,12 +91,18 @@ namespace Netflixx.Controllers
                 {
                     _logger.LogInformation($"User {user.UserName} logged in successfully");
                     //TempData["success"] = JsonSerializer.Serialize("Đăng nhập thành công");
-
-                    // Thêm kiểm tra role Admin ở đây
-                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    var loginHistory = new LoginHistory
                     {
-                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
-                    }
+                        UserId = user.Id,
+                        LoginTime = DateTime.UtcNow,
+                        logoutTime = DateTime.UtcNow, // ban đầu có thể trùng, cập nhật sau khi logout
+                        IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                        UserAgent = Request.Headers["User-Agent"]
+                    };
+
+                  
+                    _dbContext.LoginHistory.Add(loginHistory);
+                    await _dbContext.SaveChangesAsync();
 
                     // Kiểm tra nếu ReturnUrl là trang Login thì chuyển hướng sang Home
                     if (Url.IsLocalUrl(model.ReturnUrl))

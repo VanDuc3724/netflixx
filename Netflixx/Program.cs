@@ -26,6 +26,7 @@ namespace Netflixx
 
             builder.Services.AddSingleton<IOtpGenerator, SecureOtpGenerator>();
 
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -89,6 +90,19 @@ namespace Netflixx
                 options.User.RequireUniqueEmail = false;
             });
 
+            //avatar service
+            builder.Services.AddScoped<IAvatarService, AvatarService>();
+            builder.Services.AddSingleton<IChatRepository, ChatRepository>();
+
+            builder.Services.AddScoped<IChatService, ChatService>();
+            //chat hub
+            builder.Services.AddSignalR();
+
+            builder.Services.AddSingleton<IFileStorageService, AzureBlobStorageService>();
+
+            //chatbot
+            builder.Services.AddHttpClient();
+
 
             var app = builder.Build();
 
@@ -103,9 +117,12 @@ namespace Netflixx
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseSession();
+          
 
             app.UseRouting();
+            app.MapHub<ChatHub>("/hubs/chat");
+
+            app.UseSession();
 
             app.UseAuthentication();
 
@@ -124,6 +141,7 @@ namespace Netflixx
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Login}/{action=Login}/{id?}");
+                
 
             app.Run();
         }
