@@ -2,8 +2,7 @@
 @{
     ViewData["Title"] = "Thêm Thương Hiệu";
 }
-@await Html.PartialAsync("_BrandManagerMenu")
-<div class="main-content" id="mainContent">
+<div class="main-content">
     <div class="container">
         <h3 class="text-white mb-4">@ViewData["Title"]</h3>
         <form asp-action="Create" method="post" id="brandForm">
@@ -21,7 +20,6 @@
         </form>
     </div>
 </div>
-@await Html.PartialAsync("_BrandManagerMenuScripts")
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
