@@ -23,10 +23,16 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
                 ? new List<CartModel>()
                 : JsonSerializer.Deserialize<List<CartModel>>(cartJson);
 
+            var coupon = HttpContext.Session.GetString("coupon");
+            var discountStr = HttpContext.Session.GetString("discount");
+            decimal.TryParse(discountStr, out var discount);
+
             var model = new CartViewModel
             {
                 CartItems = cartItems ?? new List<CartModel>(),
-                TotalPrice = cartItems?.Sum(x => x.Quantity * x.Price) ?? 0
+                TotalPrice = cartItems?.Sum(x => x.Quantity * x.Price) ?? 0,
+                CouponCode = coupon,
+                Discount = discount
             };
             return View(model);
         }
@@ -88,6 +94,79 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
                 totalQuantity,
                 totalPrice
             });
+        }
+
+        [HttpGet]
+        public IActionResult Increase(int productId)
+        {
+            var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
+            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+            if (item != null)
+            {
+                item.Quantity += 1;
+                HttpContext.Session.SetJson("cart", cart);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Decrease(int productId)
+        {
+            var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
+            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+            if (item != null)
+            {
+                if (item.Quantity > 1)
+                {
+                    item.Quantity -= 1;
+                }
+                else
+                {
+                    cart.Remove(item);
+                }
+                HttpContext.Session.SetJson("cart", cart);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Remove(int productId)
+        {
+            var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
+            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+            if (item != null)
+            {
+                cart.Remove(item);
+                HttpContext.Session.SetJson("cart", cart);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult GetCoupon(string coupon_value)
+        {
+            var cart = HttpContext.Session.GetJson<List<CartModel>>("cart") ?? new List<CartModel>();
+            var total = cart.Sum(x => x.Quantity * x.Price);
+            decimal discount = 0;
+
+            switch (coupon_value?.ToUpperInvariant())
+            {
+                case "SAVE10":
+                    discount = total * 0.10m;
+                    break;
+                case "SAVE20":
+                    discount = total * 0.20m;
+                    break;
+            }
+
+            if (discount > 0)
+            {
+                HttpContext.Session.SetString("coupon", coupon_value);
+                HttpContext.Session.SetString("discount", discount.ToString());
+                return Json(new { success = true, message = "Áp dụng mã giảm giá thành công" });
+            }
+
+            return Json(new { success = false, message = "Mã giảm giá không hợp lệ" });
         }
 
     }
