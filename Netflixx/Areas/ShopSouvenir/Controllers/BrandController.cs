@@ -61,37 +61,41 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int BrandId, BrandSouModel brand)
         {
-            var updateBrand = await _context.BrandSous.FindAsync(brand);
+            if (!ModelState.IsValid)
+            {
+                return View(brand);
+            }
 
-            if (updateBrand == null) // Add this check
+            var updateBrand = await _context.BrandSous.FindAsync(BrandId);
+
+            if (updateBrand == null)
             {
                 TempData["error"] = "Không tìm thấy thương hiệu";
                 return RedirectToAction("Index");
             }
 
-            if (ModelState.IsValid)
-            {
-                updateBrand.Name = updateBrand.Name;
-                updateBrand.Description = updateBrand.Description;
+            updateBrand.Name = brand.Name;
+            updateBrand.Description = brand.Description;
 
-                _context.BrandSous.Update(updateBrand);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "Chỉnh sửa thương hiệu thành công";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Return to the Edit view with the model to show validation errors
-                return View(brand);
-            }
+            _context.BrandSous.Update(updateBrand);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Chỉnh sửa thương hiệu thành công";
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Remove(int BrandId)
         {
-            BrandSouModel brand = await _context.BrandSous.FindAsync(BrandId);
-            _context.BrandSous.Remove(brand);
-            _context.SaveChanges();
-            TempData["error"] = "Xóa thương hiệu thành công";
+            var brand = await _context.BrandSous.FindAsync(BrandId);
+            if (brand != null)
+            {
+                _context.BrandSous.Remove(brand);
+                await _context.SaveChangesAsync();
+                TempData["error"] = "Xóa thương hiệu thành công";
+            }
+            else
+            {
+                TempData["error"] = "Không tìm thấy thương hiệu";
+            }
             return RedirectToAction("Index");
         }
     }
