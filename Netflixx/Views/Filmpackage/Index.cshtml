@@ -17,7 +17,7 @@
     </div>
     <div class="text-center mb-4">
         <a asp-action="Billhistory" class="purchase-history-btn">Lịch sử mua gói</a>
-        <a asp-action="Create" class="create-package-btn">Tạo gói mới</a>
+        <a asp-controller="PackagesManager" asp-action="Create" class="create-package-btn">Tạo gói mới</a>
     </div>
     <div class="package-container">
         @foreach (var p in Model)

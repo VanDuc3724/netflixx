@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model IEnumerable<Netflixx.Models.PackagesModel>
 @{
+    ViewData["Title"] = "Packages Manager";
+    Layout = "_Layout";
 }
+<div class="container mt-4">
+    <h2 class="mb-3">Quản lý gói phim</h2>
+    <div class="text-end mb-3">
+        <a asp-action="Create" class="btn btn-primary">Tạo gói mới</a>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tên gói</th>
+                <th>Mô tả</th>
+                <th>Giá (coins)</th>
+                <th>Số phim</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Description</td>
+                <td>@p.Price.ToString("N0")</td>
+                <td>@(p.PackageFilms?.Count ?? 0)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
