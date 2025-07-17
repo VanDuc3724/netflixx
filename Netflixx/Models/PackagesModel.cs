@@ -15,10 +15,8 @@ namespace Netflixx.Models
         [Range(0, int.MaxValue)]
         public int Price { get; set; }
 
-        [Required]
-        [ForeignKey("Film")]
-        public int FilmID { get; set; }
-        public FilmsModel Film { get; set; }
+        // Navigation to films through join entity
+        public ICollection<PackageFilmsModel> PackageFilms { get; set; } = new List<PackageFilmsModel>();
 
         // Navigation properties
         public ICollection<PackageChannelsModel> PackageChannels { get; set; }

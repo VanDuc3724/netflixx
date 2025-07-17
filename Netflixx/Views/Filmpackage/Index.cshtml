@@ -364,7 +364,7 @@
                     <div class="price">@p.Price.ToString("N0") <span>coins</span></div>
                 </div>
 
-                <div class="film-count">Phim: @p.Film?.Title</div>
+                <div class="film-count">Số phim: @p.PackageFilms.Count()</div>
 
                 @if (owned)
                 {

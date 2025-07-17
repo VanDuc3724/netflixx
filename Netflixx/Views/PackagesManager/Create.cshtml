@@ -23,10 +23,8 @@
             <span asp-validation-for="Package.Price" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label class="form-label" for="SelectedFilmId">Chọn phim</label>
-            <select asp-for="SelectedFilmId" class="form-select" asp-items="@(new SelectList(Model.Films, "Id", "Title"))">
-                <option value="">-- chọn phim --</option>
-            </select>
+            <label class="form-label" for="SelectedFilmIds">Chọn phim</label>
+            <select asp-for="SelectedFilmIds" class="form-select" multiple size="5" asp-items="@(new SelectList(Model.Films, "Id", "Title"))"></select>
         </div>
         <div class="text-end">
             <button type="submit" class="btn btn-primary">Create</button>
