@@ -50,9 +50,35 @@
                 }
                 else
                 {
-                    <a asp-action="Buy" asp-route-packageId="@p.Id" asp-route-packageName="@p.Name" asp-route-packagePrice="@p.Price" class="btn btn-primary w-75 mb-3">Mua gói</a>
+                    <form asp-action="BuyWithCoins" method="post" class="buy-form">
+                        <input type="hidden" name="packageId" value="@p.Id" />
+                        <button type="submit" class="btn btn-primary w-75 mb-3">Mua gói</button>
+                    </form>
                 }
             </div>
         }
     </div>
 </main>
+
+@section Scripts {
+    @await Html.PartialAsync("_NotificationPartial")
+    <script>
+        document.querySelectorAll('.buy-form').forEach(function(form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Xác nhận mua gói?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e50914',
+                    confirmButtonText: 'Mua',
+                    cancelButtonText: 'Hủy'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}
