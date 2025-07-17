@@ -347,6 +347,52 @@
 
             <div class="history-section" style="margin-top:40px;">
                 <div class="history-header d-flex justify-content-between align-items-center">
+                    <h2>Lịch sử mua gói phim</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <select class="filter-dropdown" id="packagesDateFilter">
+                            <option value="">Tất cả ngày</option>
+                            <option value="3">3 ngày</option>
+                            <option value="7">7 ngày</option>
+                            <option value="30">30 ngày</option>
+                        </select>
+                        <span class="mr-2">Xem</span>
+                        <select class="form-control" style="width: 80px;" id="packagesPageLength">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="billing-table-container">
+                    <table class="billing-table" id="packagesTable">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Tên gói</th>
+                                <th>Giá</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.PackagePurchases.Any())
+                            {
+                                foreach (var p in Model.PackagePurchases)
+                                {
+                                    <tr>
+                                        <td>@p.StartDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@(p.Package?.Name ?? string.Empty)</td>
+                                        <td>@p.Price.ToString("N0")</td>
+                                        <td>@p.Status</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="history-section" style="margin-top:40px;">
+                <div class="history-header d-flex justify-content-between align-items-center">
                     <h2>Lịch sử mua phim</h2>
                     <div class="d-flex align-items-center gap-2">
                         <input type="text" class="search-input" id="purchasesSearch" placeholder="Tìm tên phim" />
@@ -434,6 +480,37 @@
 
             $('#transactionsDateFilter, #transactionsStatusFilter').change(function () {
                 transactionsTable.draw();
+            });
+
+            var packagesTable = $('#packagesTable').DataTable({
+                pageLength: parseInt($('#packagesPageLength').val()),
+                lengthMenu: [5, 10, 100],
+                lengthChange: false,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json',
+                    lengthMenu: 'Hiển thị _MENU_ mục',
+                    paginate: { previous: 'Trước', next: 'Sau' },
+                    emptyTable: 'Không có giao dịch mua gói nào'
+                },
+                dom: 'rt<"bottom"ip><"clear">'
+            });
+
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                if (settings.nTable.id !== 'packagesTable') return true;
+                var days = $('#packagesDateFilter').val();
+                var dateParts = data[0].split('/');
+                var rowDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                var diffDays = (new Date() - rowDate) / (1000 * 60 * 60 * 24);
+                return !days || diffDays <= parseInt(days);
+            });
+
+            $('#packagesPageLength').change(function () {
+                var len = parseInt($(this).val());
+                packagesTable.page.len(len).draw();
+            });
+
+            $('#packagesDateFilter').change(function () {
+                packagesTable.draw();
             });
 
             var purchasesTable = $('#purchasesTable').DataTable({

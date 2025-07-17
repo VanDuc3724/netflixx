@@ -52,10 +52,16 @@ namespace Netflixx.Controllers
                 .OrderByDescending(p => p.StartDate)
                 .FirstOrDefaultAsync();
 
-            var filmPurchases = await _context.FilmPurchases
+           var filmPurchases = await _context.FilmPurchases
                 .Include(fp => fp.Film)
                 .Where(fp => fp.UserID == user.Id)
                 .OrderByDescending(fp => fp.PurchaseDate)
+                .ToListAsync();
+
+            var packagePurchases = await _context.PackageSubscriptions
+                .Include(ps => ps.Package)
+                .Where(ps => ps.UserID == user.Id)
+                .OrderByDescending(ps => ps.StartDate)
                 .ToListAsync();
 
             var historyItems = transactions
@@ -69,13 +75,22 @@ namespace Netflixx.Controllers
                 })
                 .ToList();
 
-            historyItems.AddRange(filmPurchases.Select(p => new BillHistoryItem
+           historyItems.AddRange(filmPurchases.Select(p => new BillHistoryItem
             {
                 Date = p.PurchaseDate,
                 Description = p.Film?.Title ?? string.Empty,
                 Status = "success",
                 AmountText = p.PricePaid.ToString("N0"),
                 Provider = $"{p.PointsUsed} coins"
+            }));
+
+            historyItems.AddRange(packagePurchases.Select(p => new BillHistoryItem
+            {
+                Date = p.StartDate,
+                Description = p.Package?.Name ?? string.Empty,
+                Status = p.Status,
+                AmountText = p.Price.ToString("N0"),
+                Provider = "coins"
             }));
 
             historyItems = historyItems
@@ -87,6 +102,7 @@ namespace Netflixx.Controllers
                 CurrentPackage = currentPackage,
                 Transactions = transactions,
                 FilmPurchases = filmPurchases,
+                PackagePurchases = packagePurchases,
                 History = historyItems
             };
 
