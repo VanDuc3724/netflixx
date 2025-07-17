@@ -1,4 +1,4 @@
-﻿let filmpackage = [
+let filmpackage = [
     {
         packageId: "package01",
         packageName: "Cơ Bản",
