@@ -8,6 +8,7 @@ namespace Netflixx.Models.ViewModel
         public PackageSubscriptionsModel? CurrentPackage { get; set; }
         public List<PaymentTransactionsModel> Transactions { get; set; } = new();
         public List<FilmPurchasesModel> FilmPurchases { get; set; } = new();
+        public List<PackageSubscriptionsModel> PackagePurchases { get; set; } = new();
         public List<BillHistoryItem> History { get; set; } = new();
     }
 }
