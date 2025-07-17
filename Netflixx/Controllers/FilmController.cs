@@ -394,10 +394,10 @@ namespace Netflixx.Controllers
                 .Where(ps => ps.UserID == user.Id
                              && ps.StartDate <= DateTime.UtcNow
                              && ps.EndDate >= DateTime.UtcNow)
-                .Join(_db.PackageFilms.Where(pf => pf.FilmID == filmId),
+                .Join(_db.Packages.Where(p => p.FilmID == filmId),
                       ps => ps.PackageID,
-                      pf => pf.PackageID,
-                      (ps, pf) => ps)
+                      p => p.Id,
+                      (ps, p) => ps)
                 .AnyAsync();
 
             if (!purchased && !hasPackage)

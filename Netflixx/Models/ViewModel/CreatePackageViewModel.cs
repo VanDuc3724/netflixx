@@ -7,8 +7,8 @@ namespace Netflixx.Models.ViewModel
     {
         public PackagesModel Package { get; set; }
 
-        [Display(Name = "Films")]
-        public List<int> SelectedFilmIds { get; set; } = new List<int>();
+        [Display(Name = "Film")]
+        public int? SelectedFilmId { get; set; }
 
         public IEnumerable<FilmsModel> Films { get; set; } = new List<FilmsModel>();
     }

@@ -364,17 +364,7 @@
                     <div class="price">@p.Price.ToString("N0") <span>coins</span></div>
                 </div>
 
-                <div class="film-count">Bao gồm @(p.PackageFilms?.Count ?? 0) phim</div>
-
-                <div class="package-features">
-                    @foreach (var pf in p.PackageFilms ?? new List<Netflixx.Models.PackageFilmsModel>())
-                    {
-                        <div class="feature">
-                            <span class="feature-icon">🎬</span>
-                            <span class="feature-text">@pf.Film?.Title</span>
-                        </div>
-                    }
-                </div>
+                <div class="film-count">Phim: @p.Film?.Title</div>
 
                 @if (owned)
                 {

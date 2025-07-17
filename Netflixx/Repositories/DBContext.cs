@@ -28,7 +28,6 @@ namespace Netflixx.Repositories
         public virtual DbSet<ChannelsModel> Channels { get; set; }
         public virtual DbSet<PackageChannelsModel> PackageChannels { get; set; }
         public virtual DbSet<FilmsModel> Films { get; set; }
-        public virtual DbSet<PackageFilmsModel> PackageFilms { get; set; }
         public virtual DbSet<PromotionsModel> Promotions { get; set; }
         public virtual DbSet<PromotionPackagesModel> PromotionPackages { get; set; }
         public virtual DbSet<PromotionFilmsModel> PromotionFilms { get; set; }
@@ -166,18 +165,11 @@ namespace Netflixx.Repositories
                 .WithMany(c => c.PackageChannels)
                 .HasForeignKey(pc => pc.ChannelID);
 
-            modelBuilder.Entity<PackageFilmsModel>()
-                .HasKey(pf => new { pf.PackageID, pf.FilmID });
-
-            modelBuilder.Entity<PackageFilmsModel>()
-                .HasOne(pf => pf.Package)
-                .WithMany(p => p.PackageFilms)
-                .HasForeignKey(pf => pf.PackageID);
-
-            modelBuilder.Entity<PackageFilmsModel>()
-                .HasOne(pf => pf.Film)
-                .WithMany(f => f.PackageFilms)
-                .HasForeignKey(pf => pf.FilmID);
+            modelBuilder.Entity<PackagesModel>()
+                .HasOne(p => p.Film)
+                .WithMany(f => f.Packages)
+                .HasForeignKey(p => p.FilmID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PromotionPackagesModel>()
                 .HasKey(pp => new { pp.PromotionID, pp.PackageID });

@@ -25,16 +25,10 @@
             <span asp-validation-for="Package.Price" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label class="form-label">Chọn phim</label>
-            <div class="row">
-                @foreach (var film in Model.Films)
-                {
-                    <div class="form-check col-md-3">
-                        <input class="form-check-input" type="checkbox" value="@film.Id" name="SelectedFilmIds" id="film_@film.Id" />
-                        <label class="form-check-label" for="film_@film.Id">@film.Title</label>
-                    </div>
-                }
-            </div>
+            <label class="form-label" for="SelectedFilmId">Chọn phim</label>
+            <select asp-for="SelectedFilmId" class="form-select" asp-items="@(new SelectList(Model.Films, "Id", "Title"))">
+                <option value="">-- chọn phim --</option>
+            </select>
         </div>
         <button type="submit" class="btn btn-danger">Tạo gói</button>
         <a asp-action="Index" class="btn btn-secondary">Hủy</a>
