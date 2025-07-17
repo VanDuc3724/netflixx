@@ -44,8 +44,7 @@ namespace Netflixx.Models
 
         public float? Rating { get; set; } = 0.0f;
 
-        public virtual ICollection<PackagesModel> Packages { get; set; } = new List<PackagesModel>();
-        public ICollection<PackageFilmsModel> PackageFilms { get; set; } = new List<PackageFilmsModel>();
+        public virtual ICollection<PackageFilmsModel> PackageFilms { get; set; } = new List<PackageFilmsModel>();
         public virtual ICollection<PromotionFilmsModel> PromotionFilms { get; set; } = new List<PromotionFilmsModel>();
         public virtual ICollection<FilmPurchasesModel> Purchases { get; set; } = new List<FilmPurchasesModel>();
         public virtual ICollection<FavoriteFilmsModel> FavoriteFilms { get; set; } = new List<FavoriteFilmsModel>();
@@ -126,7 +125,7 @@ namespace Netflixx.Models
             {
                 nameof(Id), nameof(LastAction), nameof(ModifiedBy),
                 nameof(ModificationDate), nameof(ModifiedFields),
-                nameof(ChangeNote), nameof(Packages),
+                nameof(ChangeNote), nameof(PackageFilms),
                 nameof(PromotionFilms), nameof(Purchases),
                 nameof(FavoriteFilms), nameof(ProductionManager)
             };

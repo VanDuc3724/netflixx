@@ -19,7 +19,6 @@ namespace Netflixx.Controllers
         {
             var packages = await _context.Packages
                 .Include(p => p.PackageFilms)
-                    .ThenInclude(pf => pf.Film)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
             return View(packages);
@@ -48,7 +47,7 @@ namespace Netflixx.Controllers
             _context.Packages.Add(model.Package);
             await _context.SaveChangesAsync();
 
-            if (model.SelectedFilmIds != null)
+            if (model.SelectedFilmIds != null && model.SelectedFilmIds.Any())
             {
                 foreach (var filmId in model.SelectedFilmIds)
                 {

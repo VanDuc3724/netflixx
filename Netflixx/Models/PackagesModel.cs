@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netflixx.Models
 {
@@ -15,11 +14,9 @@ namespace Netflixx.Models
         [Range(0, int.MaxValue)]
         public int Price { get; set; }
 
-        // Navigation to films through join entity
-        public ICollection<PackageFilmsModel> PackageFilms { get; set; } = new List<PackageFilmsModel>();
-
         // Navigation properties
         public ICollection<PackageChannelsModel> PackageChannels { get; set; }
+        public ICollection<PackageFilmsModel> PackageFilms { get; set; }
 
         public ICollection<PromotionPackagesModel> PromotionPackages { get; set; }
 

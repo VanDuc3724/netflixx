@@ -24,7 +24,7 @@
                 <td>@p.Name</td>
                 <td>@p.Description</td>
                 <td>@p.Price.ToString("N0")</td>
-                <td>@p.PackageFilms.Count()</td>
+                <td>@(p.PackageFilms?.Count ?? 0)</td>
             </tr>
         }
         </tbody>

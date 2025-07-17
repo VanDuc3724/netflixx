@@ -27,8 +27,8 @@ namespace Netflixx.Repositories
         public virtual DbSet<PackagesModel> Packages { get; set; }
         public virtual DbSet<ChannelsModel> Channels { get; set; }
         public virtual DbSet<PackageChannelsModel> PackageChannels { get; set; }
-        public virtual DbSet<PackageFilmsModel> PackageFilms { get; set; }
         public virtual DbSet<FilmsModel> Films { get; set; }
+        public virtual DbSet<PackageFilmsModel> PackageFilms { get; set; }
         public virtual DbSet<PromotionsModel> Promotions { get; set; }
         public virtual DbSet<PromotionPackagesModel> PromotionPackages { get; set; }
         public virtual DbSet<PromotionFilmsModel> PromotionFilms { get; set; }
@@ -165,7 +165,6 @@ namespace Netflixx.Repositories
                 .HasOne(pc => pc.Channel)
                 .WithMany(c => c.PackageChannels)
                 .HasForeignKey(pc => pc.ChannelID);
-
 
             modelBuilder.Entity<PackageFilmsModel>()
                 .HasKey(pf => new { pf.PackageID, pf.FilmID });

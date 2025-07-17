@@ -338,6 +338,7 @@ namespace Netflixx.Controllers
             ModelState.Remove("ModifiedFields");
             ModelState.Remove("ChangeNote");
             ModelState.Remove("ProductionManager"); // Navigation property
+            ModelState.Remove("PackageFilms");
             ModelState.Remove("PromotionFilms");
             ModelState.Remove("Purchases");
             ModelState.Remove("FavoriteFilms");
@@ -757,7 +758,7 @@ namespace Netflixx.Controllers
         nameof(FilmsModel.ModificationDate),
         nameof(FilmsModel.ModifiedFields),
         nameof(FilmsModel.ChangeNote),
-        nameof(FilmsModel.Packages),
+        nameof(FilmsModel.PackageFilms),
         nameof(FilmsModel.PromotionFilms),
         nameof(FilmsModel.Purchases),
         nameof(FilmsModel.Rating) // Thêm dòng này để bỏ qua tracking Rating

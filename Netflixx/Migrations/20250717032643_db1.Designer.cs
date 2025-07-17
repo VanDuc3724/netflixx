@@ -12,7 +12,7 @@ using Netflixx.Repositories;
 namespace Netflixx.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250716174030_db1")]
+    [Migration("20250717032643_db1")]
     partial class db1
     {
         /// <inheritdoc />

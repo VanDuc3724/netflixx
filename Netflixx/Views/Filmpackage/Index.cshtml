@@ -344,7 +344,7 @@
 
     <div class="text-center mb-4">
         <a asp-action="Billhistory" class="purchase-history-btn">Lịch sử mua gói</a>
-        <a asp-controller="PackagesManager" asp-action="Create" class="create-package-btn">Tạo gói mới</a>
+        @* <a asp-controller="PackagesManager" asp-action="Create" class="create-package-btn">Tạo gói mới</a> *@
     </div>
 
     <div class="package-container">
@@ -364,7 +364,17 @@
                     <div class="price">@p.Price.ToString("N0") <span>coins</span></div>
                 </div>
 
-                <div class="film-count">Số phim: @p.PackageFilms.Count()</div>
+                <div class="film-count">Bao gồm @(p.PackageFilms?.Count ?? 0) phim</div>
+
+                <div class="package-features">
+                    @foreach (var pf in p.PackageFilms ?? new List<Netflixx.Models.PackageFilmsModel>())
+                    {
+                        <div class="feature">
+                            <span class="feature-icon">🎬</span>
+                            <span class="feature-text">@pf.Film?.Title</span>
+                        </div>
+                    }
+                </div>
 
                 @if (owned)
                 {
