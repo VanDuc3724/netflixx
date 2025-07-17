@@ -15,7 +15,6 @@
                 <th>Mô tả</th>
                 <th>Giá (coins)</th>
                 <th>Số phim</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -26,11 +25,6 @@
                 <td>@p.Description</td>
                 <td>@p.Price.ToString("N0")</td>
                 <td>@(p.PackageFilms?.Count ?? 0)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-warning me-1">Edit</a>
-                    <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-info me-1">Details</a>
-                    <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
             </tr>
         }
         </tbody>
