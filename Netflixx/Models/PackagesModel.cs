@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netflixx.Models
 {
@@ -14,9 +15,13 @@ namespace Netflixx.Models
         [Range(0, int.MaxValue)]
         public int Price { get; set; }
 
+        [Required]
+        [ForeignKey("Film")]
+        public int FilmID { get; set; }
+        public FilmsModel Film { get; set; }
+
         // Navigation properties
         public ICollection<PackageChannelsModel> PackageChannels { get; set; }
-        public ICollection<PackageFilmsModel> PackageFilms { get; set; }
 
         public ICollection<PromotionPackagesModel> PromotionPackages { get; set; }
 

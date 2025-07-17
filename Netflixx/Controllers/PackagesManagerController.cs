@@ -18,7 +18,7 @@ namespace Netflixx.Controllers
         public async Task<IActionResult> Index()
         {
             var packages = await _context.Packages
-                .Include(p => p.PackageFilms)
+                .Include(p => p.Film)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
             return View(packages);
@@ -44,21 +44,9 @@ namespace Netflixx.Controllers
                 return View(model);
             }
 
+            model.Package.FilmID = model.SelectedFilmId ?? 0;
             _context.Packages.Add(model.Package);
             await _context.SaveChangesAsync();
-
-            if (model.SelectedFilmIds != null && model.SelectedFilmIds.Any())
-            {
-                foreach (var filmId in model.SelectedFilmIds)
-                {
-                    _context.PackageFilms.Add(new PackageFilmsModel
-                    {
-                        PackageID = model.Package.Id,
-                        FilmID = filmId
-                    });
-                }
-                await _context.SaveChangesAsync();
-            }
 
             TempData["success"] = "Tạo gói phim thành công!";
             return RedirectToAction(nameof(Index));
