@@ -785,7 +785,7 @@
                 $('#paginationContainer').hide();
 
                 $.ajax({
-                    url: '/ProductionManager/GetAll',
+                    url: '/Manager/ProductionManager/GetAll',
                     method: 'GET',
                     success: function(data) {
                         allData = data;
@@ -845,13 +845,13 @@
                             <td>${item.headquarters || ''}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-primary btn-sm" href="/ProductionManager/Edit/${item.id}" title="Chỉnh sửa">
+                                    <a class="btn btn-primary btn-sm" href="/Manager/ProductionManager/Edit/${item.id}" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i> Sửa
                                     </a>
-                                    <a class="btn btn-info btn-sm" href="/ProductionManager/Details/${item.id}" title="Xem chi tiết">
+                                    <a class="btn btn-info btn-sm" href="/Manager/ProductionManager/Details/${item.id}" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i> Xem
                                     </a>
-                                    <a class="btn btn-secondary btn-sm" href="/ProductionManager/History/${item.id}" title="Lịch sử">
+                                    <a class="btn btn-secondary btn-sm" href="/Manager/ProductionManager/History/${item.id}" title="Lịch sử">
                                         <i class="fas fa-history"></i> Lịch sử
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-link" href="#" data-id="${item.id}" title="Xóa">
@@ -921,13 +921,13 @@
                             </div>
                             <div class="card-footer-section">
                                 <div class="btn-group">
-                                    <a class="btn btn-primary" href="/ProductionManager/Edit/${item.id}" title="Chỉnh sửa">
+                                    <a class="btn btn-primary" href="/Manager/ProductionManager/Edit/${item.id}" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i> Sửa
                                     </a>
-                                    <a class="btn btn-info" href="/ProductionManager/Details/${item.id}" title="Xem chi tiết">
+                                    <a class="btn btn-info" href="/Manager/ProductionManager/Details/${item.id}" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i> Xem
                                     </a>
-                                    <a class="btn btn-secondary" href="/ProductionManager/History/${item.id}" title="Lịch sử">
+                                    <a class="btn btn-secondary" href="/Manager/ProductionManager/History/${item.id}" title="Lịch sử">
                                         <i class="fas fa-history"></i> Lịch sử
                                     </a>
                                     <a class="btn btn-danger delete-link" href="#" data-id="${item.id}" title="Xóa">
@@ -1052,7 +1052,7 @@
             $('body').on('click', '.delete-link', function (e) {
                 e.preventDefault();
                 var id = $(this).data('id');
-                $('#deleteModalContainer').load('/ProductionManager/Delete/' + id, function () {
+                $('#deleteModalContainer').load('/Manager/ProductionManager/Delete/' + id, function () {
                     deleteModal.show();
                 });
             });
