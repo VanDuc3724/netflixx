@@ -1,0 +1,176 @@
+@model Netflixx.Models.ViewModel.QuizResultsViewModel
+@{
+    ViewData["Title"] = "Quiz Results";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+<link href="~/css/templatemo-cyborg-gaming.css" rel="stylesheet" />
+<link href="~/css/homepage.css" rel="stylesheet" a/>
+
+
+<style>
+    .results-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+    }
+
+    .results-header {
+        margin-bottom: 30px;
+    }
+
+    .results-title {
+        color: #fff;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .quiz-title {
+        color: #ccc;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .score-display {
+        background: linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 25px 0;
+    }
+
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        position: relative;
+    }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+        }
+
+    .score-text {
+        position: relative;
+        z-index: 1;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .score-details {
+        color: #fff;
+        font-size: 1.1rem;
+        margin: 10px 0;
+    }
+
+    .completion-time {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-top: 15px;
+    }
+
+    .reward-section {
+        background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 25px;
+    }
+
+    .reward-btn {
+        background: linear-gradient(45deg, #ffd700 0%, #ffa500 100%);
+        border: none;
+        color: #000;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+
+        .reward-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            color: #000;
+        }
+
+    .reward-claimed {
+        color: #28a745;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .trophy-icon {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="results-container">
+    <div class="results-header">
+        <i class="fa fa-trophy trophy-icon"></i>
+        <h2 class="results-title">Quiz Complete!</h2>
+    </div>
+
+    <div class="score-display">
+        <div class="score-circle">
+            <div class="score-text">@Model.Attempt.Score/@Model.Quiz.Questions.Count</div>
+        </div>
+
+        <div class="score-details">
+            <strong>Your Score: @Model.Attempt.Score out of @Model.Quiz.Questions.Count</strong>
+        </div>
+
+        <div class="completion-time">
+            <i class="fa fa-clock-o"></i> Completed at: @Model.Attempt.CompletedAt.ToString()
+        </div>
+    </div>
+
+    <div class="reward-section">
+        <h4 style="color: #ffd700; margin-bottom: 15px;">
+            <i class="fa fa-gift"></i> Daily Reward
+        </h4>
+
+        @if (!Model.Attempt.RewardClaimed)
+        {
+            <p style="color: #ccc; margin-bottom: 20px;">Congratulations! You've earned your daily reward!</p>
+            <form asp-action="ClaimReward" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="attemptId" value="@Model.Attempt.Id" />
+                <button type="submit" class="reward-btn">
+                    <i class="fa fa-gift"></i> Claim Your Reward!
+                </button>
+            </form>
+        }
+        else
+        {
+            <p class="reward-claimed">
+                <i class="fa fa-check-circle"></i> Reward Claimed ✅
+            </p>
+        }
+    </div>
+</div>

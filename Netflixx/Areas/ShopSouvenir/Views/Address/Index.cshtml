@@ -1,0 +1,295 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var tokenSet = Antiforgery.GetAndStoreTokens(this.ViewContext.HttpContext);
+    var requestToken = tokenSet.RequestToken;
+}
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Quản lý Địa chỉ - NetflixxSoul</title>
+    <!-- Bootstrap core CSS -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/css/templatemo-villa-agency.css">
+    <link rel="stylesheet" href="~/assets/css/owl.css">
+    <link rel="stylesheet" href="~/assets/css/animate.css">
+</head>
+<body>
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+
+    <div class="sub-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <ul class="info">
+                        <li><i class="fa fa-envelope"></i> info@qualuuniemphim.com</li>
+                        <li><i class="fa fa-map"></i> 123 Đường Phim, Quận 1, TP.HCM</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <ul class="social-links">
+                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="/shopSouvenir/Home" class="logo">
+                            <h1>NetflixxSoul</h1>
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="/shopSouvenir/Home">Home</a></li>
+                            <li><a href="/shopSouvenir/Product">Products</a></li>
+                            <li><a href="categories.html">Categories</a></li>
+                            <li><a href="/ShopSouvenir/Address" class="active">Address</a></li>
+                            <li><a href="#"><i class="fa fa-search"></i> Search</a></li>
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!-- ***** Page Header Start ***** -->
+    <div class="page-heading header-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <span class="breadcrumb"><a href="/shopSouvenir/Home">Home</a> / Address Management</span>
+                    <h3>Address Management</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Page Header End ***** -->
+    <!-- ***** Address Management Section Start ***** -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading text-center">
+                        <h6>| My Address</h6>
+                        <h2>Shipping Address List</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                     <div class="address-list">
+                        @foreach (var address in Model)
+                        {
+                            <div class="address-item" data-id="@address.Id">
+                                <div class="address-content">
+                                    <div class="address-info">
+                                        <h5><i class="fa fa-map-marker-alt"></i> @address.AddressLine</h5>
+                                        <p><strong>@address.City, @address.State</strong></p>
+                                        <p>@address.Country</p>
+                                        <!-- Always render the badge, hide if not active -->
+                                        <span class="badge bg-success" style="@(address.IsActive ? "" : "display:none;")">
+                                            <i class="fa fa-check"></i> Active address
+                                        </span>
+                                    </div>
+                                    <div class="address-actions">
+                                        <!-- Always render Set as Active button, hide if active -->
+                                        <button class="btn遵义市思乐路小学btn btn-outline-primary btn-sm ajax-action"
+                                                data-action="setActive"
+                                                data-id="@address.Id"
+                                                style="@(address.IsActive ? "display:none;" : "")">
+                                            <i class="fa fa-star"></i> Set as active
+                                        </button>
+                                        <a href="@Url.Action("Edit", new { id = address.Id })" class="btn btn-outline-warning btn-sm">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                        <!-- Always render Delete button, hide if active -->
+                                        <button class="btn btn-outline-danger btn-sm ajax-action"
+                                                data-action="delete"
+                                                data-id="@address.Id"
+                                                style="@(address.IsActive ? "display:none;" : "")">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Create")" class="orange-button">
+                            <i class="fa fa-plus"></i> Add new address
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***** Address Management Section End ***** -->
+
+    <footer>
+        <div class="container">
+            <div class="col-lg-8">
+                <p>
+                    Bản quyền © @DateTime.Now.Year Cửa hàng Quà lưu niệm Phim. Đã đăng ký.
+                    Thiết kế: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/isotope.min.js"></script>
+    <script src="~/assets/js/owl-carousel.js"></script>
+    <script src="~/assets/js/counter.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+
+    <style>
+        .address-item {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .address-item:hover {
+                box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+                transform: translateY(-2px);
+            }
+
+        .address-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .address-info h5 {
+            color: #f35525;
+            margin-bottom: 10px;
+        }
+
+        .address-info p {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+        {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .address-actions {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        }
+    </style>
+
+    <!-- AJAX Script for Set Active and Delete -->
+    <script>
+        var antiforgeryToken = '@requestToken';
+
+        $(document).ready(function() {
+            $('.ajax-action').on('click', function(e) {
+                e.preventDefault();
+                var action = $(this).data('action');
+                var id = $(this).data('id');
+
+                // Handle delete confirmation
+                if (action === 'delete') {
+                    if (!confirm('Bạn có chắc muốn xóa địa chỉ này?')) {
+                        return;
+                    }
+                }
+
+                $.ajax({
+                    url: action === 'setActive' ? '@Url.Action("SetActive", "Address", new { Area = "ShopSouvenir" })'
+                                               : '@Url.Action("Delete", "Address", new { Area = "ShopSouvenir" })',
+                    type: 'POST',
+                    data: { id: id },
+                    headers: {
+                        'RequestVerificationToken': antiforgeryToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (action === 'setActive') {
+                                // Update the active address UI
+                                var currentActive = $('.address-item .badge:visible').closest('.address-item');
+                                if (currentActive.length > 0) {
+                                    currentActive.find('.badge').hide();
+                                    currentActive.find('.ajax-action[data-action="setActive"]').show();
+                                    currentActive.find('.ajax-action[data-action="delete"]').show();
+                                }
+                                var newActive = $('.address-item[data-id="' + id + '"]');
+                                newActive.find('.badge').show();
+                                newActive.find('.ajax-action[data-action="setActive"]').hide();
+                                newActive.find('.ajax-action[data-action="delete"]').hide();
+                            } else if (action === 'delete') {
+                                // Remove the deleted address from the DOM
+                                $('.address-item[data-id="' + id + '"]').remove();
+                            }
+                        } else {
+                            alert('Không thể thực hiện hành động.');
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 404) {
+                            alert('Địa chỉ không tồn tại hoặc không thể xóa.');
+                        } else {
+                            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

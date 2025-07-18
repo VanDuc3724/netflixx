@@ -48,6 +48,15 @@ namespace Netflixx.Repositories
         public virtual DbSet<FavoriteFilmsModel> FavoriteFilms { get; set; }
         public virtual DbSet<FilmComment> FilmComments { get; set; }
         public DbSet<FilmRating> FilmRatings { get; set; }
+
+        public virtual DbSet<Quiz> Quizzes { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<AnswerOption> AnswerOptions { get; set; }
+        public virtual DbSet<UserQuizAttempt> UserQuizAttempts { get; set; }
+        public virtual DbSet<UserAnswer> UserAnswers { get; set; }
+        public virtual DbSet<DailyQuiz> DailyQuiz { get; set; }
+
+        public DbSet<UserAddress> UserAddresses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -282,6 +291,40 @@ namespace Netflixx.Repositories
     .WithMany(f => f.FavoriteFilms)      
     .HasForeignKey(fav => fav.FilmID)
     .OnDelete(DeleteBehavior.Cascade);
+
+            // Disable cascade delete from Question → AnswerOption
+            modelBuilder.Entity<AnswerOption>()
+                .HasOne(o => o.Question)
+                .WithMany(q => q.Options)
+                .HasForeignKey(o => o.QuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserAnswer>()
+                .HasOne(ua => ua.Question)
+                .WithMany()
+                .HasForeignKey(ua => ua.QuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Disable cascade delete from AnswerOption → UserAnswer
+            modelBuilder.Entity<UserAnswer>()
+                .HasOne(ua => ua.ChosenOption)
+                .WithMany()
+                .HasForeignKey(ua => ua.ChosenOptionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Allow cascade delete from Attempt → UserAnswer
+            modelBuilder.Entity<UserAnswer>()
+                .HasOne(ua => ua.Attempt)
+                .WithMany(a => a.Answers)
+                .HasForeignKey(ua => ua.AttemptId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure the relationship between AppUserModel and UserAddress
+            modelBuilder.Entity<UserAddress>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.Addresses)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

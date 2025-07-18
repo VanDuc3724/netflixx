@@ -1,0 +1,186 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Netflixx.Models.ViewModel.QuizEditViewModel
+
+@{
+    Layout = "_AdminLayout";
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Edit Quiz" : "New Quiz";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+<link href="~/css/templatemo-cyborg-gaming.css" rel="stylesheet" />
+<link href="~/css/homepage.css" rel="stylesheet" />
+
+<div class="container-fluid">
+<h2 class="mb-4" style="color: #000">@ViewData["Title"]</h2>
+<form asp-area="Admin"
+      asp-controller="Quiz"
+      asp-action="@(isEdit ? "Edit" : "Create")"
+      method="post">
+    @Html.AntiForgeryToken()
+    @if (isEdit)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div style="display: flex">
+        <div class="mb-3" style="margin-right: 1.5rem">
+            <label asp-for="Title" class="form-label">Quiz Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PublishDate" class="form-label">Publish Date</label>
+            <input asp-for="PublishDate" type="date" class="form-control" readonly />
+            <span asp-validation-for="PublishDate" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <hr />
+    <h4 style="color: #000">Questions</h4>
+    <div id="questions-container">
+        @for (int qi = 0; qi < Model.Questions.Count; qi++)
+        {
+            <div class="card mb-3 p-3 question-card" data-qi="@qi">
+                <input type="hidden" name="Questions[@qi].Id"
+                       value="@Model.Questions[qi].Id" />
+
+                <div class="mb-2">
+                    <label class="form-label">Question Text</label>
+                    <input name="Questions[@qi].Text"
+                           class="form-control"
+                           value="@Model.Questions[qi].Text" />
+                </div>
+
+                <h6>Options</h6>
+                <div class="options-container mb-2" data-qi="@qi">
+                    @for (int oi = 0; oi < Model.Questions[qi].Options.Count; oi++)
+                    {
+                        <div class="input-group mb-2 option-row" data-oi="@oi">
+                            <span class="input-group-text">
+                                <input type="radio"
+                                       name="Questions[@qi].CorrectOptionIndex"
+                                       value="@oi"
+                                       @(Model.Questions[qi].CorrectOptionIndex == oi
+                                                                      ? "checked" : "") />
+                    </span>
+                    <input name="Questions[@qi].Options[@oi].Text"
+                           class="form-control"
+                           value="@Model.Questions[qi].Options[oi].Text" />
+                    <input type="hidden"
+                           name="Questions[@qi].Options[@oi].Id"
+                           value="@Model.Questions[qi].Options[oi].Id" />
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm remove-option">
+                        ✕
+                    </button>
+                </div>
+                                }
+                </div>
+
+                <button type="button"
+                        class="btn btn-sm btn-secondary add-option"
+                        data-qi="@qi">
+                    + Option
+                </button>
+                <button type="button"
+                        class="btn btn-sm btn-warning remove-question float-end">
+                    ✕ Question
+                </button>
+            </div>
+        }
+    </div>
+
+    <button type="button" id="add-question"
+            class="btn btn-sm btn-info mb-3">
+        + Add Question
+    </button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            @(isEdit ? "Save Quiz" : "Create Quiz")
+        </button>
+        <a asp-area="Admin" asp-controller="Quiz" asp-action="Index"
+           class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+</form>
+</div>
+@section Scripts {
+    <script>
+        (function(){
+          let qContainer = document.getElementById('questions-container');
+
+          // Add new question
+          document.getElementById('add-question').addEventListener('click', ()=>{
+            // Clone the very first .question-card as a template
+            let template = document.querySelector('.question-card');
+            let clone = template.cloneNode(true);
+            let newQi = qContainer.children.length;
+            clone.setAttribute('data-qi', newQi);
+
+            // Clear inputs
+            clone.querySelector('[name^="Questions"]').value = '';
+            clone.querySelectorAll('input[name^="Questions"]').forEach(i=> {
+              let name = i.getAttribute('name')
+                .replace(/\d+/, newQi);
+              i.setAttribute('name', name);
+              if (i.type === 'radio') i.checked = false;
+              if (i.type === 'hidden' && name.endsWith('.Id')) i.value = '0';
+              if (i.type === 'text') i.value = '';
+            });
+
+            qContainer.appendChild(clone);
+          });
+
+          // Delegate add/remove option & remove question
+          qContainer.addEventListener('click', e=>{
+            // Remove question
+            if (e.target.matches('.remove-question')) {
+              e.target.closest('.question-card').remove();
+              return;
+            }
+
+            // Add option
+            if (e.target.matches('.add-option')) {
+              let card = e.target.closest('.question-card');
+              let qi = card.getAttribute('data-qi');
+              let opts = card.querySelector('.options-container');
+              let oi = opts.children.length;
+
+              // create new row
+              let row = document.createElement('div');
+              row.className = 'input-group mb-2 option-row';
+              row.setAttribute('data-oi', oi);
+              row.innerHTML = `
+                <span class="input-group-text">
+                  <input type="radio"
+                         name="Questions[${qi}].CorrectOptionIndex"
+                         value="${oi}" />
+                </span>
+                <input name="Questions[${qi}].Options[${oi}].Text"
+                       class="form-control"
+                       placeholder="Option text…" />
+                <input type="hidden"
+                       name="Questions[${qi}].Options[${oi}].Id"
+                       value="0" />
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm remove-option">
+                  ✕
+                </button>`;
+              opts.appendChild(row);
+              return;
+            }
+
+            // Remove option
+            if (e.target.matches('.remove-option')) {
+              e.target.closest('.option-row').remove();
+              return;
+            }
+          });
+        })();
+    </script>
+}

@@ -1,0 +1,301 @@
+﻿@model Netflixx.Models.CategorySouModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tạo Danh Mục Mới - Netflixx</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #e50914;
+            --danger-color: #ff0000;
+            --secondary-color: #6c757d;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+            }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #c11119;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-2px);
+            }
+
+        .validation-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .field-validation-error {
+            color: var(--danger-color);
+        }
+
+        .input-validation-error {
+            border-color: var(--danger-color) !important;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="/image/logo/NetflixxLogo.png" alt="Netflixx Logo" class="logo" />
+                </a>
+                <div class="navbar-text ms-auto">
+                    <span class="text-muted fw-bold">Quản lý Danh Mục</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="main-container">
+            <h1 class="page-title">
+                <i class="fas fa-plus-circle me-2"></i>Tạo Danh Mục Mới
+            </h1>
+
+            <form asp-action="Create" asp-controller="CategorySuo" method="post" id="createCategoryForm">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label required-field">
+                        <i class="fas fa-heading me-1"></i>Tên Danh Mục
+                    </label>
+                    <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục (tối đa 100 ký tự)" maxlength="100">
+                    <span asp-validation-for="Name" class="validation-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">
+                        <i class="fas fa-align-left me-1"></i>Mô tả
+                    </label>
+                    <textarea asp-for="Description" class="form-control"
+                              placeholder="Nhập mô tả về danh mục (tối đa 1000 ký tự)" maxlength="1000"></textarea>
+                    <span asp-validation-for="Description" class="validation-message"></span>
+                </div>
+
+                <div class="action-buttons">
+                    <a asp-action="Index" asp-controller="CategorySuo" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i class="fas fa-save me-1"></i> Lưu Danh Mục
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Highlight label when input is focused
+            $('.form-control').focus(function() {
+                $(this).parent().find('.form-label').css('color', 'var(--primary-color)');
+            }).blur(function() {
+                $(this).parent().find('.form-label').css('color', 'var(--dark-color)');
+            });
+
+            // Form submission handling
+                   $('#createCategoryForm').submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var submitButton = $('#submitButton');
+
+            if (!form.valid()) {
+                $('.input-validation-error').first().focus();
+                return false;
+            }
+
+            // Show loading state
+            submitButton.html('<i class="fas fa-spinner fa-spin me-1"></i> Đang lưu...')
+                .prop('disabled', true);
+
+            // Submit form via AJAX
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message || 'Danh mục đã được tạo thành công!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = response.redirect;
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message || 'Có lỗi xảy ra khi tạo danh mục'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    var errorMessage = 'Đã xảy ra lỗi khi gửi yêu cầu';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: errorMessage
+                    });
+                },
+                complete: function() {
+                    submitButton.html('<i class="fas fa-save me-1"></i> Lưu Danh Mục')
+                        .prop('disabled', false);
+                }
+            });
+        });
+
+            // Xử lý hiển thị lỗi validation từ server
+            @if (!ViewData.ModelState.IsValid)
+            {
+                    <text>
+                    var errors = [];
+                    @foreach (var item in ViewData.ModelState)
+                    {
+                            if (item.Value.Errors.Any())
+                            {
+                                    @:errors.push('@Html.Raw(item.Value.Errors.First().ErrorMessage)');
+                            }
+                    }
+
+                    if (errors.length > 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi nhập liệu',
+                            html: errors.join('<br>')
+                        });
+                    }
+                    </text>
+            }
+        });
+    </script>
+</body>
+</html>

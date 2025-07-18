@@ -1,0 +1,41 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Netflixx.Models.ViewModel.AIQuizGenerateViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Generate AI Quiz";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+<link href="~/css/templatemo-cyborg-gaming.css" rel="stylesheet" />
+<link href="~/css/homepage.css" rel="stylesheet" />
+<div class="container-fluid">
+
+<h2 class="mb-4" style="color: #000; justify-content: center; text-align: center">@ViewData["Title"]</h2>
+
+<form asp-area="Admin" asp-controller="Quiz" asp-action="GenerateAIQuiz" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Topic" class="form-label">Topic</label>
+        <input asp-for="Topic" class="form-control" />
+        <span asp-validation-for="Topic" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NumQuestions" class="form-label">Number of Questions</label>
+        <input asp-for="NumQuestions" type="number" class="form-control" />
+        <span asp-validation-for="NumQuestions" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate</button>
+    <a asp-area="Admin" asp-controller="Quiz" asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

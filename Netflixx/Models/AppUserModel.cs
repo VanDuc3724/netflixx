@@ -32,6 +32,26 @@ namespace Netflixx.Models
 
         public virtual ICollection<FavoriteFilmsModel>? FavoriteFilms { get; set; }
 
+        //public virtual ICollection<UserQuizAttempt> QuizAttempts { get; set; }
+        //= new List<UserQuizAttempt>();
 
+        public int? TotalQuizPoints { get; set; } = 0;
+
+        public virtual ICollection<UserAddress> Addresses { get; set; } = new List<UserAddress>();
+    }
+
+    public class UserAddress
+    {
+        public int Id { get; set; }
+        public string AddressLine { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string? PostalCode { get; set; }
+        public string Country { get; set; }
+        public bool IsActive { get; set; }
+
+        // Foreign key
+        public string UserId { get; set; }
+        public virtual AppUserModel User { get; set; }
     }
 }

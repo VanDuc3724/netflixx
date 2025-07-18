@@ -1,0 +1,657 @@
+﻿@model List<Netflixx.Models.CategorySouModel>
+@Html.AntiForgeryToken()
+@{
+    Layout = null;
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalItems = ViewBag.TotalItems ?? 0;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quản lý Danh mục</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            padding-top: 70px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .add-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Bộ lọc tích hợp */
+        .filter-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-toggle {
+            background: none;
+            border: none;
+            color: #2196F3;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-group {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-input, .filter-input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .filter-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .apply-button {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .reset-button {
+            background: #f44336;
+            color: white;
+        }
+
+        /* Bảng dữ liệu */
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .category-table th {
+            background-color: #f2f2f2;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .category-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        .category-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 5px;
+        }
+
+        .edit-button {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .description-text {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .no-category {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* Phân trang */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .page-link:hover {
+            background: #f2f2f2;
+        }
+
+        .page-item.active .page-link {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .page-item.disabled .page-link {
+            color: #aaa;
+            pointer-events: none;
+        }
+    </style>
+
+    <!-- Style cho SweetAlert -->
+    <style>
+        .swal2-popup {
+            font-family: 'Poppins', sans-serif;
+            border-radius: 10px !important;
+            padding: 20px !important;
+        }
+        
+        .swal2-title {
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+        }
+        
+        .swal2-html-container {
+            font-size: 16px !important;
+            color: #555 !important;
+        }
+        
+        .swal2-confirm {
+            background-color: #d33 !important;
+            border-radius: 6px !important;
+            padding: 10px 20px !important;
+            font-size: 14px !important;
+        }
+        
+        .swal2-cancel {
+            background-color: #6c757d !important;
+            border-radius: 6px !important;
+            padding: 10px 20px !important;
+            font-size: 14px !important;
+        }
+        
+        .swal2-success {
+            color: #4CAF50 !important;
+        }
+        
+        .swal2-error {
+            color: #f44336 !important;
+        }
+        
+        .swal2-warning {
+            color: #FFC107 !important;
+        }
+        
+        .swal2-timer-progress-bar {
+            background: rgba(0,0,0,0.2) !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/image/logo/NetflixxLogo.png" alt="Netflixx Logo" class="logo" />
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="header-section">
+            <h1 class="page-title">Quản lý Danh mục</h1>
+            <button class="add-button" onclick="window.location.href='@Url.Action("Create", "CategorySuo")'">
+    <i class="fa fa-plus"></i> Thêm Danh mục mới
+</button>
+        </div>
+
+        <!-- Bộ lọc tích hợp -->
+        <div class="filter-container">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <i class="fa fa-search"></i> Tìm kiếm & Lọc dữ liệu
+                </div>
+                <button class="filter-toggle" id="toggle-advanced">
+                    <i class="fa fa-sliders"></i> Lọc nâng cao
+                </button>
+            </div>
+            
+            <div class="filter-content">
+                <div class="search-group">
+                    <label class="filter-label">Tìm kiếm nhanh</label>
+                    <input type="text" class="search-input" id="search" placeholder="Nhập tên hoặc mô tả danh mục...">
+                </div>
+                
+                <div class="filter-group" id="advanced-filters" style="display:none">
+                    <label class="filter-label">Số sản phẩm từ</label>
+                    <input type="number" class="filter-input" id="filter-products-min" placeholder="Từ">
+                </div>
+                
+                <div class="filter-group" id="advanced-filters-2" style="display:none">
+                    <label class="filter-label">Đến</label>
+                    <input type="number" class="filter-input" id="filter-products-max" placeholder="Đến">
+                </div>
+            </div>
+            
+            <div class="filter-actions" id="advanced-actions" style="display:none">
+                <button class="filter-button apply-button" onclick="applyFilters()">
+                    <i class="fa fa-check"></i> Áp dụng
+                </button>
+                <button class="filter-button reset-button" onclick="resetFilters()">
+                    <i class="fa fa-refresh"></i> Đặt lại
+                </button>
+            </div>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="no-category">
+                <p>Chưa có danh mục nào được tạo.</p>
+                <p>Nhấn nút "Thêm Danh mục mới" để bắt đầu.</p>
+            </div>
+        }
+        else
+        {
+            <table class="category-table">
+                <thead>
+                    <tr>
+                        <th width="50">STT</th>
+                        <th>Tên Danh mục</th>
+                        <th>Mô tả</th>
+                        <th width="120">Số lượng</th>
+                        <th width="220">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var category = Model[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@category.Name</td>
+                            <td class="description-text" title="@category.Description">@category.Description</td>
+                            <td>@(category.Products?.Count ?? 0)</td>
+                            <td>
+                             <!-- Thay đổi phần nút sửa trong bảng -->
+<button class="action-button edit-button" onclick="window.location.href='@Url.Action("Edit", "CategorySuo", new { id = category.Id })'">
+    <i class="fa fa-edit"></i> Sửa
+</button>
+                                <button class="action-button delete-button" onclick="deleteCategory('@category.Id')">
+                                    <i class="fa fa-trash"></i> Xóa
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="no-results-message" class="no-category" style="display: none;">
+                <p>Không có kết quả phù hợp với bộ lọc hiện tại.</p>
+            </div>
+
+            <!-- Phân trang -->
+            @if (totalPages > 1)
+            {
+                <div class="pagination">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(currentPage - 1)">&laquo;</a>
+                    </li>
+                    
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
+                    
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(currentPage + 1)">&raquo;</a>
+                    </li>
+                </div>
+            }
+        }
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function createCategory() {
+    window.location.href = '@Url.Action("Create", "CategorySuo")';
+}
+
+        function editCategory(id, name, description) {
+            document.getElementById('category-form').style.display = 'flex';
+            document.getElementById('form-title').innerText = 'Chỉnh sửa Danh mục';
+            document.getElementById('category-id').value = id;
+            document.getElementById('category-name').value = name;
+            document.getElementById('category-description').value = description;
+        }
+
+        function cancelForm() {
+            document.getElementById('category-form').style.display = 'none';
+        }
+
+        async function saveCategory() {
+            const id = document.getElementById('category-id').value;
+            const name = document.getElementById('category-name').value.trim();
+            const description = document.getElementById('category-description').value.trim();
+
+            if (!name) {
+                await Swal.fire({
+                    title: 'Lỗi',
+                    text: 'Vui lòng nhập tên danh mục',
+                    icon: 'error',
+                    confirmButtonText: 'Đã hiểu'
+                });
+                return;
+            }
+
+            try {
+                // Hiển thị loading
+                Swal.showLoading();
+
+                const url = id ? '/CategorySuo/Update' : '/CategorySuo/Create';
+                const method = 'POST';
+                const data = {
+                    Id: id ? parseInt(id) : 0,
+                    Name: name,
+                    Description: description
+                };
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await Swal.fire({
+                        title: 'Thành công',
+                        text: result.message || 'Danh mục đã được lưu thành công',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    window.location.reload();
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi lưu danh mục');
+                }
+            } catch (error) {
+                await Swal.fire({
+                    title: 'Lỗi',
+                    text: error.message || 'Có lỗi xảy ra khi lưu danh mục',
+                    icon: 'error',
+                    confirmButtonText: 'Đã hiểu'
+                });
+            }
+        }
+
+        async function deleteCategory(id) {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Xác nhận xóa Danh mục',
+                html: `<p>Bạn có chắc chắn muốn xóa danh mục này không?</p>
+                      <p style="font-size: 14px; color: #777; margin-top: 8px;">
+                        <i class="fa fa-exclamation-circle"></i> Tất cả sản phẩm thuộc danh mục này sẽ được đặt lại thành không có danh mục.
+                      </p>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fa fa-trash"></i> Xóa',
+                cancelButtonText: '<i class="fa fa-times"></i> Hủy',
+                reverseButtons: true
+            });
+
+            if (isConfirmed) {
+                try {
+                    Swal.showLoading();
+                    
+                    const response = await fetch(`/CategorySuo/Delete/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    await Swal.fire({
+                        title: 'Thành công!',
+                        text: result.message || 'Danh mục đã được xóa thành công.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+
+                    window.location.reload();
+                    
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: error.message || 'Không thể xóa danh mục. Vui lòng thử lại.',
+                        icon: 'error',
+                        confirmButtonText: 'Đã hiểu'
+                    });
+                }
+            }
+        }
+
+        // Toggle bộ lọc nâng cao
+        document.getElementById('toggle-advanced').addEventListener('click', function() {
+            const advancedFilters = document.getElementById('advanced-filters');
+            const advancedFilters2 = document.getElementById('advanced-filters-2');
+            const advancedActions = document.getElementById('advanced-actions');
+            const toggleBtn = this;
+            
+            if (advancedFilters.style.display === 'none') {
+                advancedFilters.style.display = 'flex';
+                advancedFilters2.style.display = 'flex';
+                advancedActions.style.display = 'flex';
+                toggleBtn.innerHTML = '<i class="fa fa-sliders"></i> Ẩn lọc nâng cao';
+            } else {
+                advancedFilters.style.display = 'none';
+                advancedFilters2.style.display = 'none';
+                advancedActions.style.display = 'none';
+                toggleBtn.innerHTML = '<i class="fa fa-sliders"></i> Lọc nâng cao';
+            }
+        });
+
+        // Tìm kiếm nhanh
+        document.getElementById("search").addEventListener("input", function() {
+            applyFilters();
+        });
+
+        // Áp dụng bộ lọc
+        function applyFilters() {
+            const keyword = document.getElementById("search").value.toLowerCase();
+            const minProductsInput = document.getElementById("filter-products-min").value;
+            const maxProductsInput = document.getElementById("filter-products-max").value;
+
+            const minProducts = minProductsInput === "" ? 0 : parseInt(minProductsInput);
+            const maxProducts = maxProductsInput === "" ? Infinity : parseInt(maxProductsInput);
+
+            const rows = document.querySelectorAll(".category-table tbody tr");
+            let hasVisibleRows = false;
+
+            rows.forEach(row => {
+                const categoryName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                const categoryDesc = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+                const productsCount = parseInt(row.querySelector("td:nth-child(4)").textContent);
+
+                const searchMatch = keyword === "" || 
+                                 categoryName.includes(keyword) || 
+                                 categoryDesc.includes(keyword);
+                
+                const productsMatch = (productsCount >= minProducts) && 
+                                    (productsCount <= maxProducts);
+
+                if (searchMatch && productsMatch) {
+                    row.style.display = "";
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Hiển thị thông báo nếu không có kết quả
+            const noResultsMessage = document.getElementById("no-results-message");
+            if (hasVisibleRows) {
+                noResultsMessage.style.display = "none";
+            } else {
+                noResultsMessage.style.display = "block";
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById("search").value = "";
+            document.getElementById("filter-products-min").value = "";
+            document.getElementById("filter-products-max").value = "";
+            applyFilters();
+        }
+    </script>
+</body>
+</html>

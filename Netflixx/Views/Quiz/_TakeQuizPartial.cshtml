@@ -1,0 +1,233 @@
+@model Netflixx.Models.ViewModel.TakeQuizViewModel
+@await Html.PartialAsync("_ToastPartial")
+@{
+    ViewData["Title"] = "Home";
+    Layout = null;
+}
+<!-- Import the template’s fonts & CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+<link href="~/css/templatemo-cyborg-gaming.css" rel="stylesheet" />
+<link href="~/css/homepage.css" rel="stylesheet" />
+
+<style>
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .quiz-title {
+        color: #fff;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .quiz-date {
+        color: #aaa;
+        font-size: 1rem;
+    }
+
+    .daily-badge {
+        display: inline-block;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .mb-4 {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px !important;
+        transition: all 0.3s ease;
+    }
+
+        .mb-4:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .mb-4 h5 {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+            .mb-4 h5::before {
+                content: counter(question-counter);
+                counter-increment: question-counter;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 35px;
+                height: 35px;
+                background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 50%;
+                font-weight: bold;
+                margin-right: 15px;
+                font-size: 1rem;
+            }
+
+    .form-check {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .form-check:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+    .form-check-input {
+        margin-right: 12px;
+        transform: scale(1.2);
+    }
+
+    .form-check-label {
+        color: #ddd !important;
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 0;
+        transition: color 0.3s ease;
+    }
+
+    .form-check:hover .form-check-label {
+        color: #fff !important;
+    }
+
+    .submit-section {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%) !important;
+        border: none !important;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding: 15px 40px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white !important;
+            background: linear-gradient(45deg, #5a67d8 0%, #6b46c1 100%) !important;
+        }
+
+    .progress-bar-container {
+        margin-bottom: 30px;
+    }
+
+    .progress {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .progress-bar {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+    }
+
+    /* Counter for question numbers */
+    form {
+        counter-reset: question-counter;
+    }
+</style>
+
+<div class="quiz-header">
+    <div class="daily-badge">
+        <i class="fa fa-calendar"></i> Daily Challenge
+    </div>
+    <h2 class="quiz-title">@Model.Quiz.Title</h2>
+    <p class="quiz-date">
+        <i class="fa fa-clock-o"></i> Published on @Model.Quiz.PublishDate.ToString("MMMM dd, yyyy")
+    </p>
+</div>
+
+<div class="progress-bar-container">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 0%" id="quizProgress"></div>
+    </div>
+    <small class="text-muted">Progress: <span id="progressText">0 of @Model.Quiz.Questions.Count</span></small>
+</div>
+
+<form asp-action="Submit" asp-route-quizId="@Model.Quiz.Id" method="post">
+    @Html.AntiForgeryToken()
+    @foreach (var q in Model.Quiz.Questions)
+    {
+        <div class="mb-4">
+            <h5>@q.Text</h5>
+            @foreach (var opt in q.Options)
+            {
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="SelectedAnswers[@q.Id]"
+                           value="@opt.Id"
+                           id="opt-@opt.Id"
+                           onchange="updateProgress()" />
+                    <label class="form-check-label" for="opt-@opt.Id" style="color: #FFF">@opt.Text</label>
+                </div>
+            }
+        </div>
+    }
+    <div class="submit-section">
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+            <i class="fa fa-paper-plane"></i> Submit Answers
+        </button>
+    </div>
+</form>
+
+<script>
+    function updateProgress() {
+        const totalQuestions = @Model.Quiz.Questions.Count;
+        const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+        const percentage = (answeredQuestions / totalQuestions) * 100;
+
+        document.getElementById('quizProgress').style.width = percentage + '%';
+        document.getElementById('progressText').textContent = answeredQuestions + ' of ' + totalQuestions;
+
+        const submitBtn = document.getElementById('submitBtn');
+        if (answeredQuestions === totalQuestions) {
+            submitBtn.style.opacity = '1';
+        } else {
+            submitBtn.style.opacity = '0.8';
+        }
+    }
+
+    // Initialize progress on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateProgress();
+    });
+</script>

@@ -1,0 +1,987 @@
+﻿@model Netflixx.Models.SeriesSouModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @Html.AntiForgeryToken()
+    <title>@Model.Name - Series Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --danger-color: #e74c3c;
+            --secondary-color: #95a5a6;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .detail-header {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .series-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .series-title {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .series-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background-color: #2980b9;
+            }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-delete:hover {
+                background-color: #c0392b;
+            }
+
+        .btn-back {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+            .btn-back:hover {
+                background-color: #7f8c8d;
+            }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            .btn-add:hover {
+                background-color: #2980b9;
+            }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
+
+        .product-name {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .empty-products {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Search and product selection styles */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .available-products {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .product-item:last-child {
+                border-bottom: none;
+            }
+
+        .product-select-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .product-select-btn:hover {
+                background-color: #2980b9;
+            }
+
+            .product-select-btn.selected {
+                background-color: var(--secondary-color);
+            }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-body {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+
+        .product-price {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .product-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-category {
+            background-color: #f1c40f;
+            color: #2c3e50;
+        }
+
+        .badge-stock {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        .pagination {
+    margin-top: 30px;
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-link {
+    color: var(--primary-color);
+}
+
+.page-link:hover {
+    color: var(--dark-color);
+}
+    </style>
+
+    <style>
+    /* Cập nhật các style cho modal tìm kiếm */
+    .search-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 15px;
+        padding-left: 40px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+    }
+
+    .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 2px 12px rgba(52, 152, 219, 0.2);
+        outline: none;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #95a5a6;
+    }
+
+    .available-products {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+    }
+
+    .product-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        transition: all 0.2s;
+    }
+
+    .product-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .product-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #eee;
+    }
+
+    .product-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-title {
+        font-weight: 500;
+        color: var(--dark-color);
+        margin-bottom: 3px;
+    }
+
+    .product-price {
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .product-select-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    .product-select-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+    }
+
+    .product-select-btn.selected {
+        background-color: #2ecc71;
+    }
+
+    .no-products {
+        padding: 30px;
+        text-align: center;
+        color: #95a5a6;
+    }
+
+    .no-products i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        color: #bdc3c7;
+    }
+
+    .selected-count {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        text-align: right;
+    }
+</style>
+</head>
+<body>
+    <div class="detail-header">
+        <div class="detail-container">
+            <button class="btn-action btn-back" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Series
+            </button>
+        </div>
+    </div>
+
+    <div class="detail-container">
+        <div class="series-info">
+            <h2 class="series-title">@Model.Name</h2>
+            <p class="series-description">@Model.Description</p>
+
+            <div class="action-buttons">
+                <button class="btn-action btn-edit" onclick="openEditModal()">
+                    <i class="fas fa-edit"></i> Edit Info Series
+                </button>
+            </div>
+
+            <div class="products-header">
+                <h3 class="section-title">Products in this Series</h3>
+                <button class="btn-add" onclick="openAddProductModal()">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+            @if (Model.Products != null && Model.Products.Any())
+            {
+                <div class="product-grid">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="product-card">
+                            <!-- Product Image -->
+                            <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "https://via.placeholder.com/300x200?text=No+Image" : product.ImageUrl)"
+                                 alt="@product.Name" class="product-image">
+
+                            <div class="product-body">
+                                <!-- Product Name -->
+                                <h5 class="product-name">@product.Name</h5>
+
+                                <!-- Product Price -->
+                                <div class="product-price">$@product.Price.ToString("N2")</div>
+
+                                <!-- Product Description -->
+                                <p class="product-description">@product.Description</p>
+
+                                <!-- Product Meta -->
+                                <div class="product-meta">
+                                    <span class="badge badge-stock">Stock: @product.StockQuantity</span>
+                                </div>
+
+                                <!-- Product Actions -->
+                                <div class="product-actions">
+                                    <button class="btn-action btn-delete btn-sm" onclick="removeProduct(@product.Id, '@product.Name')">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- Thêm phân trang -->
+    <nav aria-label="Product pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @{
+                int currentPage = ViewBag.ProductPage;
+                int totalPages = ViewBag.TotalProductPages;
+                int prevPage = currentPage - 1;
+                int nextPage = currentPage + 1;
+                
+                // Nút Previous
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = prevPage })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                // Các số trang
+                for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = i })">@i</a>
+                    </li>
+                }
+
+                // Nút Next
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = nextPage })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+            }
+            else
+            {
+                <div class="empty-products">
+                    <div class="empty-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h4>No Products Yet</h4>
+                    <p>Add your first product to this series</p>
+                    <button class="btn-add" onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Edit Series Modal -->
+    <div id="editSeriesModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Series</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="editSeriesName">Series Name</label>
+                    <input type="text" class="form-control" id="editSeriesName" value="@Model.Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editSeriesDescription">Description</label>
+                    <textarea class="form-control" id="editSeriesDescription" rows="4">@Model.Description</textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-action btn-back" onclick="closeEditModal()">Cancel</button>
+                <button class="btn-action btn-edit" onclick="updateSeries()">Update</button>
+            </div>
+        </div>
+    </div>
+
+<!-- Add Product Modal -->
+<div id="addProductModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Thêm sản phẩm vào bộ sưu tập</h3>
+            <button class="close-btn" onclick="closeAddProductModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="productSearch" 
+                       placeholder="Tìm kiếm sản phẩm theo tên..." 
+                       oninput="searchProducts()">
+            </div>
+            
+            <div class="selected-count" id="selectedCount">Đã chọn: 0 sản phẩm</div>
+            
+            <div class="available-products" id="availableProductsList">
+                <div class="no-products">
+                    <i class="fas fa-search"></i>
+                    <p>Nhập từ khóa để tìm kiếm sản phẩm</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-action btn-back" onclick="closeAddProductModal()">Hủy bỏ</button>
+            <button class="btn-action btn-edit" onclick="addSelectedProducts()">
+                <i class="fas fa-plus"></i> Thêm sản phẩm đã chọn
+            </button>
+        </div>
+    </div>
+</div>
+
+    <script>
+        const seriesId = @Model.Id;
+        let selectedProducts = [];
+
+        // Navigation
+        function goBack() {
+            window.location.href = '@Url.Action("Index", "SouvenirSeries")';
+        }
+
+        // Edit Series Modal Functions
+        function openEditModal() {
+            document.getElementById('editSeriesModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editSeriesModal').style.display = 'none';
+        }
+
+        function updateSeries() {
+    // Lấy giá trị từ form
+    const tenMoi = document.getElementById('editSeriesName').value.trim();
+    const moTaMoi = document.getElementById('editSeriesDescription').value.trim();
+    const trangHienTai = @ViewBag.ProductPage; // Giữ lại trang hiện tại
+    const tokenBaoMat = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!tenMoi) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Vui lòng nhập tên series',
+            confirmButtonColor: 'var(--primary-color)'
+        });
+        return;
+    }
+
+    // Lấy nút cập nhật và hiển thị trạng thái loading
+    const nutCapNhat = document.querySelector('#editSeriesModal .btn-edit');
+    const noiDungGoc = nutCapNhat.innerHTML;
+    nutCapNhat.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
+    nutCapNhat.disabled = true;
+
+    // Chuẩn bị dữ liệu gửi đi
+    const duLieu = {
+        Id: seriesId,
+        Name: tenMoi,
+        Description: moTaMoi
+    };
+
+    // Gửi yêu cầu đến server
+    fetch('@Url.Action("Edit", "SouvenirSeries")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': tokenBaoMat
+        },
+        body: JSON.stringify(duLieu)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(duLieuLoi => Promise.reject(duLieuLoi));
+        }
+        return response.json();
+    })
+    .then(duLieu => {
+        if (duLieu.success) {
+            // Đóng modal trước
+            closeEditModal();
+            
+            // Hiển thị thông báo thành công
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: duLieu.message || 'Cập nhật series thành công',
+                timer: 2000,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                willClose: () => {
+                    // Chuyển hướng lại trang edit với trang phân trang hiện tại
+                    window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + trangHienTai;
+                }
+            });
+        } else {
+            // Hiển thị thông báo lỗi chi tiết
+            let thongBaoLoi = duLieu.message || 'Cập nhật series thất bại';
+            if (duLieu.errors && duLieu.errors.length > 0) {
+                thongBaoLoi += '\n\n' + duLieu.errors.join('\n');
+            }
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: thongBaoLoi,
+                confirmButtonColor: 'var(--primary-color)'
+            });
+            
+            // Khôi phục trạng thái nút
+            nutCapNhat.innerHTML = noiDungGoc;
+            nutCapNhat.disabled = false;
+        }
+    })
+    .catch(loi => {
+        console.error('Lỗi:', loi);
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi hệ thống',
+            text: 'Đã xảy ra lỗi không mong muốn khi cập nhật series',
+            confirmButtonColor: 'var(--primary-color)'
+        });
+        
+        // Khôi phục trạng thái nút
+        nutCapNhat.innerHTML = noiDungGoc;
+        nutCapNhat.disabled = false;
+    });
+}
+
+        // Add Product Modal Functions
+        function openAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'flex';
+            loadAvailableProducts();
+        }
+
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            selectedProducts = [];
+        }
+
+function loadAvailableProducts(searchTerm = '') {
+    fetch(`@Url.Action("SearchAvailableProducts", "SouvenirSeries")?seriesId=${seriesId}&searchTerm=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(products => {
+            const container = document.getElementById('availableProductsList');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <p>${searchTerm ? 'Không tìm thấy sản phẩm phù hợp' : 'Nhập từ khóa để tìm kiếm sản phẩm'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+                productItem.innerHTML = `
+                    <div class="product-info">
+                        <img src="${product.imageUrl || product.ImageUrl || 'https://via.placeholder.com/50?text=No+Image'}" 
+                             alt="${product.name}" class="product-thumbnail">
+                        <div class="product-details">
+                            <div class="product-title">${product.name}</div>
+                            <div class="product-stock" style="font-size: 0.8rem; color: #7f8c8d;">
+                                Stock: ${product.stockQuantity || product.StockQuantity || 0}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="product-select-btn"
+                            onclick="toggleProductSelection(${product.id}, this)"
+                            data-id="${product.id}">
+                        Chọn
+                    </button>
+                `;
+                container.appendChild(productItem);
+            });
+            
+            updateSelectedCount();
+        });
+}
+
+function toggleProductSelection(productId, button) {
+    const index = selectedProducts.indexOf(productId);
+    if (index === -1) {
+        selectedProducts.push(productId);
+        button.classList.add('selected');
+        button.innerHTML = '<i class="fas fa-check"></i> Đã chọn';
+    } else {
+        selectedProducts.splice(index, 1);
+        button.classList.remove('selected');
+        button.textContent = 'Chọn';
+    }
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const countElement = document.getElementById('selectedCount');
+    countElement.textContent = `Đã chọn: ${selectedProducts.length} sản phẩm`;
+    countElement.style.color = selectedProducts.length > 0 ? 'var(--primary-color)' : '#7f8c8d';
+    countElement.style.fontWeight = selectedProducts.length > 0 ? '600' : 'normal';
+}
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value;
+            loadAvailableProducts(searchTerm);
+        }
+
+        // Trong hàm addSelectedProducts
+function addSelectedProducts() {
+    if (selectedProducts.length === 0) {
+        alert('Please select at least one product');
+        return;
+    }
+
+    const currentPage = @ViewBag.ProductPage;
+
+    fetch('@Url.Action("AddProductsToSeries", "SouvenirSeries")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            SeriesId: seriesId,
+            ProductIds: selectedProducts
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + currentPage;
+        } else {
+            alert('Error adding products');
+        }
+    });
+}
+
+// Trong hàm removeProduct
+function removeProduct(productId, productName) {
+    Swal.fire({
+        title: 'Bạn có chắc chắn?',
+        text: `Bạn đang xóa sản phẩm "${productName}" khỏi bộ sưu tập này`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'var(--primary-color)',
+        cancelButtonColor: 'var(--secondary-color)',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const currentPage = @ViewBag.ProductPage;
+            const tokenBaoMat = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            // Hiển thị loading
+            Swal.fire({
+                title: 'Đang xử lý...',
+                html: 'Vui lòng chờ trong giây lát',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('@Url.Action("RemoveProduct", "SouvenirSeries")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': tokenBaoMat
+                },
+                body: JSON.stringify({
+                    SeriesId: seriesId,
+                    ProductId: productId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => Promise.reject(data));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã xóa!',
+                        text: data.message || `Sản phẩm "${data.productName || productName}" đã được xóa khỏi bộ sưu tập`,
+                        timer: 2000,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        willClose: () => {
+                            window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + currentPage;
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: data.message || 'Không thể xóa sản phẩm. Vui lòng thử lại sau.',
+                        confirmButtonColor: 'var(--primary-color)'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: error.message || 'Đã xảy ra lỗi khi xóa sản phẩm',
+                    confirmButtonColor: 'var(--primary-color)'
+                });
+            });
+        }
+    });
+}
+    </script>
+</body>
+</html>

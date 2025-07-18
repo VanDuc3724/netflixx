@@ -1,0 +1,57 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Netflixx.Models.Quiz>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Manage Quizzes";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/fontawesome.css" rel="stylesheet" />
+<link href="~/css/templatemo-cyborg-gaming.css" rel="stylesheet" />
+<link href="~/css/homepage.css" rel="stylesheet" />
+
+<div class="container-fluid">
+<h1 class="mb-4" style="color: #000">@ViewData["Title"]</h1>
+<a asp-area="Admin" asp-controller="Quiz" asp-action="Create"
+   class="btn btn-primary mb-3">+ New Quiz</a>
+<a asp-area="Admin" asp-controller="Quiz" asp-action="GenerateAIQuiz"
+   class="btn btn-secondary mb-3">Generate AI Quiz</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Published</th>
+            <th>Questions</th>
+            <th style="width:160px">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quiz in Model)
+        {
+            <tr>
+                <td>@quiz.Title</td>
+                <td>@quiz.PublishDate.ToString("yyyy‑MM‑dd")</td>
+                <td>@quiz.Questions.Count</td>
+                <td>
+                    <a asp-area="Admin" asp-controller="Quiz" asp-action="Edit"
+                       asp-route-id="@quiz.Id" class="btn btn-sm btn-warning me-1">
+                        Edit
+                    </a>
+                    <form asp-area="Admin" asp-controller="Quiz" asp-action="Delete"
+                          asp-route-id="@quiz.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Delete this quiz?');">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

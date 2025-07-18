@@ -61,84 +61,105 @@ namespace Netflixx.Controllers
 
             var amountStr = Request.Query["vnp_Amount"].FirstOrDefault();
             var user = await _userManager.GetUserAsync(User);
+
+            // Validate PaymentId exists and is not null/empty
+            if (string.IsNullOrEmpty(response.PaymentId))
+            {
+                // Log error or handle case where PaymentId is missing
+                return View("RechargeResult", false);
+            }
+
             if (user != null)
             {
                 await using var transaction = await _context.Database.BeginTransactionAsync();
 
-                long.TryParse(amountStr, out var amount);
-                var coins = (int)(amount / 100);
-
-                // Ensure provider and environment records exist
-                var provider = await _context.PaymentProviders.FirstOrDefaultAsync(p => p.Name == "VNPAY");
-                if (provider == null)
+                try
                 {
-                    provider = new PaymentProvidersModel { Name = "VNPAY" };
-                    _context.PaymentProviders.Add(provider);
-                    await _context.SaveChangesAsync();
-                }
+                    long.TryParse(amountStr, out var amount);
+                    var coins = (int)(amount / 100);
 
-                var environment = await _context.PaymentEnvironments.FirstOrDefaultAsync(e => e.Name == "VNPAY Sandbox");
-                if (environment == null)
-                {
-                    environment = new PaymentEnvironmentsModel { Name = "VNPAY Sandbox" };
-                    _context.PaymentEnvironments.Add(environment);
-                    await _context.SaveChangesAsync();
-                }
+                    // Ensure provider and environment records exist
+                    var provider = await _context.PaymentProviders.FirstOrDefaultAsync(p => p.Name == "VNPAY");
+                    if (provider == null)
+                    {
+                        provider = new PaymentProvidersModel { Name = "VNPAY" };
+                        _context.PaymentProviders.Add(provider);
+                        await _context.SaveChangesAsync();
+                    }
 
-                if (success && amount > 0)
-                {
-                    // Prevent double credit if this transaction was already processed
+                    var environment = await _context.PaymentEnvironments.FirstOrDefaultAsync(e => e.Name == "VNPAY Sandbox");
+                    if (environment == null)
+                    {
+                        environment = new PaymentEnvironmentsModel { Name = "VNPAY Sandbox" };
+                        _context.PaymentEnvironments.Add(environment);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Check if this transaction was already processed (prevent duplicate processing)
                     var existingTransaction = await _context.PaymentTransactions
                         .FirstOrDefaultAsync(pt => pt.ExternalTransactionRef == response.PaymentId);
+
                     if (existingTransaction != null)
                     {
                         await transaction.RollbackAsync();
-                        return View("RechargeResult", true);
+                        // Return success if transaction was already processed successfully
+                        return View("RechargeResult", existingTransaction.Status == "Success");
                     }
 
-                    var account = await _context.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
-                    if (account == null)
+                    if (success && amount > 0)
                     {
-                        account = new UserAccountsModel
+                        var account = await _context.UserAccounts.FirstOrDefaultAsync(a => a.UserID == user.Id);
+                        if (account == null)
                         {
-                            UserID = user.Id,
-                            Balance = 0,
-                            PointsBalance = 0
-                        };
-                        _context.UserAccounts.Add(account);
+                            account = new UserAccountsModel
+                            {
+                                UserID = user.Id,
+                                Balance = 0,
+                                PointsBalance = 0
+                            };
+                            _context.UserAccounts.Add(account);
+                        }
+                        account.PointsBalance += coins;
                     }
-                    account.PointsBalance += coins;
-                }
 
-                var paymentTransaction = new PaymentTransactionsModel
-                {
-                    UserID = user.Id,
-                    ProviderID = provider.ProviderID,
-                    EnvironmentID = environment.EnvironmentID,
-                    TransactionDate = DateTime.UtcNow,
-                    Amount = coins,
-                    Currency = "VND",
-                    Status = success ? "Success" : "Failed",
-                    ExternalTransactionRef = response.PaymentId
-                };
-                _context.PaymentTransactions.Add(paymentTransaction);
-                await _context.SaveChangesAsync();
-
-                if (success && amount > 0)
-                {
-                    _context.PointsTransactions.Add(new PointsTransactionsModel
+                    // Create payment transaction record
+                    var paymentTransaction = new PaymentTransactionsModel
                     {
                         UserID = user.Id,
+                        ProviderID = provider.ProviderID,
+                        EnvironmentID = environment.EnvironmentID,
                         TransactionDate = DateTime.UtcNow,
-                        PointsChange = coins,
-                        Reason = "Recharge via VNPAY",
-                        RelatedTransactionID = paymentTransaction.TransactionID
-                    });
-
+                        Amount = coins,
+                        Currency = "VND",
+                        Status = success ? "Success" : "Failed",
+                        ExternalTransactionRef = response.PaymentId // This is now guaranteed to be not null/empty
+                    };
+                    _context.PaymentTransactions.Add(paymentTransaction);
                     await _context.SaveChangesAsync();
-                }
 
-                await transaction.CommitAsync();
+                    if (success && amount > 0)
+                    {
+                        _context.PointsTransactions.Add(new PointsTransactionsModel
+                        {
+                            UserID = user.Id,
+                            TransactionDate = DateTime.UtcNow,
+                            PointsChange = coins,
+                            Reason = "Recharge via VNPAY",
+                            RelatedTransactionID = paymentTransaction.TransactionID
+                        });
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    // Log the exception
+                    // You might want to add logging here
+                    return View("RechargeResult", false);
+                }
             }
 
             return View("RechargeResult", success);

@@ -12,6 +12,9 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <!-- Thêm vào phần head -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css" />
     <style>
         :root {
             --primary-color: #4a6bff;
@@ -242,6 +245,60 @@
                 padding: 0.75rem;
                 vertical-align: top;
             }
+        /* DataTables styles */
+        .dataTables_wrapper {
+            padding: 0;
+            margin-top: 1.5rem;
+        }
+
+        .dataTables_filter input {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+
+        .dataTables_length select {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin: 0 10px;
+        }
+
+        .dataTables_info {
+            padding-top: 1rem !important;
+        }
+
+        .dataTables_paginate .paginate_button {
+            padding: 0.3em 0.8em;
+            margin: 0 2px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #333 !important;
+        }
+
+            .dataTables_paginate .paginate_button:hover {
+                background: #f5f5f5;
+                border: 1px solid #ddd;
+            }
+
+            .dataTables_paginate .paginate_button.current {
+                background: var(--primary-color) !important;
+                color: white !important;
+                border: 1px solid var(--primary-color);
+            }
+
+        /* Buttons styles */
+        .dt-buttons {
+            margin-bottom: 1rem;
+        }
+
+            .dt-buttons .btn {
+                margin-right: 5px;
+                margin-bottom: 5px;
+            }
+
+        
     </style>
 </head>
 <body>
@@ -261,7 +318,7 @@
         }
         else
         {
-            <table id="productsTable">
+            <table id="productsTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th class="text-center">Hình ảnh</th>
@@ -356,6 +413,132 @@
 
             // Xử lý khi click vào nút xem chi tiết
             $('.view-details').on('click', function(e) {
+                e.preventDefault();
+                var productId = $(this).data('id');
+                loadProductDetails(productId);
+            });
+
+            // Hàm tải chi tiết sản phẩm bằng AJAX
+            function loadProductDetails(productId) {
+                $.ajax({
+                    url: '/ShopSouvenir/ProductSou/DetailsPartial/' + productId,
+                    type: 'GET',
+                    success: function(response) {
+                        $('#productDetailsContent').html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#productDetailsContent').html(
+                            '<div class="alert alert-danger">Không thể tải chi tiết sản phẩm. Vui lòng thử lại.</div>'
+                        );
+                        console.error('Error loading product details:', error);
+                    }
+                });
+            }
+
+            // Tải lại nội dung modal mỗi khi mở
+            $('#productDetailsModal').on('show.bs.modal', function() {
+                $('#productDetailsContent').html(
+                    '<div class="text-center">' +
+                    '<div class="spinner-border text-primary" role="status">' +
+                    '<span class="sr-only">Loading...</span>' +
+                    '</div>' +
+                    '</div>'
+                );
+            });
+        });
+    </script>
+    <!-- Thêm sau jQuery và trước script hiện tại -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+
+    <script>
+                $(document).ready(function() {
+            // Khởi tạo DataTable
+            var table = $('#productsTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i> Copy',
+                        className: 'btn btn-sm btn-secondary',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        className: 'btn btn-sm btn-info',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-sm btn-success',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i> PDF',
+                        className: 'btn btn-sm btn-danger',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i> Print',
+                        className: 'btn btn-sm btn-warning',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fas fa-columns"></i> Columns',
+                        className: 'btn btn-sm btn-primary'
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
+                },
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    { orderable: false, targets: [0, 7] }, // Cột hình ảnh và thao tác không sort
+                    { className: "text-center", targets: [0, 6, 7] }, // Căn giữa các cột
+                    { className: "text-right", targets: [5] } // Căn phải cột giá
+                ],
+                order: [[1, 'asc']] // Mặc định sort theo tên sản phẩm A-Z
+            });
+
+            // Kiểm tra xem các button có click được không
+            table.on('draw', function() {
+                $('.action-btns a').on('click', function(e) {
+                    console.log('Button clicked:', $(this).attr('href'));
+                });
+            });
+
+            // Xử lý khi hình ảnh bị lỗi
+            $('.product-image').on('error', function() {
+                $(this).attr('src', '@Url.Content("~/images/default-product.jpg")');
+            });
+
+            // Xử lý khi click vào nút xem chi tiết
+            $('#productsTable').on('click', '.view-details', function(e) {
                 e.preventDefault();
                 var productId = $(this).data('id');
                 loadProductDetails(productId);

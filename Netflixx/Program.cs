@@ -90,6 +90,8 @@ namespace Netflixx
                 options.User.RequireUniqueEmail = false;
             });
 
+            builder.Services.AddHostedService<DailyQuizSelector>();
+
             //avatar service
             builder.Services.AddScoped<IAvatarService, AvatarService>();
             builder.Services.AddSingleton<IChatRepository, ChatRepository>();

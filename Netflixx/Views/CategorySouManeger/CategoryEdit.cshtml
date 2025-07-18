@@ -1,0 +1,1005 @@
+﻿@model Netflixx.Models.CategorySouModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @Html.AntiForgeryToken()
+    <title>@Model.Name - Category Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --danger-color: #e74c3c;
+            --secondary-color: #95a5a6;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .detail-header {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .category-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .category-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background-color: #2980b9;
+            }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-delete:hover {
+                background-color: #c0392b;
+            }
+
+        .btn-back {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+            .btn-back:hover {
+                background-color: #7f8c8d;
+            }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            .btn-add:hover {
+                background-color: #2980b9;
+            }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
+
+        .product-name {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .empty-products {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Search and product selection styles */
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-left: 40px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 12px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+        }
+
+        .available-products {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .product-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            transition: all 0.2s;
+        }
+
+        .product-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 3px;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .product-select-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .product-select-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .product-select-btn.selected {
+            background-color: #2ecc71;
+        }
+
+        .no-products {
+            padding: 30px;
+            text-align: center;
+            color: #95a5a6;
+        }
+
+        .no-products i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+
+        .selected-count {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-align: right;
+        }
+
+        .pagination {
+            margin-top: 30px;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .page-link {
+            color: var(--primary-color);
+        }
+
+        .page-link:hover {
+            color: var(--dark-color);
+        }
+    </style>
+    <style>
+    /* Thêm các style mới từ SeriesEdit.cshtml */
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+    }
+
+    .product-body {
+        padding: 15px;
+    }
+
+    .product-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: var(--dark-color);
+    }
+
+    .product-price {
+        color: #e74c3c;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+
+    .product-description {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #95a5a6;
+        margin-bottom: 15px;
+    }
+
+    .badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .badge-category {
+        background-color: #f1c40f;
+        color: #2c3e50;
+    }
+
+    .badge-stock {
+        background-color: #2ecc71;
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+</style>
+</head>
+<body>
+    <div class="detail-header">
+        <div class="detail-container">
+            <button class="btn-action btn-back" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Categories
+            </button>
+        </div>
+    </div>
+
+    <div class="detail-container">
+        <div class="category-info">
+            <h2 class="category-title">@Model.Name</h2>
+            <p class="category-description">@Model.Description</p>
+
+            <div class="action-buttons">
+                <button class="btn-action btn-edit" onclick="openEditModal()">
+                    <i class="fas fa-edit"></i> Edit Category Info
+                </button>
+            </div>
+
+            <div class="products-header">
+                <h3 class="section-title">Products in this Category</h3>
+                <button class="btn-add" onclick="openAddProductModal()">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+            @if (Model.Products != null && Model.Products.Any())
+{
+    <div class="product-grid">
+        @foreach (var product in Model.Products)
+        {
+            <div class="product-card">
+                <!-- Product Image -->
+                <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "https://via.placeholder.com/300x200?text=No+Image" : product.ImageUrl)"
+                     alt="@product.Name" class="product-image">
+
+                <div class="product-body">
+                    <!-- Product Name -->
+                    <h5 class="product-name">@product.Name</h5>
+
+                    <!-- Product Price -->
+                    <div class="product-price">$@product.Price.ToString("N2")</div>
+
+                    <!-- Product Description -->
+                    <p class="product-description">@product.Description</p>
+
+                    <!-- Product Meta -->
+                    <div class="product-meta">
+                        <span class="badge badge-stock">Stock: @product.StockQuantity</span>
+                    </div>
+
+                    <!-- Product Actions -->
+                    <div class="product-actions">
+                        <button class="btn-action btn-delete btn-sm" onclick="removeProduct(@product.Id, '@product.Name')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- Pagination -->
+    <nav aria-label="Product pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @{
+                int currentPage = ViewBag.ProductPage;
+                int totalPages = ViewBag.TotalProductPages;
+                int prevPage = currentPage - 1;
+                int nextPage = currentPage + 1;
+                
+                // Previous button
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = prevPage })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                // Page numbers
+                for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = i })">@i</a>
+                    </li>
+                }
+
+                // Next button
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Edit", new { id = Model.Id, productPage = nextPage })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+            else
+            {
+                <div class="empty-products">
+                    <div class="empty-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h4>No Products Yet</h4>
+                    <p>Add your first product to this category</p>
+                    <button class="btn-add" onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Edit Category Modal -->
+    <div id="editCategoryModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Category</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="editCategoryName">Category Name</label>
+                    <input type="text" class="form-control" id="editCategoryName" value="@Model.Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editCategoryDescription">Description</label>
+                    <textarea class="form-control" id="editCategoryDescription" rows="4">@Model.Description</textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-action btn-back" onclick="closeEditModal()">Cancel</button>
+                <button class="btn-action btn-edit" onclick="updateCategory()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Products to Category</h3>
+                <button class="close-btn" onclick="closeAddProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="productSearch" 
+                           placeholder="Search products by name..." 
+                           oninput="searchProducts()">
+                </div>
+                
+                <div class="selected-count" id="selectedCount">Selected: 0 products</div>
+                
+                <div class="available-products" id="availableProductsList">
+                    <div class="no-products">
+                        <i class="fas fa-search"></i>
+                        <p>Enter keywords to search for products</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-action btn-back" onclick="closeAddProductModal()">Cancel</button>
+                <button class="btn-action btn-edit" onclick="addSelectedProducts()">
+                    <i class="fas fa-plus"></i> Add Selected Products
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categoryId = @Model.Id;
+        let selectedProducts = [];
+
+        // Navigation
+        function goBack() {
+            window.location.href = '@Url.Action("Index", "CategorySuo")';
+        }
+
+        // Edit Category Modal Functions
+        function openEditModal() {
+            document.getElementById('editCategoryModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editCategoryModal').style.display = 'none';
+        }
+
+        function updateCategory() {
+    // Get values from form
+    const newName = document.getElementById('editCategoryName').value.trim();
+    const newDescription = document.getElementById('editCategoryDescription').value.trim();
+    const currentPage = @ViewBag.ProductPage;
+    const securityToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    // Validate input
+    if (!newName) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please enter category name',
+            confirmButtonColor: 'var(--primary-color)'
+        });
+        return;
+    }
+
+    // Show loading state
+    const updateButton = document.querySelector('#editCategoryModal .btn-edit');
+    const originalContent = updateButton.innerHTML;
+    updateButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    updateButton.disabled = true;
+
+    // Prepare data
+    const data = {
+        Id: categoryId,
+        Name: newName,
+        Description: newDescription
+    };
+
+    // Send request to server
+    fetch('@Url.Action("Update", "CategorySuo")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': securityToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                // If the error response is JSON, use it
+                if (errorData && errorData.message) {
+                    return Promise.reject(errorData);
+                }
+                // Otherwise create a generic error
+                return Promise.reject({
+                    message: 'Server returned an error',
+                    status: response.status
+                });
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Close modal first
+            closeEditModal();
+            
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message || 'Category updated successfully',
+                timer: 2000,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                willClose: () => {
+                    // Redirect back to edit page with current pagination
+                    window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + currentPage;
+                }
+            });
+        } else {
+            // Show detailed error message
+            let errorMessage = data.message || 'Failed to update category';
+            
+            // Add validation errors if they exist
+            if (data.errors && data.errors.length > 0) {
+                errorMessage += '\n\n' + data.errors.join('\n');
+            }
+            
+            // Add specific error if it exists
+            if (data.error) {
+                errorMessage += '\n\n' + data.error;
+            }
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+                confirmButtonColor: 'var(--primary-color)'
+            });
+            
+            // Restore button state
+            updateButton.innerHTML = originalContent;
+            updateButton.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        let errorMessage = 'An unexpected error occurred while updating category';
+        if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'System Error',
+            text: errorMessage,
+            confirmButtonColor: 'var(--primary-color)'
+        });
+        
+        // Restore button state
+        updateButton.innerHTML = originalContent;
+        updateButton.disabled = false;
+    });
+}
+
+        // Add Product Modal Functions
+        function openAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'flex';
+            loadAvailableProducts();
+        }
+
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            selectedProducts = [];
+        }
+
+        function loadAvailableProducts(searchTerm = '') {
+            fetch(`@Url.Action("SearchAvailableProducts", "CategorySuo")?categoryId=${categoryId}&searchTerm=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(products => {
+                    const container = document.getElementById('availableProductsList');
+                    
+                    if (products.length === 0) {
+                        container.innerHTML = `
+                            <div class="no-products">
+                                <i class="fas fa-box-open"></i>
+                                <p>${searchTerm ? 'No matching products found' : 'Enter keywords to search for products'}</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    
+                    products.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
+                        productItem.innerHTML = `
+                            <div class="product-info">
+                                <img src="${product.imageUrl || product.ImageUrl || 'https://via.placeholder.com/50?text=No+Image'}" 
+                                     alt="${product.name}" class="product-thumbnail">
+                                <div class="product-details">
+                                    <div class="product-title">${product.name}</div>
+                                    <div class="product-stock" style="font-size: 0.8rem; color: #7f8c8d;">
+                                        Stock: ${product.stockQuantity || product.StockQuantity || 0}
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="product-select-btn"
+                                    onclick="toggleProductSelection(${product.id}, this)"
+                                    data-id="${product.id}">
+                                Select
+                            </button>
+                        `;
+                        container.appendChild(productItem);
+                    });
+                    
+                    updateSelectedCount();
+                });
+        }
+
+        function toggleProductSelection(productId, button) {
+            const index = selectedProducts.indexOf(productId);
+            if (index === -1) {
+                selectedProducts.push(productId);
+                button.classList.add('selected');
+                button.innerHTML = '<i class="fas fa-check"></i> Selected';
+            } else {
+                selectedProducts.splice(index, 1);
+                button.classList.remove('selected');
+                button.textContent = 'Select';
+            }
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const countElement = document.getElementById('selectedCount');
+            countElement.textContent = `Selected: ${selectedProducts.length} products`;
+            countElement.style.color = selectedProducts.length > 0 ? 'var(--primary-color)' : '#7f8c8d';
+            countElement.style.fontWeight = selectedProducts.length > 0 ? '600' : 'normal';
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value;
+            loadAvailableProducts(searchTerm);
+        }
+
+       function addSelectedProducts() {
+    if (selectedProducts.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Vui lòng chọn ít nhất 1 sản phẩm',
+            confirmButtonColor: 'var(--primary-color)'
+        });
+        return;
+    }
+
+    const securityToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+    const currentPage = @ViewBag.ProductPage;
+
+    // Show loading
+    Swal.fire({
+        title: 'Đang xử lý...',
+        html: 'Vui lòng chờ trong giây lát',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch('@Url.Action("AddProductsToCategory", "CategorySuo")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': securityToken
+        },
+        body: JSON.stringify({
+            CategoryId: categoryId,
+            ProductIds: selectedProducts
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(error => Promise.reject(error));
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: data.message || 'Thêm sản phẩm vào danh mục thành công',
+                timer: 2000,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                willClose: () => {
+                    window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + currentPage;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: data.message || 'Lỗi khi thêm sản phẩm',
+                confirmButtonColor: 'var(--primary-color)'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: error.message || 'Có lỗi xảy ra khi thêm sản phẩm',
+            confirmButtonColor: 'var(--primary-color)'
+        });
+    });
+}
+
+        function removeProduct(productId, productName) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are removing product "${productName}" from this category`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--primary-color)',
+                cancelButtonColor: 'var(--secondary-color)',
+                confirmButtonText: 'Remove',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const currentPage = @ViewBag.ProductPage;
+                    const securityToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    // Show loading
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: 'Please wait a moment',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('@Url.Action("RemoveProduct", "CategorySuo")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': securityToken
+                        },
+                        body: JSON.stringify({
+                            CategoryId: categoryId,
+                            ProductId: productId
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => Promise.reject(data));
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Removed!',
+                                text: data.message || `Product "${data.productName || productName}" has been removed from category`,
+                                timer: 2000,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                willClose: () => {
+                                    window.location.href = '@Url.Action("Edit", new { id = Model.Id })' + '?productPage=' + currentPage;
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Failed to remove product. Please try again later.',
+                                confirmButtonColor: 'var(--primary-color)'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message || 'An error occurred while removing product',
+                            confirmButtonColor: 'var(--primary-color)'
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

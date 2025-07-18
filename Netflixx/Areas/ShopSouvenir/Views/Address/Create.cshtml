@@ -1,0 +1,279 @@
+﻿@using Netflixx.Models.ViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model CreateAddressViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Thêm Địa chỉ - NetflixxSoul</title>
+    <!-- Bootstrap core CSS -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/css/templatemo-villa-agency.css">
+    <link rel="stylesheet" href="~/assets/css/owl.css">
+    <link rel="stylesheet" href="~/assets/css/animate.css">
+</head>
+<body>
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+
+    <div class="sub-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <ul class="info">
+                        <li><i class="fa fa-envelope"></i> info@qualuuniemphim.com</li>
+                        <li><i class="fa fa-map"></i> 123 Đường Phim, Quận 1, TP.HCM</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <ul class="social-links">
+                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="/shopSouvenir/Home" class="logo">
+                            <h1>NetflixxSoul</h1>
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="/shopSouvenir/Home">Home</a></li>
+                            <li><a href="/shopSouvenir/Product">Products</a></li>
+                            <li><a href="categories.html">Categories</a></li>
+                            <li><a href="/ShopSouvenir/Address" class="active">Address</a></li>
+                            <li><a href="#"><i class="fa fa-search"></i> Search</a></li>
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!-- ***** Page Header Start ***** -->
+    <div class="page-heading header-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <span class="breadcrumb"><a href="/shopSouvenir/Home">Home</a> / <a href="@Url.Action("Index")">Address</a> / Add new</span>
+                    <h3>New Address</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Page Header End ***** -->
+    <!-- ***** Contact Section Start ***** -->
+    <div class="contact section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="section-heading text-center">
+                        <h6>| Add new address</h6>
+                        <h2>New shipping address</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <form asp-area="ShopSouvenir" asp-controller="Address" asp-action="Create" method="post" id="address-form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="country">Country</label>
+                                    <input type="text" class="form-control" id="country" name="Country" value="Việt Nam" readonly />
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-6">
+                                <fieldset>
+                                    <label for="city">City</label>
+                                    <select class="form-control" id="city" name="City" required>
+                                        <option value="">Select city</option>
+                                    </select>
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-6">
+                                <fieldset>
+                                    <label for="state">District</label>
+                                    <select class="form-control" id="state" name="State" required>
+                                        <option value="">Select district</option>
+                                    </select>
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="addressLine">Full Address</label>
+                                    <input type="text" class="form-control" id="addressLine" name="AddressLine" placeholder="Auto-generated..." readonly />
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <label for="postalCode">Postal code</label>
+                                    <input type="text" class="form-control" id="postalCode" name="PostalCode" placeholder="Enter postal code..." />
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <button type="submit" class="orange-button">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                    <a href="@Url.Action("Index")" class="btn btn-secondary ml-2">
+                                        <i class="fa fa-arrow-left"></i> Back
+                                    </a>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger mt-4">
+                            <h5><i class="fa fa-exclamation-triangle"></i> Có lỗi xảy ra:</h5>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <p class="mb-1">• @error.ErrorMessage</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="col-lg-8">
+                <p>
+                    Bản quyền © @DateTime.Now.Year Cửa hàng Quà lưu niệm Phim. Đã đăng ký.
+                    Thiết kế: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/isotope.min.js"></script>
+    <script src="~/assets/js/owl-carousel.js"></script>
+    <script src="~/assets/js/counter.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+
+    <script>
+        const stateData = {
+            "Hà Nội": ["Hoàn Kiếm", "Ba Đình", "Cầu Giấy", "Đống Đa", "Tây Hồ", "Long Biên", "Hai Bà Trưng", "Thanh Xuân", "Hoàng Mai", "Nam Từ Liêm", "Bắc Từ Liêm", "Gia Lâm", "Sóc Sơn", "Mê Linh", "Đông Anh", "Thanh Trì"],
+            "Hồ Chí Minh": ["Quận 1", "Quận 3", "Quận 5", "Bình Thạnh", "Tân Bình", "Gò Vấp", "Phú Nhuận", "Quận 7", "Quận 8", "Quận 10", "Quận 11", "Quận 12", "Tân Phú", "Bình Tân", "Thủ Đức", "Củ Chi", "Hóc Môn", "Nhà Bè", "Cần Giờ"],
+            "Đà Nẵng": ["Hải Châu", "Thanh Khê", "Sơn Trà", "Ngũ Hành Sơn", "Cẩm Lệ", "Liên Chiểu", "Hoà Vang"],
+            "Cần Thơ": ["Ninh Kiều", "Bình Thủy", "Cái Răng", "Ô Môn", "Thốt Nốt", "Phong Điền", "Cờ Đỏ", "Vĩnh Thạnh", "Kiên Giang", "Bình Minh"],
+            "Hải Phòng": ["Hồng Bàng", "Ngô Quyền", "Lê Chân", "Kiến An", "Dương Kinh", "Thuỷ Nguyên", "An Dương", "An Lão", "Cát Hải", "Bạch Long Vĩ"],
+            "Hải Dương": ["TP. Hải Dương", "Chí Linh", "Kinh Môn", "Kim Thành", "Nam Sách", "Ninh Giang", "Thanh Miện", "Tứ Kỳ", "Cẩm Giàng", "Gia Lộc", "Bình Giang"],
+            "Bắc Ninh": ["Bắc Ninh", "Từ Sơn", "Yên Phong", "Tiên Du", "Quế Võ", "Thuận Thành", "Lương Tài", "Gia Bình", "Phù Cừ", "Trường Sơn"],
+            "Quảng Ninh": ["Hạ Long", "Cẩm Phả", "Móng Cái", "Uông Bí", "Quảng Yên", "Đầm Hà", "Tiên Yên", "Vân Đồn", "Ba Chẽ", "Hoành Bồ", "Hải Hà"],
+            "Thanh Hóa": ["Thanh Hóa", "Sầm Sơn", "Bỉm Sơn", "Hàm Rồng", "Mường Lát", "Quan Hóa", "Tĩnh Gia", "Triệu Sơn", "Như Xuân", "Vĩnh Lộc", "Yên Định", "Hoằng Hóa"],
+            "Nghệ An": ["Vinh", "Cửa Lò", "Nghi Lộc", "Thanh Chương", "Hưng Nguyên", "Quỳnh Lưu", "Diễn Châu", "Nam Đàn", "Con Cuông", "Kỳ Sơn", "Tương Dương", "Anh Sơn", "Quế Phong"],
+            "Hà Tĩnh": ["Hà Tĩnh", "Hồng Lĩnh", "Cẩm Xuyên", "Kỳ Anh", "Lộc Hà", "Nghi Xuân", "Thạch Hà", "Can Lộc", "Vũ Quang", "Hương Sơn"],
+            "Thừa Thiên Huế": ["Huế", "Hương Thủy", "Hương Trà", "Phú Vang", "Quảng Điền", "Phú Lộc", "A Lưới", "Nam Đông"],
+            "Quảng Nam": ["Tam Kỳ", "Hội An", "Điện Bàn", "Duy Xuyên", "Quế Sơn", "Thăng Bình", "Tân Bình", "Nông Sơn", "Hiệp Đức"],
+            "Bình Định": ["Quy Nhơn", "An Nhơn", "Hoài Nhơn", "Phù Cát", "Tuy Phước", "Vân Canh", "Vĩnh Thạnh", "Tây Sơn", "Đồng Xuân", "Phù Mỹ", "Bình Sơn", "Nhơn Hòa"],
+            "Phú Yên": ["Tuy Hòa", "Sông Cầu", "Đồng Xuân", "Tuy An", "Phú Hòa", "Sơn Hòa", "Tây Hòa", "Đại Lộc"],
+            "Khánh Hòa": ["Nha Trang", "Cam Ranh", "Vạn Ninh", "Ninh Hòa", "Khánh Vĩnh", "Diên Khánh", "Cam Lâm", "Khánh Sơn"],
+            "Ninh Thuận": ["Phan Rang-Tháp Chàm", "Ninh Hải", "Ninh Phước", "Thuận Bắc", "Thuận Nam", "Bác Ái"],
+            "Bình Thuận": ["Phan Thiết", "La Gi", "Bình Tân", "Hàm Tân", "Hàm Thuận Nam", "Hàm Thuận Bắc", "Tánh Linh", "Đức Linh"],
+            "Lâm Đồng": ["Đà Lạt", "Bảo Lộc", "Đơn Dương", "Lâm Hà", "Đức Trọng", "Di Linh", "Lạc Dương", "Lâm Đồng", "Cát Tiên", "Trạm Hành"],
+            "Đắk Lắk": ["Buôn Ma Thuột", "Buôn Hồ", "Ea H'leo", "Cư M'gar", "Krông Ana", "Krông Bông", "Krông Pắk", "Lắk", "M'Đrắk", "Ea Kar"],
+            "Gia Lai": ["Pleiku", "An Khê", "Chư Sê", "Chư Păh", "Ia Grai", "Kbang", "Đak Pơ", "Kông Chro", "Krông Pa"],
+            "Kon Tum": ["Kon Tum", "Gia Lai", "Đắk Tô", "Sa Thầy", "Ngọc Hồi", "Đắk Glei"],
+            "Đắk Nông": ["Gia Nghĩa", "Đắk R'lấp", "Đắk Mil", "Chư Jô", "Đắk Song"],
+            "Bình Phước": ["Đồng Xoài", "Phước Long", "Chơn Thành", "Bù Đăng", "Bù Đốp", "Hớn Quản", "Lộc Ninh", "Bình Long"],
+            "Tây Ninh": ["Tây Ninh", "Trảng Bàng", "Châu Thành", "Dương Minh Châu", "Gò Dầu", "Bến Cầu", "Hòa Thành", "Tân Biên"],
+            "Long An": ["Tân An", "Bến Lức", "Thủ Thừa", "Cần Giuộc", "Cần Đước", "Châu Thành", "Đức Hòa", "Đức Huệ", "Tân Trụ", "Mỹ Hạnh", "Vĩnh Hưng"],
+            "Vĩnh Long": ["Vĩnh Long", "Long Hồ", "Mang Thít", "Trà Ôn", "Vũng Liêm", "Tam Bình", "Bình Minh"],
+            "Trà Vinh": ["Trà Vinh", "Càng Long", "Châu Thành", "Tiểu Cần", "Duyên Hải", "Cầu Kè", "Tiểu Cần"],
+            "Sóc Trăng": ["Sóc Trăng", "Vĩnh Châu", "Kế Sách", "Châu Thành", "Long Phú", "Mỹ Xuyên", "Thạnh Trị", "Trần Đề"],
+            "Bạc Liêu": ["Bạc Liêu", "Giá Rai", "Phước Long", "Vĩnh Lợi", "Hòa Bình"],
+            "Cà Mau": ["Cà Mau", "U Minh", "Thới Bình", "Trần Văn Thời", "Năm Căn", "Đầm Dơi", "Ngọc Hiển", "Phú Tân"],
+            "An Giang": ["Long Xuyên", "Châu Đốc", "Tân Châu", "Châu Phú", "An Phú", "Chợ Mới", "Thoại Sơn", "Phú Tân"],
+            "Hậu Giang": ["Vị Thanh", "Long Mỹ", "Châu Thành", "Phụng Hiệp", "Giang Thành", "Nga Bảy"],
+            "Kiên Giang": ["Rạch Giá", "Hà Tiên", "Phú Quốc", "An Minh", "Châu Thành", "Giang Thành", "Kiên Lương", "Gò Quao", "Tân Hiệp"]
+        };
+
+        // Populate province dropdown on page load
+        const provinceSelect = document.getElementById('city');
+        Object.keys(stateData).forEach(province => {
+            const option = document.createElement('option');
+            option.value = province;
+            option.text = province;
+            provinceSelect.appendChild(option);
+        });
+
+        // Update district dropdown based on selected province
+        function updateDistricts() {
+            const province = provinceSelect.value;
+            const districtSelect = document.getElementById('state');
+            districtSelect.innerHTML = '<option value="">Select district</option>';
+
+            if (province && stateData[province]) {
+                stateData[province].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.text = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+            updateFullAddress();
+        }
+
+        // Update the full address field dynamically
+        function updateFullAddress() {
+            const city = provinceSelect.value || '';
+            const state = document.getElementById('state').value || '';
+            const country = "Việt Nam";
+            const fullAddress = [state, city, country].filter(Boolean).join(', ');
+            document.getElementById('addressLine').value = fullAddress;
+        }
+
+        // Event listeners
+        provinceSelect.addEventListener('change', updateDistricts);
+        document.getElementById('state').addEventListener('change', updateFullAddress);
+
+        // Initialize full address on page load
+        updateFullAddress();
+    </script>
+</body>
+</html>

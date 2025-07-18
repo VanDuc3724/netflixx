@@ -155,7 +155,28 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
             }
         }
 
-        
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var product = await _context.ProductSous
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Series)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Chuẩn bị dữ liệu cho dropdown
+            ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
+            ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
+            ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
+
+            return View(product);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -264,18 +285,19 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
                 .Include(p => p.Series)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-                // Load lại dữ liệu dropdown
-                ViewBag.CategoryId = new SelectList(_context.CategorySous, "Id", "Name", product.CategoryId);
-                ViewBag.BrandId = new SelectList(_context.BrandSous, "Id", "Name", product.BrandId);
-                ViewBag.SeriesId = new SelectList(_context.SeriesSous, "Id", "Name", product.SeriesId);
+            if (product == null)
+            {
+                return NotFound();
+            }
 
-            return View(product);
+            return View(product); // Không cần load lại dropdowns vì view delete chỉ hiển thị thông tin
         }
 
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ActionName("Delete")] // Thêm attribute này
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.ProductSous.FindAsync(id);
@@ -286,18 +308,17 @@ namespace Netflixx.Areas.ShopSouvenir.Controllers
 
             try
             {
-                // Removed image deletion logic
                 _context.ProductSous.Remove(product);
                 await _context.SaveChangesAsync();
 
                 TempData["success"] = "Xóa sản phẩm thành công";
-                return Redirect("https://localhost:7198/ShopSouvenir/ProductSou/Index");
+                return RedirectToAction(nameof(Index)); // Sử dụng RedirectToAction thay vì URL cứng
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error deleting product: {ex}");
                 TempData["error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
-                return Redirect("https://localhost:7198/ShopSouvenir/ProductSou/Index");
+                return RedirectToAction(nameof(Index));
             }
         }
 

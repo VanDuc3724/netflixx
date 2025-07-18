@@ -13,7 +13,7 @@ namespace Netflixx.Models
 
         public string Description { get; set; }
 
-        // Navigation property
-        public ICollection<ProductSouModel> Products { get; set; }
+        // Navigation property - khởi tạo ngay trong model
+        public ICollection<ProductSouModel> Products { get; set; } = new List<ProductSouModel>();
     }
 }

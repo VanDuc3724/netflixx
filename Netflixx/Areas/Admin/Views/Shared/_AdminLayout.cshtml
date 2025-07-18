@@ -57,6 +57,11 @@
                 <span>Giao dịch</span>
             </a>
 
+            <a href="/Admin/Quiz" class="sidebar-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Quản lý câu hỏi</span>
+            </a>
+
             <div class="sidebar-divider"></div>
 
             <div class="sidebar-heading">Báo cáo</div>
@@ -120,11 +125,11 @@
 
     </div>
 
-    <div class="admin-main">
-        <div class="admin-content">
+    <div class="admin-main" style="display: flex; flex-direction: column; min-height: 100vh;">
+        <div class="admin-content" style="flex: 1;">
             @RenderBody()
         </div>
-        <footer class="admin-footer">
+        <footer class="admin-footer" style="width: 100%; padding: 10px 0; text-align: center;">
             © 2025 Netflixx Admin. All rights reserved.
         </footer>
     </div>
