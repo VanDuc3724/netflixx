@@ -24,6 +24,7 @@ namespace Netflixx.Controllers
         {
             var packages = await _context.Packages
                 .Include(p => p.PackageFilms)
+                    .ThenInclude(pf => pf.Film)
                 .AsNoTracking()
                 .OrderBy(p => p.Name)
                 .ToListAsync();
