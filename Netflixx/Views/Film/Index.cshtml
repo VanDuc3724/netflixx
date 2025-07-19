@@ -82,17 +82,25 @@
                 <div class="card-footer bg-transparent">
                     @{
                         var purchased = false;
+                        var hasPackage = false;
                         if (currentUser != null)
                         {
                             int filmId = film.Id;
                             purchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == currentUser.Id && p.FilmID == filmId);
+                            hasPackage = await DBContext.PackageSubscriptions
+                                .Where(ps => ps.UserID == currentUser.Id && ps.StartDate <= DateTime.UtcNow && ps.EndDate >= DateTime.UtcNow)
+                                .Join(DBContext.PackageFilms.Where(pf => pf.FilmID == filmId),
+                                      ps => ps.PackageID,
+                                      pf => pf.PackageID,
+                                      (ps, pf) => ps)
+                                .AnyAsync();
                         }
                     }
-                    @if (purchased)
+                    @if (purchased || hasPackage)
                     {
                         <a asp-action="Watch" asp-route-filmId="@film.Id" class="btn btn-primary">Xem ngay</a>
                     }
-                    else if (currentUser != null)
+                    else if (currentUser != null && !(purchased || hasPackage))
                     {
                         <form asp-action="Purchase" method="post" class="d-inline purchase-form">
                             @Html.AntiForgeryToken()
