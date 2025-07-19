@@ -12,9 +12,20 @@
 @{
     var user = await _userManager.GetUserAsync(User);
     var hasPurchased = false;
+    var hasPackage = false;
     if (user != null)
     {
         hasPurchased = await DBContext.FilmPurchases.AnyAsync(p => p.UserID == user.Id && p.FilmID == Model.Film.Id);
+
+        hasPackage = await DBContext.PackageSubscriptions
+            .Where(ps => ps.UserID == user.Id
+                         && ps.StartDate <= DateTime.UtcNow
+                         && ps.EndDate >= DateTime.UtcNow)
+            .Join(DBContext.PackageFilms.Where(pf => pf.FilmID == Model.Film.Id),
+                  ps => ps.PackageID,
+                  pf => pf.PackageID,
+                  (ps, pf) => ps)
+            .AnyAsync();
     }
 }
 
@@ -187,7 +198,7 @@
             <!-- Row 1: Poster (2) + Description (6) -->
             <div class="row mb-3">
                 <div class="col-md-4">
-                    @if (hasPurchased)
+                    @if (hasPurchased || hasPackage)
                     {
                         <a asp-action="Watch"
                            asp-route-filmId="@Model.Film.Id"
@@ -204,7 +215,7 @@
                             </div>
                         </a>
                     }
-                    else if (user != null)
+                    else if (user != null && !(hasPurchased || hasPackage))
                     {
                         <div class="card poster-card position-relative overflow-hidden">
                             <img src="@Model.Film.PosterPath"
