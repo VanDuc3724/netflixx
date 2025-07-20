@@ -59,6 +59,7 @@
     .sidebar.collapsed ~ .show-sidebar-btn { display: block; }
     .card { background-color: #2c2c2c; border: 1px solid #444; margin-bottom: 20px; }
     .card-header { background-color: #ff4d6d; color: #fff; }
+    .filter-card .card-header { background-color: #ff4d6d; }
     .btn-primary { background-color: #ff4d6d; border: none; }
     .btn-success { background-color: #28a745; border: none; }
 </style>
@@ -78,6 +79,42 @@
                 </div>
             </div>
         </div>
+        <div class="card shadow filter-card">
+            <div class="card-header">
+                <strong><i class="fas fa-search"></i> Tìm kiếm & Lọc</strong>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label>Tên gói</label>
+                        <input type="text" class="form-control" id="filterName" placeholder="Tìm tên gói..." />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Số phim</label>
+                        <div class="d-flex">
+                            <input type="number" class="form-control me-1" id="minFilms" placeholder="Từ" />
+                            <input type="number" class="form-control" id="maxFilms" placeholder="Đến" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Giá (coins)</label>
+                        <div class="d-flex">
+                            <input type="number" class="form-control me-1" id="minPrice" placeholder="Từ" />
+                            <input type="number" class="form-control" id="maxPrice" placeholder="Đến" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end gap-2">
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button class="btn btn-secondary" id="clearFilterBtn">
+                            <i class="fas fa-times"></i> Xóa lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong><i class="fas fa-box"></i> Danh Sách Gói</strong>
@@ -121,10 +158,48 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#packagesTable').DataTable({
+            var table = $('#packagesTable').DataTable({
                 language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json' },
                 pageLength: 10,
                 lengthMenu: [5,10,25,50,100]
+            });
+
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                if (settings.nTable.id !== 'packagesTable') return true;
+
+                var name = $('#filterName').val().toLowerCase();
+                var minFilms = parseInt($('#minFilms').val());
+                var maxFilms = parseInt($('#maxFilms').val());
+                var minPrice = parseInt($('#minPrice').val());
+                var maxPrice = parseInt($('#maxPrice').val());
+
+                var rowName = data[0].toLowerCase();
+                var rowPrice = parseInt(data[2].replace(/[^0-9]/g, '')) || 0;
+                var rowFilms = parseInt(data[3]) || 0;
+
+                if (name && !rowName.includes(name)) return false;
+                if (!isNaN(minFilms) && rowFilms < minFilms) return false;
+                if (!isNaN(maxFilms) && rowFilms > maxFilms) return false;
+                if (!isNaN(minPrice) && rowPrice < minPrice) return false;
+                if (!isNaN(maxPrice) && rowPrice > maxPrice) return false;
+
+                return true;
+            });
+
+            function applyFilters() {
+                table.draw();
+            }
+
+            $('#searchBtn').on('click', applyFilters);
+            $('#filterName, #minFilms, #maxFilms, #minPrice, #maxPrice').on('keypress', function (e) {
+                if (e.which === 13) {
+                    applyFilters();
+                }
+            });
+
+            $('#clearFilterBtn').on('click', function () {
+                $('#filterName, #minFilms, #maxFilms, #minPrice, #maxPrice').val('');
+                applyFilters();
             });
         });
     </script>
