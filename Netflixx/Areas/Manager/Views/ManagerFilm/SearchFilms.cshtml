@@ -6,8 +6,9 @@
     bool isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
     if (isAjax)
     {
-        Layout = null;
+        Layout = "_ManagerLayout";
     }
+
 }
 
 @if (!isAjax)

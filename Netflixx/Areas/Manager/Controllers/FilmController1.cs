@@ -15,8 +15,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Netflixx.Controllers
-{
+
+[Authorize]
+[Area("Manager")]
+
+
     [Authorize]
     public class FilmController1 : Controller
     {
@@ -349,7 +352,7 @@ namespace Netflixx.Controllers
                     kvp => kvp.Key,
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                 );
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors = errors });
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors });
             }
 
             try
@@ -405,7 +408,7 @@ namespace Netflixx.Controllers
                         status = film.GetStatusText(),
                         ratingValue = film.GetRatingText(),
                         rating = film.Rating,
-                        ProductionManagerId = film.ProductionManagerId
+                        film.ProductionManagerId
                     }
                 });
             }
@@ -767,4 +770,3 @@ namespace Netflixx.Controllers
         }
         #endregion
     }
-}
