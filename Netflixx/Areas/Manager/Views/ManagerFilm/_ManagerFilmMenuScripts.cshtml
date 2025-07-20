@@ -1,0 +1,20 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggle = document.getElementById('filmListToggleSidebar');
+        var show = document.getElementById('filmListShowSidebar');
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                document.getElementById('filmListSidebar').classList.add('collapsed');
+                document.getElementById('filmListMainContent').classList.add('expanded');
+                if (show) show.style.display = 'block';
+            });
+        }
+        if (show) {
+            show.addEventListener('click', function () {
+                document.getElementById('filmListSidebar').classList.remove('collapsed');
+                document.getElementById('filmListMainContent').classList.remove('expanded');
+                show.style.display = 'none';
+            });
+        }
+    });
+</script>
