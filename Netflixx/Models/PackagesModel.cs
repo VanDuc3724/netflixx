@@ -17,11 +17,11 @@ namespace Netflixx.Models
         public int Price { get; set; }
 
         // Navigation properties
-        public ICollection<PackageChannelsModel> PackageChannels { get; set; }
-        public ICollection<PackageFilmsModel> PackageFilms { get; set; }
+        public ICollection<PackageChannelsModel>? PackageChannels { get; set; }
+        public ICollection<PackageFilmsModel> ?PackageFilms { get; set; }
 
-        public ICollection<PromotionPackagesModel> PromotionPackages { get; set; }
+        public ICollection<PromotionPackagesModel>? PromotionPackages { get; set; }
 
-        public ICollection<PackageSubscriptionsModel> Subscriptions { get; set; }
+        public ICollection<PackageSubscriptionsModel>? Subscriptions { get; set; }
     }
 }

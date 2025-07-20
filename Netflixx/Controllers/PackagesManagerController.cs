@@ -8,11 +8,13 @@ namespace Netflixx.Controllers
 {
     public class PackagesManagerController : Controller
     {
+        private readonly ILogger<PackagesManagerController> _logger;
         private readonly DBContext _context;
 
-        public PackagesManagerController(DBContext context)
+        public PackagesManagerController(DBContext context, ILogger<PackagesManagerController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
