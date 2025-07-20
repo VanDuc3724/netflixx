@@ -149,7 +149,7 @@ using System.Threading.Tasks;
                 .AsNoTracking()
                 .ToListAsync();
 
-            return View("~/Views/Film/ManagerFilm/ListFilms.cshtml", films);
+            return View("~/Areas/Manager/Views/ManagerFilm/ListFilms.cshtml", films);
         }
 
         public class FilmFilterViewModel
@@ -196,7 +196,7 @@ using System.Threading.Tasks;
                 .AsNoTracking()
                 .ToListAsync();
 
-            return View("~/Views/Film/ManagerFilm/SearchFilms.cshtml", result);
+            return View("~/Areas/Manager/Views/ManagerFilm/SearchFilms.cshtml", result);
         }
 
         // Thêm phim mới
@@ -209,7 +209,7 @@ using System.Threading.Tasks;
                 .ToList();
 
             SetupCreateEditViewBags();
-            return View("~/Views/Film/ManagerFilm/CreateFilms.cshtml", new FilmsModel());
+            return View("~/Areas/Manager/Views/ManagerFilm/CreateFilms.cshtml", new FilmsModel());
         }
 
         [HttpPost]
@@ -255,7 +255,7 @@ using System.Threading.Tasks;
                         .ToListAsync();
 
                     SetupCreateEditViewBags();
-                    return View("~/Views/Film/ManagerFilm/CreateFilms.cshtml", film);
+                    return View("~/Areas/Manager/Views/ManagerFilm/CreateFilms.cshtml", film);
                 }
 
                 // 5. Xử lý upload file poster nếu có
@@ -267,7 +267,7 @@ using System.Threading.Tasks;
                         ModelState.AddModelError("PosterPath", "Kích thước file không được vượt quá 5MB");
                         ViewBag.ProductionManagers = await _context.ProductionManagers.ToListAsync();
                         SetupCreateEditViewBags();
-                        return View("~/Views/Film/ManagerFilm/CreateFilms.cshtml", film);
+                        return View("~/Areas/Manager/Views/ManagerFilm/CreateFilms.cshtml", film);
                     }
 
                     // Kiểm tra loại file
@@ -278,7 +278,7 @@ using System.Threading.Tasks;
                         ModelState.AddModelError("PosterPath", "Chỉ chấp nhận file ảnh (JPG, JPEG, PNG, GIF)");
                         ViewBag.ProductionManagers = await _context.ProductionManagers.ToListAsync();
                         SetupCreateEditViewBags();
-                        return View("~/Views/Film/ManagerFilm/CreateFilms.cshtml", film);
+                        return View("~/Areas/Manager/Views/ManagerFilm/CreateFilms.cshtml", film);
                     }
 
                     // Lưu file
@@ -324,7 +324,7 @@ using System.Threading.Tasks;
                     .ToListAsync();
 
                 SetupCreateEditViewBags();
-                return View("~/Views/Film/ManagerFilm/CreateFilms.cshtml", film);
+                return View("~/Areas/Manager/Views/ManagerFilm/CreateFilms.cshtml", film);
             }
         }
 
@@ -451,7 +451,7 @@ using System.Threading.Tasks;
                 .AsNoTracking()
                 .ToListAsync();
 
-            return View("~/Views/Film/ManagerFilm/DeletedFilms.cshtml", deletedFilms);
+            return View("~/Areas/Manager/Views/ManagerFilm/DeletedFilms.cshtml", deletedFilms);
         }
 
         // Xóa phim (đánh dấu xóa)
@@ -555,7 +555,7 @@ using System.Threading.Tasks;
                 .ToListAsync();
 
             ViewBag.SearchParameters = new { searchKeyword, actionType, fromDate, toDate };
-            return View("~/Views/Film/ManagerFilm/EditHistory.cshtml", history);
+            return View("~/Areas/Manager/Views/ManagerFilm/EditHistory.cshtml", history);
         }
 
         // Chi tiết lịch sử
@@ -567,7 +567,7 @@ using System.Threading.Tasks;
 
             if (film == null) return NotFound();
 
-            return PartialView("~/Views/Film/ManagerFilm/_HistoryDetailPartial.cshtml", film);
+            return PartialView("~/Areas/Manager/Views/ManagerFilm/_HistoryDetailPartial.cshtml", film);
         }
 
         #region Helper Methods
