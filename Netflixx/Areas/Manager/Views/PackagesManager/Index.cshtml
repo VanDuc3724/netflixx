@@ -3,6 +3,10 @@
     ViewData["Title"] = "Packages Manager";
     Layout = "_ManagerLayout";
 }
+
+@await Html.PartialAsync("_PackagesManagerMenu")
+
+<div class="main-content" id="mainContent">
 <div class="container mt-4">
     <h2 class="mb-3">Quản lý gói phim</h2>
     <div class="text-end mb-3">
@@ -35,3 +39,6 @@
         </tbody>
     </table>
 </div>
+</div>
+
+@await Html.PartialAsync("_PackagesManagerMenuScripts")

@@ -3,6 +3,10 @@
     ViewData["Title"] = "Delete Package";
     Layout = "_ManagerLayout";
 }
+
+@await Html.PartialAsync("_PackagesManagerMenu")
+
+<div class="main-content" id="mainContent">
 <div class="container py-4">
     <h2 class="mb-3">Xóa gói phim</h2>
     <h5>Bạn có chắc muốn xóa gói này?</h5>
@@ -14,3 +18,6 @@
         <a asp-action="Index" class="btn btn-secondary">Back</a>
     </form>
 </div>
+</div>
+
+@await Html.PartialAsync("_PackagesManagerMenuScripts")
