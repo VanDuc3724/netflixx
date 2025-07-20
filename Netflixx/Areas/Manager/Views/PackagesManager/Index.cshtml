@@ -1,44 +1,132 @@
 @model IEnumerable<Netflixx.Models.PackagesModel>
 @{
-    ViewData["Title"] = "Packages Manager";
+    ViewData["Title"] = "Quản Lý Gói Phim";
     Layout = "_ManagerLayout";
 }
-
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css" />
+}
+<style>
+    body {
+        background-color: #1f1f1f;
+        color: #fff;
+        transition: margin-left 0.3s;
+        overflow-x: hidden;
+    }
+    .navbar { z-index: 1100; }
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        height: calc(100vh - 70px);
+        width: 230px;
+        background-color: #2c2c2c;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #444;
+    }
+    .sidebar.collapsed { transform: translateX(-100%); }
+    .sidebar a {
+        display: block;
+        padding: 15px 20px;
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar a:hover { background-color: #ff4d6d; }
+    .main-content {
+        margin-left: 230px;
+        padding: 100px 20px 20px;
+        transition: margin-left 0.3s ease;
+    }
+    .main-content.expanded { margin-left: 0; }
+    .toggle-btn, .show-sidebar-btn {
+        position: fixed;
+        top: 75px;
+        z-index: 1200;
+        background-color: #ff4d6d;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .toggle-btn { left: 10px; }
+    .show-sidebar-btn { left: 10px; display: none; }
+    .sidebar.collapsed ~ .show-sidebar-btn { display: block; }
+    .card { background-color: #2c2c2c; border: 1px solid #444; margin-bottom: 20px; }
+    .card-header { background-color: #ff4d6d; color: #fff; }
+    .btn-primary { background-color: #ff4d6d; border: none; }
+    .btn-success { background-color: #28a745; border: none; }
+</style>
 @await Html.PartialAsync("_PackagesManagerMenu")
-
 <div class="main-content" id="mainContent">
-<div class="container mt-4">
-    <h2 class="mb-3">Quản lý gói phim</h2>
-    <div class="text-end mb-3">
-        <a asp-action="Create" class="btn btn-primary">Tạo gói mới</a>
+    <div class="container-fluid px-4 py-3">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2 class="page-title mb-0">
+                            <i class="fas fa-boxes text-warning me-2"></i>
+                            Danh Sách Gói Phim
+                        </h2>
+                        <p class="text-muted mb-0">Quản lý các gói phim</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong><i class="fas fa-box"></i> Danh Sách Gói</strong>
+                <a asp-action="Create" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus"></i> Tạo Gói Mới
+                </a>
+            </div>
+            <div class="card-body">
+                <table id="packagesTable" class="table table-dark table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Tên gói</th>
+                            <th>Mô tả</th>
+                            <th>Giá (coins)</th>
+                            <th>Số phim</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Name</td>
+                            <td>@p.Description</td>
+                            <td>@p.Price.ToString("N0")</td>
+                            <td>@(p.PackageFilms?.Count ?? 0)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-warning btn-sm me-1"><i class="fas fa-edit"></i></a>
+                                <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Tên gói</th>
-                <th>Mô tả</th>
-                <th>Giá (coins)</th>
-                <th>Số phim</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var p in Model)
-        {
-            <tr>
-                <td>@p.Name</td>
-                <td>@p.Description</td>
-                <td>@p.Price.ToString("N0")</td>
-                <td>@(p.PackageFilms?.Count ?? 0)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-warning me-1">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
 </div>
-</div>
-
-@await Html.PartialAsync("_PackagesManagerMenuScripts")
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#packagesTable').DataTable({
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json' },
+                pageLength: 10,
+                lengthMenu: [5,10,25,50,100]
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_PackagesManagerMenuScripts")
+}
