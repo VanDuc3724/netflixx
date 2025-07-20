@@ -382,26 +382,7 @@
 <body>
     
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="filmListSidebar">
-        <div>
-            <a class="d-flex align-items-center justify-content-center gap-1 text-decoration-none py-3">
-                <strong>MENU</strong>
-            </a>
-            <a asp-action="Search"><i class="fas fa-filter me-2"></i> Tìm kiếm & Lọc</a>
-            <a asp-action="Create"><i class="fas fa-plus me-2"></i> Thêm phim mới</a>
-            <a asp-action="History" class="active"><i class="fas fa-history me-2"></i> Lịch sử chỉnh sửa</a>
-            <a asp-action="Trash"><i class="fas fa-trash-alt me-2"></i> Thùng rác</a>
-        </div>
-    </div>
-
-    <!-- Sidebar Toggle Buttons -->
-    <button id="filmListToggleSidebar" class="toggle-btn">
-        <i class="fas fa-angle-double-left"></i>
-    </button>
-    <button id="filmListShowSidebar" class="show-sidebar-btn">
-        <i class="fas fa-angle-double-right"></i>
-    </button>
+    @await Html.PartialAsync("_ManagerFilmMenu")
 
     <!-- Main Content -->
     <div class="main-content" id="filmListMainContent">
@@ -647,23 +628,6 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Xử lý sidebar
-            $('#filmListToggleSidebar').click(function () {
-                $('#filmListSidebar').addClass('collapsed');
-                $('#filmListMainContent').addClass('expanded');
-                $('#filmListShowSidebar').show();
-                $(this).hide();
-            });
-
-            $('#filmListShowSidebar').click(function () {
-                $('#filmListSidebar').removeClass('collapsed');
-                $('#filmListMainContent').removeClass('expanded');
-                $('#filmListShowSidebar').hide();
-                $('#filmListToggleSidebar').show();
-            });
-
-            // Ẩn nút show sidebar ban đầu
-            $('#filmListShowSidebar').hide();
 
             // Khởi tạo DataTable
             var table = $('#dataTable').DataTable({
@@ -688,5 +652,6 @@
             });
         });
     </script>
+    @await Html.PartialAsync("_ManagerFilmMenuScripts")
 </body>
 </html>
