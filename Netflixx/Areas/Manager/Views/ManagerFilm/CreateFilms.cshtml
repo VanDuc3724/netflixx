@@ -316,7 +316,7 @@
 </head>
 <body>
    
-    @await Html.PartialAsync("_ManagerFilmMenu")
+    @await Html.PartialAsync("~/Areas/Manager/Views/ManagerFilm/_ManagerFilmMenu.cshtml")
 
     <!-- Main Content -->
     <div class="main-content" id="filmListMainContent">
@@ -586,6 +586,6 @@
             });
         });
     </script>
-    @await Html.PartialAsync("_ManagerFilmMenuScripts")
+    @await Html.PartialAsync("~/Areas/Manager/Views/ManagerFilm/_ManagerFilmMenuScripts.cshtml")
 </body>
 </html>
