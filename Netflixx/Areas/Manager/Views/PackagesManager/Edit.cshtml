@@ -3,6 +3,10 @@
     ViewData["Title"] = "Edit Film Package";
     Layout = "_ManagerLayout";
 }
+
+@await Html.PartialAsync("_PackagesManagerMenu")
+
+<div class="main-content" id="mainContent">
 <div class="container py-4">
     <h2 class="text-center mb-4">Chỉnh sửa gói phim</h2>
     <form asp-action="Edit" method="post">
@@ -38,6 +42,7 @@
         </div>
     </form>
 </div>
+</div>
 @section Scripts {
     <link rel="stylesheet" href="~/souvenir/vendor/select2/select2.min.css" />
     <script src="~/souvenir/vendor/select2/select2.min.js"></script>
@@ -50,4 +55,5 @@
             });
         });
     </script>
+    @await Html.PartialAsync("_PackagesManagerMenuScripts")
 }
