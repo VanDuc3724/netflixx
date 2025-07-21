@@ -5,7 +5,7 @@
 
 
 @{
-    ViewData["Title"] = "Edit Blog Post";
+    ViewData["Title"] = "Chỉnh sửa Blog";
 }
 
 <div class="container netflix-bg blog-form-container">
@@ -28,7 +28,7 @@
                         <div class="form-group mb-4">
                             <label asp-for="Title" class="form-label text-white">
                                 <i class="bi bi-text-left me-1"></i>
-                                Title <span class="text-danger">*</span>
+                                Tiêu đề <span class="text-danger">*</span>
                             </label>
                             <input asp-for="Title" class="form-control" />
                             <span asp-validation-for="Title" class="text-danger"></span>
@@ -38,7 +38,7 @@
                         <div class="form-group mb-4">
                             <label asp-for="Content" class="form-label text-white">
                                 <i class="bi bi-file-text me-1"></i>
-                                Content <span class="text-danger">*</span>
+                                Nội dung <span class="text-danger">*</span>
                             </label>
                             <div id="editor" class="netflix-editor"></div>
                             <textarea asp-for="Content" id="blogContent" class="form-control d-none">@Html.Raw(Model.Content)</textarea>
@@ -49,7 +49,7 @@
                         <div class="form-group mb-4">
                             <label asp-for="FilmId" class="form-label text-white">
                                 <i class="bi bi-camera-reels me-1"></i>
-                                Related Film <span class="text-danger">*</span>
+                                Phim liên quan <span class="text-danger">*</span>
                             </label>
                             <select asp-for="FilmId" class="form-control select2-film-search" required>
                                 <option value="">-- Search for a film --</option>
@@ -62,22 +62,13 @@
                             </select>
                             <span asp-validation-for="FilmId" class="text-danger"></span>
                         </div>
-
-                        @* <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a href="@ViewBag.Referer" class="btn btn-outline-light">
-                                <i class="bi bi-arrow-left me-1"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-save me-1"></i> Save Changes
-                            </button>
-                        </div> *@
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a href="@ViewBag.Referer" class="btn btn-outline-light">
-                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                                <i class="bi bi-arrow-left me-1"></i> Hủy
                             </a>
                             <div>
                                 <button type="submit" name="action" value="draft" class="btn btn-secondary me-2">
-                                    <i class="bi bi-save me-1"></i> Save as Draft
+                                    <i class="bi bi-save me-1"></i> Lưu bản nháp 
                                 </button>
                                 <button type="submit" name="action" value="publish" class="btn btn-danger">
                                     <i class="bi bi-send me-1"></i> @(Model.Status == BlogPostStatus.Published ? "Update" : "Publish")
@@ -110,7 +101,7 @@
                 $(document).ready(function() {
             // Initialize Select2 for Film Selection
             $('.select2-film-search').select2({
-                placeholder: "Search for a film...",
+                placeholder: "Tìm kiếm phim...",
                 allowClear: true,
                 width: '100%'
             });
@@ -140,21 +131,21 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Upload failed');
+                                throw new Error('Không thành công');
                             }
                             return response.json();
                         })
                         .then(data => {
                             if (data.success === 1) {
-                                callback(data.file.url, 'image');
+                                callback(data.file.url, 'Ảnh');
                             } else {
-                                console.error('Upload failed:', data);
-                                alert('Image upload failed');
+                                console.error('Không thành công:', data);
+                                alert('Đăng ảnh không thành công');
                             }
                         })
                         .catch(error => {
-                            console.error('Image upload error:', error);
-                            alert('Error uploading image: ' + error.message);
+                            console.error('Đăng ảnh không thành công:', error);
+                            alert('Lỗi đăng ảnh: ' + error.message);
                         });
                     }
                 },

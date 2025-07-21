@@ -1,38 +1,36 @@
-﻿<!DOCTYPE html>
+﻿@model Netflixx.Areas.ShopSouvenir.Models.CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = null;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Shoping Cart</title>
+    <title>Shop - Giỏ hàng</title>
+    <!-- Include tất cả các CSS giống như trang Home -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="~/souvenir/images/icons/favicon.png" />
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/bootstrap/css/bootstrap.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/fonts/iconic/css/material-design-iconic-font.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/fonts/linearicons-v1.0.0/icon-font.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/animate/animate.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/css-hamburgers/hamburgers.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/animsition/css/animsition.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/select2/select2.min.css">
-    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/MagnificPopup/magnific-popup.css">
     <link rel="stylesheet" type="text/css" href="~/souvenir/vendor/perfect-scrollbar/perfect-scrollbar.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/souvenir/css/util.css">
     <link rel="stylesheet" type="text/css" href="~/souvenir/css/main.css">
-    <!--===============================================================================================-->
+
 </head>
 <body class="animsition">
 
     <!-- Header -->
-    <header class="header-v4">
+    <header>
         <!-- Header desktop -->
         <div class="container-menu-desktop">
             <!-- Topbar -->
@@ -62,32 +60,28 @@
                 </div>
             </div>
 
-            <div class="wrap-menu-desktop how-shadow1">
+            <div class="wrap-menu-desktop">
                 <nav class="limiter-menu-desktop container">
 
                     <!-- Logo desktop -->
                     <a href="#" class="logo">
-                        <img src="images/icons/logo-01.png" alt="IMG-LOGO">
+                        <img src="~/souvenir/images/icons/logo-01.png" alt="IMG-LOGO">
                     </a>
 
                     <!-- Menu desktop -->
                     <div class="menu-desktop">
                         <ul class="main-menu">
-                            <li>
-                                <a href="index.html">Home</a>
-                                <ul class="sub-menu">
-                                    <li><a href="index.html">Homepage 1</a></li>
-                                    <li><a href="home-02.html">Homepage 2</a></li>
-                                    <li><a href="home-03.html">Homepage 3</a></li>
-                                </ul>
+                            <li class="active-menu">
+                                <a href="ShopSouvenir">Home</a>
+
                             </li>
 
                             <li>
-                                <a href="product.html">Shop</a>
+                                <a asp-area="ShopSouvenir" asp-controller="Product" asp-action="Index">Shop</a>
                             </li>
 
                             <li class="label1" data-label1="hot">
-                                <a href="shoping-cart.html">Features</a>
+                                <a href="ShopSouvenir/Cart/Index">Features</a>
                             </li>
 
                             <li>
@@ -114,7 +108,7 @@
                             <i class="zmdi zmdi-shopping-cart"></i>
                         </div>
 
-                        <a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+                        <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
                             <i class="zmdi zmdi-favorite-outline"></i>
                         </a>
                     </div>
@@ -126,7 +120,7 @@
         <div class="wrap-header-mobile">
             <!-- Logo moblie -->
             <div class="logo-mobile">
-                <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
+                <a href="index.html"><img src="~/souvenir/images/icons/logo-01.png" alt="IMG-LOGO"></a>
             </div>
 
             <!-- Icon header -->
@@ -222,7 +216,7 @@
         <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
             <div class="container-search-header">
                 <button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-                    <img src="images/icons/icon-close2.png" alt="CLOSE">
+                    <img src="~/souvenir/images/icons/icon-close2.png" alt="CLOSE">
                 </button>
 
                 <form class="wrap-search-header flex-w p-l-15">
@@ -234,119 +228,14 @@
             </div>
         </div>
     </header>
-
-    <!-- Cart -->
-    <div class="wrap-header-cart js-panel-cart">
-        <div class="s-full js-hide-cart"></div>
-
-        <div class="header-cart flex-col-l p-l-65 p-r-25">
-            <div class="header-cart-title flex-w flex-sb-m p-b-8">
-                <span class="mtext-103 cl2">
-                    Your Cart
-                </span>
-
-                <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
-                    <i class="zmdi zmdi-close"></i>
-                </div>
-            </div>
-
-            <div class="header-cart-content flex-w js-pscroll">
-                <ul class="header-cart-wrapitem w-full">
-                    <li class="header-cart-item flex-w flex-t m-b-12">
-                        <div class="header-cart-item-img">
-                            <img src="images/item-cart-01.jpg" alt="IMG">
-                        </div>
-
-                        <div class="header-cart-item-txt p-t-8">
-                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                                White Shirt Pleat
-                            </a>
-
-                            <span class="header-cart-item-info">
-                                1 x $19.00
-                            </span>
-                        </div>
-                    </li>
-
-                    <li class="header-cart-item flex-w flex-t m-b-12">
-                        <div class="header-cart-item-img">
-                            <img src="images/item-cart-02.jpg" alt="IMG">
-                        </div>
-
-                        <div class="header-cart-item-txt p-t-8">
-                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                                Converse All Star
-                            </a>
-
-                            <span class="header-cart-item-info">
-                                1 x $39.00
-                            </span>
-                        </div>
-                    </li>
-
-                    <li class="header-cart-item flex-w flex-t m-b-12">
-                        <div class="header-cart-item-img">
-                            <img src="images/item-cart-03.jpg" alt="IMG">
-                        </div>
-
-                        <div class="header-cart-item-txt p-t-8">
-                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                                Nixon Porter Leather
-                            </a>
-
-                            <span class="header-cart-item-info">
-                                1 x $17.00
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="w-full">
-                    <div class="header-cart-total w-full p-tb-40">
-                        Total: $75.00
-                    </div>
-
-                    <div class="header-cart-buttons flex-w w-full">
-                        <a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-                            View Cart
-                        </a>
-
-                        <a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-                            Check Out
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- breadcrumb -->
-    <div class="container">
-        <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-            <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
-                Home
-                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-            </a>
-
-            <span class="stext-109 cl4">
-                Shoping Cart
-            </span>
-        </div>
-    </div>
-
-
-    <!-- Shoping Cart -->
-    @using Netflixx.Areas.ShopSouvenir.Models
-    @model CartViewModel
     <div class="bg0 p-t-75 p-b-85">
         <div class="container">
-            @if (Model.CartItems != null && Model.CartItems.Count > 0)
-            {
-                <div class="row">
-                    <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-                        <div class="m-l-25 m-r--38 m-lr-0-xl">
-                            <div class="wrap-table-shopping-cart">
+            <div class="row">
+                <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+                    <div class="m-l-25 m-r--38 m-lr-0-xl">
+                        <div class="wrap-table-shopping-cart">
+                            @if (Model.CartItems.Any())
+                            {
                                 <table class="table-shopping-cart">
                                     <tr class="table_head">
                                         <th class="column-1">Product</th>
@@ -362,59 +251,60 @@
                                         <tr class="table_row">
                                             <td class="column-1">
                                                 <div class="how-itemcart1">
-                                                    <img src="@item.ImageUrl" alt="@item.ProductName">
+                                                    <img src="@item.ImageUrl" alt="IMG">
                                                 </div>
                                             </td>
                                             <td class="column-2">@item.ProductName</td>
-                                            <td class="column-3">@item.Price.ToString("#,##0") VNĐ</td>
+                                            <td class="column-3 item-price" data-price="@item.Price">
+                                                @item.Price.ToString("N0") ₫
+                                            </td>
                                             <td class="column-4">
                                                 <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                                    <a class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                                       asp-action="Decrease" asp-controller="Cart" asp-route-productId="@item.ProductId">
+                                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" data-id="@item.ProductId">
                                                         <i class="fs-16 zmdi zmdi-minus"></i>
-                                                    </a>
-
-                                                    <input class="mtext-104 cl3 txt-center num-product" type="text"
-                                                           value="@item.Quantity" readonly>
-
-                                                    <a class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                                       asp-action="Increase" asp-controller="Cart" asp-route-productId="@item.ProductId">
+                                                    </div>
+                                                    <input class="mtext-104 cl3 txt-center num-product" type="number" value="@item.Quantity" data-id="@item.ProductId">
+                                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" data-id="@item.ProductId">
                                                         <i class="fs-16 zmdi zmdi-plus"></i>
-                                                    </a>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td class="column-5">@item.TotalPrice.ToString("#,##0") VNĐ</td>
+                                            <td class="column-5 item-total" data-price="@item.Price" data-id="@item.ProductId">
+                                                @((item.Price * item.Quantity).ToString("N0")) ₫
+                                            </td>
                                             <td class="column-6">
-                                                <a class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                                   asp-action="Remove" asp-controller="Cart" asp-route-productId="@item.ProductId">
+                                                <button class="remove-item btn btn-link" data-id="@item.ProductId">
                                                     <i class="zmdi zmdi-close"></i>
-                                                </a>
+                                                </button>
                                             </td>
                                         </tr>
                                     }
                                 </table>
-                            </div>
-
-                            <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-                                <div class="flex-w flex-m m-r-20 m-tb-5">
-                                    <input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5 coupon-value"
-                                           type="text" placeholder="Coupon Code">
-
-                                    <button class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5 btn-apply-coupon">
-                                        Apply coupon
-                                    </button>
+                            }
+                            else
+                            {
+                                <div class="text-center p-t-50 p-b-50">
+                                    <h4>Your cart is empty</h4>
+                                    <p class="p-t-20">
+                                        <a href="/ShopSouvenir/Product" class="btn btn-primary">Continue Shopping</a>
+                                    </p>
                                 </div>
-
-                                @if (!string.IsNullOrEmpty(Model.CouponCode))
-                                {
-                                    <div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-                                        Coupon applied: @Model.CouponCode
-                                    </div>
-                                }
-                            </div>
+                            }
                         </div>
-                    </div>
 
+                        @if (Model.CartItems.Any())
+                        {
+                            <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+                                <a href="/ShopSouvenir/Product" class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+                                    Continue Shopping
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (Model.CartItems.Any())
+                {
                     <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
                         <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
                             <h4 class="mtext-109 cl2 p-b-30">
@@ -427,83 +317,35 @@
                                         Subtotal:
                                     </span>
                                 </div>
-
                                 <div class="size-209">
-                                    <span class="mtext-110 cl2">
-                                        @Model.TotalPrice.ToString("#,##0") VNĐ
+                                    <span class="mtext-110 cl2" id="cart-total-price">
+                                        @Model.TotalPrice.ToString("N0") ₫
                                     </span>
                                 </div>
                             </div>
 
-                            @if (Model.Discount > 0)
-                            {
-                                <div class="flex-w flex-t bor12 p-b-13">
-                                    <div class="size-208">
-                                        <span class="stext-110 cl2">
-                                            Discount:
-                                        </span>
-                                    </div>
-
-                                    <div class="size-209">
-                                        <span class="mtext-110 cl2">
-                                            -@Model.Discount.ToString("#,##0") VNĐ
-                                        </span>
-                                    </div>
-                                </div>
-                            }
-
-                            <div class="flex-w flex-t p-t-27 p-b-33">
+                            <div class="flex-w flex-t bor12 p-b-13">
                                 <div class="size-208">
-                                    <span class="mtext-101 cl2">
+                                    <span class="stext-110 cl2">
                                         Total:
                                     </span>
                                 </div>
-
-                                <div class="size-209 p-t-1">
-                                    <span class="mtext-110 cl2">
-                                        @Model.GrandTotal.ToString("#,##0") VNĐ
+                                <div class="size-209">
+                                    <span class="mtext-110 cl2" id="cart-total-price">
+                                        @Model.TotalPrice.ToString("N0") ₫
                                     </span>
                                 </div>
                             </div>
 
-                            <a class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
-                               asp-action="Checkout" asp-controller="Checkout" onclick="return confirm('Xác nhận đặt hàng?')">
+                            <a href="/ShopSouvenir/Checkout" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
                                 Proceed to Checkout
-                            </a>
-
-                            <form method="POST" asp-action="CreatePaymentMomo" asp-controller="Payment" class="m-t-20">
-                                <input type="hidden" name="Amount" value="@Model.GrandTotal" />
-                                <input type="hidden" name="OrderInfo" value="Thanh toán cho đơn hàng tại Qyn-Figure" />
-                                <input type="hidden" name="FullName" value="QynFigure" />
-                                <input type="hidden" name="OrderId" value="@Guid.NewGuid().ToString()" />
-                                <button class="flex-c-m stext-101 cl0 size-116 bg-danger bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
-                                    Thanh toán với Momo
-                                </button>
-                            </form>
-
-                            <a class="flex-c-m stext-101 cl0 size-116 bg1 bor14 hov-btn3 p-lr-15 trans-04 pointer m-t-20"
-                               asp-controller="Home" asp-action="Index">
-                                Continue Shopping
                             </a>
                         </div>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="col-12 text-center">
-                    <h4 class="mtext-105 cl2 p-b-30">Giỏ hàng của bạn đang trống</h4>
-                    <a class="flex-c-m stext-101 cl0 size-116 bg1 bor14 hov-btn3 p-lr-15 trans-04 pointer"
-                       asp-controller="Home" asp-action="Index">
-                        Mua sắm ngay
-                    </a>
-                </div>
-            }
+                }
+            </div>
         </div>
     </div>
-
-
-
 
     <!-- Footer -->
     <footer class="bg3 p-t-75 p-b-32">
@@ -649,85 +491,125 @@
             </div>
         </div>
     </footer>
-
-
-    <!-- Back to top -->
-    <div class="btn-back-to-top" id="myBtn">
-        <span class="symbol-btn-back-to-top">
-            <i class="zmdi zmdi-chevron-up"></i>
-        </span>
-    </div>
-
-    <!--===============================================================================================-->
     <script src="~/souvenir/vendor/jquery/jquery-3.2.1.min.js"></script>
-    <!--===============================================================================================-->
     <script src="~/souvenir/vendor/animsition/js/animsition.min.js"></script>
-    <!--===============================================================================================-->
     <script src="~/souvenir/vendor/bootstrap/js/popper.js"></script>
     <script src="~/souvenir/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!--===============================================================================================-->
     <script src="~/souvenir/vendor/select2/select2.min.js"></script>
-    <script>
-        $(".js-select2").each(function(){
-            $(this).select2({
-                minimumResultsForSearch: 20,
-                dropdownParent: $(this).next('.dropDownSelect2')
-            });
-        })
-    </script>
-    <!--===============================================================================================-->
+    <script src="~/souvenir/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/souvenir/vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="~/souvenir/vendor/slick/slick.min.js"></script>
+    <script src="~/souvenir/js/slick-custom.js"></script>
+    <script src="~/souvenir/vendor/parallax100/parallax100.js"></script>
     <script src="~/souvenir/vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-    <!--===============================================================================================-->
+    <script src="~/souvenir/vendor/isotope/isotope.pkgd.min.js"></script>
+    <script src="~/souvenir/vendor/sweetalert/sweetalert.min.js"></script>
     <script src="~/souvenir/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script>
-        $('.js-pscroll').each(function(){
-            $(this).css('position','relative');
-            $(this).css('overflow','hidden');
-            var ps = new PerfectScrollbar(this, {
-                wheelSpeed: 1,
-                scrollingThreshold: 1000,
-                wheelPropagation: false,
+        $(document).ready(function() {
+            console.log("Script loaded"); // Kiểm tra script có chạy không
+
+            // Function to calculate item total
+            function calculateItemTotal(productId) {
+                var priceElement = $(`.item-total[data-id="${productId}"]`);
+                var price = parseFloat(priceElement.data('price'));
+                var quantity = parseInt($(`.num-product[data-id="${productId}"]`).val());
+                var total = price * quantity;
+                priceElement.text(total.toLocaleString('vi-VN') + ' ₫');
+                console.log("Updated item", productId, "total:", total);
+                return total;
+            }
+
+            // Function to calculate cart total
+            function calculateCartTotal() {
+                var total = 0;
+                $('.item-total').each(function() {
+                    var price = parseFloat($(this).data('price'));
+                    var quantity = parseInt($(this).closest('tr').find('.num-product').val());
+                    total += price * quantity;
+                });
+                $('#cart-total-price').text(total.toLocaleString('vi-VN') + ' ₫');
+                console.log("Cart total updated:", total);
+                return total;
+            }
+
+            // Quantity down button - ĐÃ THÊM stopImmediatePropagation() và off('click')
+            $('.btn-num-product-down').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var productId = $(this).data('id');
+                var input = $(`.num-product[data-id="${productId}"]`);
+                var currentVal = parseInt(input.val());
+
+                if (currentVal > 1) {
+                    input.val(currentVal - 1);
+                    calculateItemTotal(productId);
+                    calculateCartTotal();
+                    updateCartItem(productId, currentVal - 1);
+                }
             });
 
-            $(window).on('resize', function(){
-                ps.update();
-            })
-        });
-    </script>
-    <!--===============================================================================================-->
-    <script src="~/souvenir/js/main.js"></script>
+            // Quantity up button - ĐÃ THÊM stopImmediatePropagation() và off('click')
+            $('.btn-num-product-up').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
 
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            $(".btn-apply-coupon").click(function () {
-                var coupon_value = $(".coupon-value").val();
-                if (!coupon_value) {
-                    Swal.fire('Lỗi', 'Vui lòng nhập mã giảm giá', 'error');
-                    return;
-                }
+                var productId = $(this).data('id');
+                var input = $(`.num-product[data-id="${productId}"]`);
+                var currentVal = parseInt(input.val());
 
+                input.val(currentVal + 1);
+                calculateItemTotal(productId);
+                calculateCartTotal();
+                updateCartItem(productId, currentVal + 1);
+            });
+
+            // Remove item
+            $('.remove-item').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var productId = $(this).data('id');
+                removeFromCart(productId);
+            });
+
+            // Update cart item via AJAX
+            function updateCartItem(productId, quantity) {
+                console.log("Updating cart item", productId, "quantity:", quantity);
                 $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("GetCoupon", "Cart")",
-                    data: { coupon_value: coupon_value },
-                    success: function (result) {
-                        if (result.success) {
-                            Swal.fire('Thành công', result.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Lỗi', result.message, 'error');
+                    url: '@Url.Action("UpdateCart", "Cart", new { area = "ShopSouvenir" })',
+                    type: 'POST',
+                    data: { id: productId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            $(".icon-header-noti[data-notify]").attr("data-notify", response.cartCount);
+                            console.log("Cart updated successfully");
                         }
                     },
-                    error: function() {
-                        Swal.fire('Lỗi', 'Có lỗi xảy ra khi kết nối', 'error');
+                    error: function(xhr) {
+                        console.error("Error updating cart:", xhr.responseText);
                     }
                 });
-            });
+            }
+
+            // Remove from cart via AJAX
+            function removeFromCart(productId) {
+                $.ajax({
+                    url: '@Url.Action("RemoveFromCart", "Cart", new { area = "ShopSouvenir" })',
+                    type: 'POST',
+                    data: { id: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            $(`tr[data-id="${productId}"]`).remove();
+                            $(".icon-header-noti[data-notify]").attr("data-notify", response.cartCount);
+                            calculateCartTotal();
+                        }
+                    }
+                });
+            }
         });
     </script>
-
+    <script src="~/souvenir/js/main.js"></script>
 </body>
 </html>

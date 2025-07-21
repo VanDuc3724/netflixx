@@ -1,14 +1,13 @@
 ﻿@model Netflixx.Models.BlogPost
 <link rel="stylesheet" href="/css/site.css">
 <link rel="stylesheet" href="/css/blog.css">
-
-
+@Html.AntiForgeryToken()
 @{
     ViewData["Title"] = Model.Title;
 }
 
 <div class="blog-detail-container blog-page-container">
-    <!-- Banner Image - Using film image if available -->
+    <!-- Banner Image -->
     <div class="blog-banner" style="background-image: url('@(Model.Film?.FilmURL ?? "/images/default-blog-banner.jpg")')">
         <div class="banner-overlay">
             <div class="container">
@@ -17,11 +16,11 @@
                     <span class="text-light">@Model.CreatedDate.ToString("MMMM dd, yyyy")</span>
                     @if (Model.LastUpdated.HasValue)
                     {
-                        <span class="text-light"> | Updated: @Model.LastUpdated.Value.ToString("MMMM dd, yyyy")</span>
+                        <span class="text-light"> | Cập nhật lần cuối: @Model.LastUpdated.Value.ToString("MMMM dd, yyyy")</span>
                     }
                     @if (Model.Author != null)
                     {
-                        <span class="text-light ms-2">By @Model.Author.UserName</span>
+                        <span class="text-light ms-2">Tác giả: @Model.Author.UserName</span>
                     }
                     @if (Model.Film != null)
                     {
@@ -35,101 +34,431 @@
     <div class="container">
         @if (Model.Status == BlogPostStatus.Draft)
         {
-            <div class="alert alert-warning mb-5">
-                <strong><i class="bi bi-exclamation-triangle-fill"></i> This is a draft</strong> -
-                This post is not visible to other users. You can edit or publish it when ready in "Edit Post".
+            <div class="alert alert-warning mb-4 mt-4">
+                <strong><i class="bi bi-exclamation-triangle-fill"></i>Đây là bản nháp</strong> -
+                Bài viết này chưa được đăng và sẽ không hiển thị với người dùng khác.
             </div>
         }
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <!-- Blog Content -->
-                <article class="blog-content mb-5">
-                    <div class="blog-text-content">
-                        @Html.Raw(Model.Content)
-                    </div>
-                </article>
 
-                <!-- Action Buttons -->
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="blog-action-buttons mb-4 d-flex gap-2">
-                        <a asp-action="Index" class="btn btn-outline-light">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Blog
-                        </a>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || Model.AuthorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
-                        {
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-light">
-                                <i class="bi bi-pencil me-1"></i> Edit Post
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-light">
-                                <i class="bi bi-trash me-1"></i> Delete Post
-                            </a>
-                        }
+        <!-- Blog Content + Related Film in one row -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-lg-10">
+                <div class="row g-4 flex-lg-nowrap">
+                    <!-- Blog Content Box -->
+                    <div class="col-12 col-lg-8">
+                        <div class="blog-content-box card shadow-sm mb-0">
+                            <div class="card-body">
+                                <article class="blog-content mb-3">
+                                    <div class="blog-text-content">
+                                        @Html.Raw(Model.Content)
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <div class="blog-action-buttons mb-4">
-                        <a asp-action="Index" class="btn btn-outline-light">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Blog
-                        </a>
-                    </div>
-                }
-
-                <!-- Related Film Section -->
-                @if (Model.Film != null)
-                {
-                    <div class="related-film mt-5">
-                        <h3 class="section-title text-white mb-4">
-                            <i class="bi bi-camera-reels me-2"></i>
-                            Related Film
-                        </h3>
-                        <div class="film-card">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    @if (!string.IsNullOrEmpty(Model.Film.FilmURL))
-                                    {
-                                        <img src="@Model.Film.FilmURL" class="img-fluid rounded-start film-poster" alt="@Model.Film.Title">
-                                    }
-                                    else
-                                    {
-                                        <div class="film-placeholder d-flex align-items-center justify-content-center text-muted">
-                                            <i class="bi bi-camera-reels" style="font-size: 3rem;"></i>
-                                        </div>
-                                    }
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body text-white">
-                                        <h4 class="card-title text-danger">@Model.Film.Title</h4>
-                                        <p class="card-text text-light">@Model.Film.Description</p>
-                                        <div class="film-meta mb-3">
+                    <!-- Related Film Box -->
+                    @if (Model.Film != null)
+                    {
+                        <div class="col-12 col-lg-4">
+                            <div class="related-film card shadow-sm mb-0">
+                                <div class="card-body p-3 d-flex flex-column align-items-center">
+                                    <h5 class="section-title mb-3 w-100 text-center">
+                                        <i class="bi bi-camera-reels me-2"></i>
+                                        Phim liên quan
+                                    </h5>
+                                    <div class="film-card-related d-flex flex-column align-items-center w-100">
+                                        @if (!string.IsNullOrEmpty(Model.Film.FilmURL))
+                                        {
+                                            <img src="@Model.Film.FilmURL" class="film-poster-related mb-3" alt="@Model.Film.Title" onerror="this.src='/images/default-blog-banner.jpg';">
+                                        }
+                                        else
+                                        {
+                                            <div class="film-placeholder-related mb-3">
+                                                <i class="bi bi-camera-reels"></i>
+                                            </div>
+                                        }
+                                        <h6 class="film-title-related text-danger text-center mb-2">@Model.Film.Title</h6>
+                                        <p class="film-desc-related text-light text-center mb-2">@Model.Film.Description</p>
+                                        <div class="film-meta-related mb-2 text-center">
                                             @if (Model.Film.ReleaseDate.HasValue)
                                             {
-                                                <span class="text-muted">
+                                                <span class="text-muted small me-2">
                                                     <i class="bi bi-calendar me-1"></i>
-                                                    Released: @Model.Film.ReleaseDate.Value.ToString("MMMM dd, yyyy")
+                                                    @Model.Film.ReleaseDate.Value.ToString("MMMM dd, yyyy")
                                                 </span>
                                             }
                                             @if (Model.Film.Price.HasValue)
                                             {
-                                                <span class="badge bg-success ms-2">
+                                                <span class="badge bg-success ms-1">
                                                     <i class="bi bi-tag me-1"></i>
                                                     $@Model.Film.Price.Value.ToString("0")
                                                 </span>
                                             }
                                         </div>
                                         <a asp-controller="Film" asp-action="Detail" asp-route-id="@Model.Film.Id"
-                                           class="btn btn-danger">
+                                           class="btn btn-danger btn-watch-related mt-1">
                                             <i class="bi bi-play-fill me-1"></i>
-                                            Watch Now
+                                            Xem ngay
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    }
+                </div>
+                <!-- Action Buttons -->
+                <div class="blog-action-buttons mb-2 d-flex gap-2 flex-wrap">
+                    <a asp-action="Index" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left me-1"></i> Quay lại
+                    </a>
+                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || Model.AuthorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-light">
+                            <i class="bi bi-pencil me-1"></i> Sửa
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-light">
+                            <i class="bi bi-trash me-1"></i> Xóa
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Like/Dislike Section -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-lg-8">
+                <div class="like-section mb-4">
+                    <h4 class="text-white mb-3">Bạn thấy bài viết này hữu ích không?</h4>
+                    <div class="d-flex align-items-center gap-2">
+                        <button id="likeBtn" class="btn @(Model.CurrentUserVote == true ? "btn-success" : "btn-outline-success") btn-lg"
+                                data-blog-id="@Model.Id">
+                            <i class="bi bi-hand-thumbs-up"></i> <span id="likeCount">@Model.LikeCount</span>
+                        </button>
+                        <button id="dislikeBtn" class="btn @(Model.CurrentUserVote == false ? "btn-danger" : "btn-outline-danger") btn-lg"
+                                data-blog-id="@Model.Id">
+                            <i class="bi bi-hand-thumbs-down"></i> <span id="dislikeCount">@Model.DislikeCount</span>
+                        </button>
                     </div>
-                }
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="comments-section mt-4">
+                    <h5 class="text-white mb-3">Bình luận (@Model.Comments.Count())</h5>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-action="AddComment" method="post" class="mb-4 comment-form">
+                            <input type="hidden" name="blogPostId" value="@Model.Id" />
+                            <textarea name="content" class="form-control" rows="2" maxlength="250" placeholder="Viết bình luận..." required></textarea>
+                            <button type="submit" class="btn btn-danger btn-post mt-2">Đăng</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-dark mb-4">
+                            Vui lòng <a asp-controller="login" asp-action="login" class="text-danger">đăng nhập</a> để bình luận.
+                        </div>
+                    }
+                    <div id="commentsContainer">
+                        @await Html.PartialAsync("_CommentsPartial", Model.Comments.Where(c => c.ParentCommentId == null).OrderByDescending(c => c.CreatedDate).ToList())
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Like/Dislike functionality
+            $('#likeBtn, #dislikeBtn').click(function() {
+                const blogPostId = $(this).data('blog-id');
+                const isLike = $(this).attr('id') === 'likeBtn';
+
+                $.ajax({
+                    url: '@Url.Action("ToggleLike", "Blog")',
+                    type: 'POST',
+                    data: {
+                        blogPostId: blogPostId,
+                        isLike: isLike
+                    },
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#likeCount').text(response.likeCount);
+                            $('#dislikeCount').text(response.dislikeCount);
+
+                            // Update button styles
+                            if (isLike) {
+                                $('#likeBtn').toggleClass('btn-outline-success btn-success');
+                                $('#dislikeBtn').removeClass('btn-danger').addClass('btn-outline-danger');
+                            } else {
+                                $('#dislikeBtn').toggleClass('btn-outline-danger btn-danger');
+                                $('#likeBtn').removeClass('btn-success').addClass('btn-outline-success');
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Handle enable edit comment
+            $(document).on('submit', 'form[action*="EnableEditComment"]', function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                const commentId = form.find('input[name="commentId"]').val();
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(data) {
+                        $('#commentsContainer').html(data);
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi chỉnh sửa comment');
+                    }
+                });
+            });
+
+            // Handle update comment form submission
+            $(document).on('submit', '.edit-comment-form', function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                const commentId = form.find('input[name="commentId"]').val();
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(data) {
+                        if (typeof data === 'object' && data.success === false) {
+                            alert(data.message);
+                            return;
+                        }
+                        $('#commentsContainer').html(data);
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi cập nhật comment');
+                    }
+                });
+            });
+
+            // Cancel edit (nút Cancel trong form edit)
+            $(document).on('click', '.edit-comment-form .btn-cancel', function(e) {
+                e.preventDefault();
+                var commentId = $(this).closest('.edit-comment-form').find('input[name="commentId"]').val();
+                // Reload với anchor đến comment
+                window.location.hash = 'comment-' + commentId;
+                window.location.reload();
+            });
+
+            // Handle add comment form submission (main comment form)
+            $(document).on('submit', '.comment-form', function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            form.find('textarea[name="content"]').val('');
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi thêm comment');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi thêm comment');
+                    }
+                });
+            });
+
+            // Handle add reply form submission
+            $(document).on('submit', '.reply-form form', function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                const parentCommentId = form.find('input[name="parentCommentId"]').val();
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Sau khi reply, reload với anchor đến comment cha
+                            window.location.hash = 'comment-' + parentCommentId;
+                            window.location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi thêm reply');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi thêm reply');
+                    }
+                });
+            });
+
+            // Reply functionality
+            $(document).on('click', '.btn-reply', function(e) {
+                e.preventDefault();
+                const replyForm = $(this).closest('.comment-actions').next('.reply-form');
+                $('.reply-form').not(replyForm).hide();
+                replyForm.toggle();
+            });
+
+            // Cancel reply
+            $(document).on('click', '.cancel-reply', function(e) {
+                e.preventDefault();
+                $(this).closest('.reply-form').hide();
+            });
+
+            // Delete comment functionality
+            let commentToDelete = null;
+
+            // Handle delete comment button click
+            $(document).on('click', '.btn-delete-comment', function(e) {
+                e.preventDefault();
+                const commentId = $(this).data('comment-id');
+                const hasReplies = $(this).data('has-replies');
+
+                window.commentToDelete = commentId;
+
+                if (hasReplies) {
+                    $('#deleteWarning').show();
+                    $('#deleteModalMessage').text('Bạn có chắc muốn xóa bình luận này và các phản hồi liên quan?');
+                } else {
+                    $('#deleteWarning').hide();
+                    $('#deleteModalMessage').text('Bạn có chắc muốn xóa bình luận này?');
+                }
+
+                $('#deleteCommentModal').modal('show');
+            });
+
+            // Confirm delete handler
+            $('#confirmDeleteBtn').click(function() {
+                if (!window.commentToDelete) return;
+
+                const button = $(this);
+                const spinner = button.find('.spinner-border');
+                const modal = $('#deleteCommentModal');
+
+                button.prop('disabled', true);
+                spinner.removeClass('d-none');
+
+                $.ajax({
+                    url: '@Url.Action("DeleteComment", "Blog")',
+                    type: 'POST',
+                    data: {
+                        commentId: window.commentToDelete,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            modal.modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            // Sau khi xóa, về anchor của comment cha (nếu có), hoặc về cuối danh sách
+                            var parent = $('.comment-item[data-comment-id="' + window.commentToDelete + '"]').closest('.reply-section').prev('.comment-item');
+                            var anchorId = parent.length ? parent.attr('id') : '';
+                            if (anchorId) {
+                                window.location.hash = anchorId;
+                            } else {
+                                // Nếu không có comment cha, về cuối trang
+                                window.location.hash = 'commentsContainer';
+                            }
+                            window.location.reload();
+                        } else {
+                            alert(response.message || 'Failed to delete comment');
+                            button.prop('disabled', false);
+                            spinner.addClass('d-none');
+                            window.commentToDelete = null;
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Error occurred while deleting comment');
+                        button.prop('disabled', false);
+                        spinner.addClass('d-none');
+                        window.commentToDelete = null;
+                    }
+                });
+            });
+
+            // Modal hidden event
+            $('#deleteCommentModal').on('hidden.bs.modal', function() {
+                window.commentToDelete = null;
+                $('#confirmDeleteBtn').prop('disabled', false);
+                $('#confirmDeleteBtn .spinner-border').addClass('d-none');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            });
+
+            // Handle bulk delete (if needed for admin)
+            $('.btn-bulk-delete').click(function() {
+                const selectedComments = $('.comment-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (selectedComments.length === 0) {
+                    alert('Please select comments to delete');
+                    return;
+                }
+
+                if (confirm(`Are you sure you want to delete ${selectedComments.length} comment(s)?`)) {
+                    $.ajax({
+                        url: '@Url.Action("BulkDeleteComments", "Blog")',
+                        type: 'POST',
+                        data: {
+                            commentIds: selectedComments,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                alert('Failed to delete comments');
+                            }
+                        },
+                        error: function() {
+                            alert('Error occurred during bulk delete');
+                        }
+                    });
+                }
+            });
+
+            // Simplified error handling - chỉ log ra console
+            $(document).ajaxError(function(event, xhr, settings) {
+                if (settings.url.includes('Comment')) {
+                    console.error('AJAX Error:', xhr.responseText);
+                }
+            });
+        });
+    </script>
+}

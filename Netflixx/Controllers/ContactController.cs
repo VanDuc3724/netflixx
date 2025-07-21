@@ -1,9 +1,9 @@
-﻿// Controllers/ContactController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace Netflixx.Controllers
 {
@@ -16,29 +16,16 @@ namespace Netflixx.Controllers
             _context = context;
         }
 
-        // Hiển thị thông tin liên hệ - ai cũng xem được
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var contactInfo = _context.ContactInfos.FirstOrDefault();
-
+            var contactInfo = await _context.ContactInfos.FirstOrDefaultAsync();
             if (contactInfo == null)
             {
-                contactInfo = new ContactInfo
-                {
-                    Address = "123 Main Street, City",
-                    Phone = "+1 234 567 890",
-                    Email = "contact@netflixx.com",
-                    BusinessHours = "Monday-Friday: 9AM-5PM",
-                    MapEmbedUrl = "https://www.google.com/maps/embed?pb=..."
-                };
-                _context.ContactInfos.Add(contactInfo);
-                _context.SaveChanges();
+                contactInfo = new ContactInfo();
             }
-
             return View(contactInfo);
         }
 
-        // Trang chỉnh sửa - chỉ Admin/Manager
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult Edit()
         {
@@ -50,31 +37,28 @@ namespace Netflixx.Controllers
             return View(contactInfo);
         }
 
-        // Xử lý form chỉnh sửa - chỉ Admin/Manager
         [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ContactInfo model)
+        public async Task<IActionResult> Edit(ContactInfo model)
         {
             if (ModelState.IsValid)
             {
-                var existingContact = _context.ContactInfos.FirstOrDefault();
-
-                if (existingContact == null)
+                try
                 {
-                    _context.ContactInfos.Add(model);
-                }
-                else
-                {
-                    existingContact.Address = model.Address;
-                    existingContact.Phone = model.Phone;
-                    existingContact.Email = model.Email;
-                    existingContact.BusinessHours = model.BusinessHours;
-                    existingContact.MapEmbedUrl = model.MapEmbedUrl;
-                }
+                    var allContacts = await _context.ContactInfos.ToListAsync();
+                    _context.ContactInfos.RemoveRange(allContacts);
 
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                    await _context.ContactInfos.AddAsync(model);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi lưu dữ liệu: " + ex.Message);
+                }
             }
             return View(model);
         }

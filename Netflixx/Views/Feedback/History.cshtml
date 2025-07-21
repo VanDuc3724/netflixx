@@ -1,0 +1,115 @@
+﻿@model IEnumerable<Netflixx.Models.Feedback>
+<link rel="stylesheet" href="/css/feedback.css">
+
+@{
+    ViewData["Title"] = "Lịch sử phản hồi";
+    bool isAdmin = ViewBag.IsAdmin ?? false;
+}
+
+<div class="container mt-4">
+    <div class="contact-banner">
+        <div class="container">
+            <h1 class="banner-title">@ViewData["Title"]</h1>
+            <p class="banner-subtitle">Xem các phản hồi bạn đã gửi tại đây</p>
+        </div>
+    </div>
+    <div class="feedback-history">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">
+                Bạn chưa có phản hồi nào
+            </div>
+        }
+        else
+        {
+            <div class="pagination-container">
+                <ul class="pagination">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("History", new { page = ViewBag.CurrentPage - 1 })">Trước</a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("History", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("History", new { page = ViewBag.CurrentPage + 1 })">Sau</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            foreach (var feedback in Model)
+            {
+                <div class="feedback-pair mb-4">
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <h4 class="feedback-title">@feedback.Title</h4>
+                            <span class="feedback-meta">@feedback.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="feedback-content">
+                            @feedback.Content
+                        </div>
+                        <div class="feedback-author">
+                            Gửi bởi: @feedback.FullName (@feedback.Email)
+                        </div>
+                    </div>
+
+                    <div class="response-item">
+                        @if (string.IsNullOrEmpty(feedback.Response))
+                        {
+                            <div class="response-header">
+                                <h4 class="response-title">Phản hồi</h4>
+                            </div>
+                            if (isAdmin)
+                            {
+                                <form asp-action="UpdateResponse" method="post" class="response-form">
+                                    <input type="hidden" name="id" value="@feedback.Id" />
+                                    <textarea name="response" class="form-control response-textarea" rows="3" placeholder="Phản hồi từ quản trị viên"></textarea>
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Gửi phản hồi</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="feedback-content text-muted">
+                                    Vui lòng chờ phản hồi từ quản trị viên.
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="response-header">
+                                <h4 class="response-title">Phản hồi</h4>
+                                <span class="response-meta">@feedback.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            if (isAdmin)
+                            {
+                                <form asp-action="UpdateResponse" method="post" class="response-form">
+                                    <input type="hidden" name="id" value="@feedback.Id" />
+                                    <textarea name="response" class="form-control response-textarea" rows="3">@feedback.Response</textarea>
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Cập nhật</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="feedback-content">
+                                    @feedback.Response
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+        <a asp-action="Index" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại trang phản hồi
+        </a>
+    </div>
+</div>

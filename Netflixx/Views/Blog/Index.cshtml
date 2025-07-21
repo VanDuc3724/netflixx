@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 @using Netflixx.Models
 @{
-    ViewData["Title"] = "Blog Posts";
+    ViewData["Title"] = "Blog";
     int currentPage = ViewBag.CurrentPage ?? 1;
 }
 
@@ -17,50 +17,55 @@
                 <input type="hidden" name="showDrafts" value="@ViewBag.ShowDrafts" />
                 
                 <div class="col-md-4">
-                    <label class="form-label text-light">Search</label>
+                    <label class="form-label text-light">Tìm kiếm</label>
                     <input type="text" name="searchTerm" class="form-control" 
                            placeholder="Search for movie name or post title..." 
                            value="@ViewBag.SearchTerm">
                 </div>
                 
                 <div class="col-md-2">
-                    <label class="form-label text-light">Time</label>
+                    <label class="form-label text-light">Thời gian</label>
                     <select name="dateFilter" class="form-select">
-                        <option value="all" selected="@(ViewBag.DateFilter == "all")">All</option>
-                        <option value="today" selected="@(ViewBag.DateFilter == "today")">Today</option>
-                        <option value="week" selected="@(ViewBag.DateFilter == "week")">This Week</option>
-                        <option value="month" selected="@(ViewBag.DateFilter == "month")">This Month</option>
-                        <option value="year" selected="@(ViewBag.DateFilter == "year")">This Year</option>
+                        <option value="all" selected="@(ViewBag.DateFilter == "all")">Tất cả</option>
+                        <option value="today" selected="@(ViewBag.DateFilter == "today")">Hôm nay</option>
+                        <option value="week" selected="@(ViewBag.DateFilter == "week")">Tuần này</option>
+                        <option value="month" selected="@(ViewBag.DateFilter == "month")">Tháng này</option>
+                        <option value="year" selected="@(ViewBag.DateFilter == "year")">Năm nay</option>
                     </select>
                 </div>
                 
                 <div class="col-md-2">
-                    <label class="form-label text-light">Sort by</label>
+                    <label class="form-label text-light">Sắp xếp</label>
                     <select name="sortBy" class="form-select">
-                        <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc")">Newest</option>
-                        <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc")">Oldest</option>
-                        <option value="title_asc" selected="@(ViewBag.SortBy == "title_asc")">From A to Z</option>
-                        <option value="title_desc" selected="@(ViewBag.SortBy == "title_desc")">From Z to A</option>
+                        <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc")">Mới nhất</option>
+                        <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc")">Cũ nhất</option>
+                        <option value="title_asc" selected="@(ViewBag.SortBy == "title_asc")">A → Z</option>
+                        <option value="title_desc" selected="@(ViewBag.SortBy == "title_desc")">Z → A</option>
+                        <option value="like_desc" selected="@(ViewBag.SortBy == "like_desc")">Nhiều Like nhất</option>
+                        <option value="dislike_desc" selected="@(ViewBag.SortBy == "dislike_desc")">Nhiều Dislike nhất</option>
                     </select>
                 </div>
                 
-                <div class="col-md-6 d-flex gap-2 align-items-end">
+                <div class="col-md-9 d-flex gap-2 align-items-end">
+                    <a href="@Url.Action("Index")" class="btn btn-info">
+                        <i class="bi bi-list-ul"></i> Tất cả
+                    </a>
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-funnel"></i> Apply
+                        <i class="bi bi-funnel"></i> Áp dụng
                     </button>
                     <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        <i class="bi bi-arrow-counterclockwise"></i> Đặt lại
                     </a>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a asp-action="Create" class="btn btn-success">
-                            <i class="bi bi-plus-lg"></i> Add Post
+                            <i class="bi bi-plus-circle"></i> Tạo bài viết
                         </a>
                         <a href="@Url.Action("Index", new { myPosts = true, page = 1 })" class="btn btn-primary">
-                            <i class="bi bi-collection"></i> My Post
+                            <i class="bi bi-collection"></i> Bài viết của tôi
                         </a>
                         <a href="@Url.Action("Index", new { showDrafts = true, page = 1 })" class="btn btn-warning">
-                            <i class="bi bi-file-earmark"></i> My Draft
+                            <i class="bi bi-file-earmark"></i> Bản nháp
                         </a>
                     }
                 </div>
@@ -70,9 +75,9 @@
         @if (ViewBag.TotalPosts > 0)
         {
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-light mb-0">@ViewBag.TotalPosts Posts</h5>
+                <h5 class="text-light mb-0">@ViewBag.TotalPosts Bài viết</h5>
                 <div class="text-muted">
-                    Page @currentPage/@ViewBag.TotalPages
+                    Trang @currentPage/@ViewBag.TotalPages
                 </div>
             </div>
         }
@@ -95,7 +100,7 @@
                                     <!-- Hiển thị badge Draft -->
                                     @if (item.Status == BlogPostStatus.Draft)
                                     {
-                                        <span class="badge bg-warning">Draft</span>
+                                        <span class="badge bg-warning">Bản nháp</span>
                                     }
                                     <span><i class="bi bi-calendar3"></i> @item.CreatedDate.ToString("dd/MM/yyyy")</span>
                                     @if (item.Author != null)
@@ -105,7 +110,7 @@
                                 </div>
                                 <div class="blog-post-actions">
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-card-action btn-view">
-                                        <strong>Detail</strong>
+                                        <strong>Xem</strong>
                                     </a>
                                     @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || item.AuthorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
                                     {
@@ -141,7 +146,32 @@
                                                 </button>
                                             </form>
                                         }
-                                    }
+                                    } else
+                                        {
+                                            <!-- Hiển thị nút like/dislike cho người không phải tác giả/admin/manager -->
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <button class="btn-like btn btn-sm @(item.CurrentUserVote == true ? "btn-success" : "btn-outline-success")"
+                                                        data-blog-id="@item.Id" title="Like">
+                                                    <i class="bi bi-hand-thumbs-up"></i> <span class="like-count">@item.LikeCount</span>
+                                                </button>
+                                                <button class="btn-dislike btn btn-sm @(item.CurrentUserVote == false ? "btn-danger" : "btn-outline-danger")"
+                                                        data-blog-id="@item.Id" title="Dislike">
+                                                    <i class="bi bi-hand-thumbs-down"></i> <span class="dislike-count">@item.DislikeCount</span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn-like btn btn-sm @(item.CurrentUserVote == true ? "btn-success" : "btn-outline-success")"
+                                                        disabled title="Please login to like/dislike">
+                                                    <i class="bi bi-hand-thumbs-up"></i> <span class="like-count">@item.LikeCount</span>
+                                                </button>
+                                                <button class="btn-dislike btn btn-sm @(item.CurrentUserVote == false ? "btn-danger" : "btn-outline-danger")"
+                                                        disabled title="Please login to like/dislike">
+                                                    <i class="bi bi-hand-thumbs-down"></i> <span class="dislike-count">@item.DislikeCount</span>
+                                                </button>
+                                            }
+                                        }
                                 </div>
                             </div>
                         </div>
@@ -177,7 +207,7 @@
                     }
 
                     <div class="pagination-info">
-                        Page @currentPage / @ViewBag.TotalPages
+                        Trang @currentPage / @ViewBag.TotalPages
                     </div>
 
                     @if (ViewBag.HasNextPage)
@@ -210,10 +240,10 @@
                         <input type="hidden" name="myPosts" value="@ViewBag.MyPosts" />
                         <input type="hidden" name="showDrafts" value="@ViewBag.ShowDrafts" />
                         
-                        <span>Go to:</span>
+                        <span>Đến trang:</span>
                         <input type="number" name="page" class="page-jump-input" 
                                min="1" max="@ViewBag.TotalPages" value="@currentPage" />
-                        <button type="submit" class="page-jump-button">Go</button>
+                        <button type="submit" class="page-jump-button">Đi</button>
                     </form>
                 </div>
             }
@@ -222,41 +252,41 @@
         {
             <div class="text-center py-5">
                 <div class="alert alert-dark" role="alert">
-                    <h4 class="alert-heading">Post not found</h4>
+                    <h4 class="alert-heading">Không tìm thấy bài viết</h4>
                     <p>
                         @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
                         {
-                            <span>There are no posts related to "<strong>@ViewBag.SearchTerm</strong>"</span>
+                            <span>Không có bài viết nào liên quan đến "<strong>@ViewBag.SearchTerm</strong>"</span>
                         }
                         else if (ViewBag.MyPosts)
                         {
-                            <span>You have not posted anything</span>
+                            <span>Bạn chưa có bài viết nào</span>
                         }
                         else if (ViewBag.ShowDrafts)
                         {
-                            <span>You have no drafts</span>
+                            <span>Bạn chưa có bản nháp nào</span>
                         }
                         else
                         {
-                            <span>There are no posts</span>
+                            <span>Chưa có bài viết nào</span>
                         }
                     </p>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <hr>
                         <a asp-action="Create" class="btn btn-success mt-2">
-                            <i class="bi bi-plus-circle"></i> Create your own post
+                            <i class="bi bi-plus-circle"></i> Tạo bài viết mới
                         </a>
                         @if (ViewBag.MyPosts)
                         {
                             <a href="@Url.Action("Index")" class="btn btn-primary mt-2">
-                                <i class="bi bi-arrow-left"></i> All posts
+                                <i class="bi bi-arrow-left"></i> Tất cả bài viết
                             </a>
                         }
                         @if (ViewBag.ShowDrafts)
                         {
                             <a href="@Url.Action("Index")" class="btn btn-primary mt-2">
-                                <i class="bi bi-arrow-left"></i> All posts
+                                <i class="bi bi-arrow-left"></i> Tất cả bài viết
                             </a>
                         }
                     }
@@ -264,6 +294,8 @@
             </div>
         }
     </div>
+</div>
+@section Scripts {
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Xử lý sự kiện khi người dùng nhập số trang không hợp lệ
@@ -299,5 +331,106 @@
             });
         }
     });
+
+    $(document).ready(function() {
+        // Like/Dislike functionality - optimized for instant update
+        $(document).on('click', '.btn-like, .btn-dislike', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const button = $(this);
+            if (button.hasClass('disabled')) return;
+            
+            const blogPostId = button.data('blog-id');
+            const isLikeButton = button.hasClass('btn-like');
+            const card = button.closest('.netflix-card');
+            
+            // Get current counts
+            let likeCount = parseInt(card.find('.like-count').text()) || 0;
+            let dislikeCount = parseInt(card.find('.dislike-count').text()) || 0;
+            
+            // Optimistic UI update - update immediately while waiting for server response
+            if (isLikeButton) {
+                if (button.hasClass('btn-outline-success')) {
+                    // Adding like
+                    likeCount++;
+                    if (card.find('.btn-dislike').hasClass('btn-danger')) {
+                        // If previously disliked, remove that dislike
+                        dislikeCount--;
+                        card.find('.btn-dislike').removeClass('btn-danger').addClass('btn-outline-danger');
+                    }
+                    button.removeClass('btn-outline-success').addClass('btn-success');
+                } else {
+                    // Removing like
+                    likeCount--;
+                    button.removeClass('btn-success').addClass('btn-outline-success');
+                }
+            } else {
+                if (button.hasClass('btn-outline-danger')) {
+                    // Adding dislike
+                    dislikeCount++;
+                    if (card.find('.btn-like').hasClass('btn-success')) {
+                        // If previously liked, remove that like
+                        likeCount--;
+                        card.find('.btn-like').removeClass('btn-success').addClass('btn-outline-success');
+                    }
+                    button.removeClass('btn-outline-danger').addClass('btn-danger');
+                } else {
+                    // Removing dislike
+                    dislikeCount--;
+                    button.removeClass('btn-danger').addClass('btn-outline-danger');
+                }
+            }
+            
+            // Update counts immediately
+            card.find('.like-count').text(likeCount);
+            card.find('.dislike-count').text(dislikeCount);
+            
+            // Disable button during request
+            button.addClass('disabled');
+            const originalHtml = button.html();
+            button.html('<i class="bi bi-arrow-repeat spinner"></i>');
+            
+            // Send request to server
+            $.ajax({
+                url: '@Url.Action("ToggleLike", "Blog")',
+                type: 'POST',
+                data: {
+                    blogPostId: blogPostId,
+                    isLike: isLikeButton
+                },
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (!response.success) {
+                        // Revert changes if server failed
+                        card.find('.like-count').text(response.likeCount);
+                        card.find('.dislike-count').text(response.dislikeCount);
+                        
+                        // Reset button states based on server response
+                        const likeButton = card.find('.btn-like');
+                        const dislikeButton = card.find('.btn-dislike');
+                        
+                        likeButton.removeClass('btn-success btn-outline-success')
+                                 .addClass(response.currentUserVote === true ? 'btn-success' : 'btn-outline-success');
+                                 
+                        dislikeButton.removeClass('btn-danger btn-outline-danger')
+                                   .addClass(response.currentUserVote === false ? 'btn-danger' : 'btn-outline-danger');
+                    }
+                },
+                error: function() {
+                    // Revert to original counts on error
+                    card.find('.like-count').text(likeCount + (isLikeButton ? -1 : 0));
+                    card.find('.dislike-count').text(dislikeCount + (isLikeButton ? 0 : -1));
+                    alert('Failed to update vote. Please try again.');
+                },
+                complete: function() {
+                    button.html(originalHtml);
+                    button.removeClass('disabled');
+                }
+            });
+        });
+    });
     </script>
-</div>
+}

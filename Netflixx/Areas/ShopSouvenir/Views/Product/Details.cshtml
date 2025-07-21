@@ -649,7 +649,8 @@
                                                 <i class="fs-16 zmdi zmdi-plus"></i>
                                             </div>
                                         </div>
-                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                        <button type="button" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
+                                                data-id="@Model.Product.Id">
                                             Add to cart
                                         </button>
                                     </div>
@@ -734,6 +735,19 @@
                 $('#addToCartForm').submit();
             });
 
+                $.post("/ShopSouvenir/Cart/AddToCart", { id: productId, quantity: quantity })
+        .done(function(response) {
+            if (response.success) {
+                // Cập nhật số lượng giỏ hàng trên UI nếu cần
+                updateCartCount(response.cartCount);
+
+                // Sau 1 giây thì chuyển hướng
+                setTimeout(function() {
+                    window.location.href = "/ShopSouvenir";
+                }, 1000);
+            }
+        });
+
             // Wishlist
             $('.js-addwish-b2, .js-addwish-detail').on('click', function(e){
                 e.preventDefault();
@@ -769,6 +783,56 @@
                 wheelPropagation: false,
             });
             $(window).on('resize', function(){ ps.update(); });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Quantity controls
+            $('.btn-num-product-down').on('click', function(e) {
+                e.preventDefault();
+                var numProduct = Number($('.num-product').val());
+                if (numProduct > 1) $('.num-product').val(numProduct - 1);
+            });
+
+            $('.btn-num-product-up').on('click', function(e) {
+                e.preventDefault();
+                var numProduct = Number($('.num-product').val());
+                $('.num-product').val(numProduct + 1);
+            });
+
+            // Add to cart with AJAX
+            $('.js-addcart-detail').on('click', function(e) {
+                e.preventDefault();
+                var productId = $(this).data('id');
+                var quantity = $('.num-product').val();
+
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart", new { area = "ShopSouvenir" })',
+                    type: 'POST',
+                    data: { id: productId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            // Update cart count in header
+                            $(".icon-header-noti[data-notify]").attr("data-notify", response.cartCount);
+
+                            // Show success message
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'An error occurred while adding to cart', 'error');
+                    }
+                });
+            });
         });
     </script>
     <script src="~/souvenir/js/main.js"></script>

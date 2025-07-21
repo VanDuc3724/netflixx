@@ -3,15 +3,15 @@
 @inject UserManager<AppUserModel> UserManager
 
 @{
-    ViewData["Title"] = "Contact Us";
+    ViewData["Title"] = "Liên hệ với chúng tôi";
 }
 
 <div class="contact-container">
     <div class="contact-banner">
         <div class="banner-overlay">
             <div class="container">
-                <h1 class="banner-title">Contact Netflixx</h1>
-                <p class="banner-subtitle">We're here to help you with any questions or concerns</p>
+                <h1 class="banner-title">Liên hệ Netflixx</h1>
+                <p class="banner-subtitle">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
             </div>
         </div>
     </div>
@@ -28,25 +28,25 @@
         {
             <div class="text-end mb-4">
                 <a asp-action="Edit" class="btn btn-danger">
-                    <i class="bi bi-pencil"></i> Edit Contact Info
+                    <i class="bi bi-pencil"></i> Chỉnh sửa thông tin
                 </a>
             </div>
         }
 
         <div class="row">
             <div class="col-lg-6 contact-details">
-                <h2 class="contact-section-title">Get In Touch</h2>
+                <h2 class="contact-section-title">Thông tin liên hệ</h2>
                 <div class="contact-info-item">
                     <i class="bi bi-geo-alt-fill"></i>
                     <div>
-                        <h3>Address</h3>
+                        <h3>Địa chỉ</h3>
                         <p>@Model.Address</p>
                     </div>
                 </div>
                 <div class="contact-info-item">
                     <i class="bi bi-telephone-fill"></i>
                     <div>
-                        <h3>Phone</h3>
+                        <h3>Điện thoại</h3>
                         <p>@Model.Phone</p>
                     </div>
                 </div>
@@ -60,13 +60,13 @@
                 <div class="contact-info-item">
                     <i class="bi bi-clock-fill"></i>
                     <div>
-                        <h3>Business Hours</h3>
+                        <h3>Giờ làm việc</h3>
                         <p>@Model.BusinessHours</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 contact-map">
-                <h2 class="contact-section-title">Our Location</h2>
+                <h2 class="contact-section-title">Vị trí của chúng tôi</h2>
                 <div class="map-container">
                     <iframe src="@Model.MapEmbedUrl"
                             width="100%"
@@ -79,4 +79,3 @@
         </div>
     </div>
 </div>
-

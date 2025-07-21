@@ -12,6 +12,9 @@ namespace Netflixx.Repositories
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
         }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<BlogComment> BlogComments { get; set; }
+        public virtual DbSet<BlogLike> BlogLikes { get; set; }
         public virtual DbSet<ContactInfo> ContactInfos { get; set; }
         public virtual DbSet<BrandSouModel> BrandSous { get; set; }
         public virtual DbSet<CategorySouModel> CategorySous { get; set; }
@@ -57,9 +60,31 @@ namespace Netflixx.Repositories
         public virtual DbSet<DailyQuiz> DailyQuiz { get; set; }
 
         public DbSet<UserAddress> UserAddresses { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BlogComment>(entity =>
+            {
+                entity.HasOne(c => c.BlogPost)
+                      .WithMany(p => p.Comments)
+                      .HasForeignKey(c => c.BlogPostId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
+                entity.HasOne(c => c.ParentComment)
+                      .WithMany(c => c.Replies)
+                      .HasForeignKey(c => c.ParentCommentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<BlogLike>(entity =>
+            {
+                entity.HasIndex(l => new { l.UserId, l.BlogPostId }).IsUnique();
+
+                entity.HasOne(l => l.BlogPost)
+                      .WithMany(p => p.Likes)
+                      .HasForeignKey(l => l.BlogPostId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
             modelBuilder.Entity<ProductionManager>()
                      .ToTable("ProductionManagers");
             modelBuilder.Entity<ProductionManager>()

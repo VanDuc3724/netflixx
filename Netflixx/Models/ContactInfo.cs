@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netflixx.Models
 {
@@ -7,22 +8,22 @@ namespace Netflixx.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Address is required")]
+        [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "Phone number is required")]
-        [Phone(ErrorMessage = "Invalid phone number")]
+        [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
         public string Phone { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Business hours are required")]
+        [Required(ErrorMessage = "Giờ làm việc là bắt buộc")]
         public string BusinessHours { get; set; }
 
-        [Required(ErrorMessage = "Map URL is required")]
-        [Url(ErrorMessage = "Invalid URL")]
+        [Required(ErrorMessage = "Đường dẫn bản đồ là bắt buộc")]
+        [Url(ErrorMessage = "Đường dẫn không hợp lệ")]
         public string MapEmbedUrl { get; set; }
     }
 }

@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Netflixx.Models.BlogComment>
+@using System.Security.Claims
+@{
+    int level = ViewBag.CommentLevel != null ? (int)ViewBag.CommentLevel : 1;
+}
+
+@foreach (var comment in Model)
+{
+    var isRoot = comment.ParentCommentId == null;
+    <div id="comment-@comment.Id" class="comment-item @(isRoot ? "root-comment" : "reply-comment")" data-comment-id="@comment.Id">
+        <div class="d-flex align-items-start">
+            <img src="@(comment.Author?.AvatarUrl ?? "/image/logo/avatar_default.jpg")"
+                 class="comment-avatar"
+                 alt="@(comment.Author?.UserName ?? "Người dùng đã xóa")" />
+            <div class="comment-content">
+                <div class="comment-author">
+                    <span class="comment-username">@((comment.Author?.UserName ?? "Người dùng đã xóa"))</span>
+                    <span class="comment-time">@comment.CreatedDate.ToString("HH:mm")</span>
+                </div>
+                <div class="comment-text @(comment.Content == "[Bình luận này đã bị xóa]" ? "text-muted fst-italic" : "")">
+                    @comment.Content
+                </div>
+                <div class="comment-actions">
+                    @if (User.Identity.IsAuthenticated && comment.Content != "[Bình luận này đã bị xóa]")
+                    {
+                        if (level < 3)
+                        {
+                            <button class="btn-comment-action btn-reply">Trả lời</button>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || comment.AuthorId == User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                        {
+                            <form asp-action="EnableEditComment" method="post" class="d-inline">
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-comment-action btn-edits">Sửa</button>
+                            </form>
+                            <button type="button" class="btn-comment-action btn-delete-comment btn-deletes"
+                                    data-comment-id="@comment.Id"
+                                    data-has-replies="@(comment.Replies.Any())">
+                                Xóa
+                            </button>
+                        }
+                    }
+                </div>
+                @if (comment.IsEditing)
+                {
+                    <form asp-action="UpdateComment" method="post" class="edit-comment-form mt-2">
+                        <input type="hidden" name="commentId" value="@comment.Id" />
+                        <textarea name="content" class="form-control" rows="3" maxlength="250" required>@comment.Content</textarea>
+                        <div class="d-flex gap-2 mt-2">
+                            <button type="submit" class="form-button btn-save">Lưu</button>
+                            <a asp-action="Details" asp-route-id="@comment.BlogPostId" class="form-button btn-cancel">Hủy</a>
+                        </div>
+                    </form>
+                }
+                @if (comment.Content != "[Bình luận này đã bị xóa]")
+                {
+                    <div class="reply-form" style="display: none;">
+                        <form asp-action="AddComment" method="post">
+                            <input type="hidden" name="blogPostId" value="@comment.BlogPostId" />
+                            <input type="hidden" name="parentCommentId" value="@comment.Id" />
+                            <textarea name="content" class="form-control" rows="2" maxlength="250" placeholder="Viết phản hồi..." required></textarea>
+                            <div class="d-flex gap-2 mt-2">
+                                <button type="submit" class="form-button btn-save">Gửi</button>
+                                <button type="button" class="form-button btn-cancel cancel-reply">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (comment.Replies.Any() && level < 3)
+        {
+            <div class="reply-section">
+                @{
+                    ViewBag.CommentLevel = level + 1;
+                }
+                @await Html.PartialAsync("_CommentsPartial", comment.Replies.OrderBy(c => c.CreatedDate))
+            </div>
+        }
+    </div>
+}
+
+<!-- Modal xác nhận xóa -->
+<div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h6 class="modal-title text-white" id="deleteCommentModalLabel">Xác nhận xóa</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body text-white">
+                <p id="deleteModalMessage">Bạn có chắc chắn muốn xóa bình luận này?</p>
+                <div class="alert alert-warning" id="deleteWarning" style="display: none;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Bình luận này có thể có phản hồi. Xóa nó sẽ xóa luôn tất cả các phản hồi liên quan.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

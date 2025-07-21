@@ -2,10 +2,7 @@
 {
     public class CartViewModel
     {
-        public List<CartModel> CartItems { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string? CouponCode { get; set; }
-        public decimal Discount { get; set; }
-        public decimal GrandTotal => TotalPrice - Discount;
+        public List<CartModel> CartItems { get; set; } = new List<CartModel>();
+        public decimal TotalPrice => CartItems.Sum(x => x.TotalPrice);
     }
 }

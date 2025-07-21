@@ -4,10 +4,9 @@
 @{
     ViewData["Title"] = "Tìm Kiếm Phim";
     bool isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-    if (isAjax)
-    {
+  
         Layout = "_ManagerLayout";
-    }
+    
 
 }
 

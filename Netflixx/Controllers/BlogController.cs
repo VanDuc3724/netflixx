@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
 using System;
@@ -31,6 +34,7 @@ public class BlogController : Controller
         var blogPostsQuery = _context.BlogPosts
             .Include(b => b.Film)
             .Include(b => b.Author)
+            .Include(b => b.Likes) // Thêm include cho Likes
             .AsQueryable();
 
         // Filter by current user's posts if myPosts is true
@@ -95,6 +99,16 @@ public class BlogController : Controller
             case "title_desc":
                 blogPostsQuery = blogPostsQuery.OrderByDescending(b => b.Title);
                 break;
+            case "like_desc":
+                blogPostsQuery = blogPostsQuery
+                    .Include(b => b.Likes)
+                    .OrderByDescending(b => b.Likes.Count(l => l.IsLike));
+                break;
+            case "dislike_desc":
+                blogPostsQuery = blogPostsQuery
+                    .Include(b => b.Likes)
+                    .OrderByDescending(b => b.Likes.Count(l => !l.IsLike));
+                break;
             default: // date_desc
                 blogPostsQuery = blogPostsQuery.OrderByDescending(b => b.CreatedDate);
                 break;
@@ -106,9 +120,31 @@ public class BlogController : Controller
         page = Math.Min(page, Math.Max(1, totalPages));
 
         var blogPosts = await blogPostsQuery
+            .Select(b => new {
+                BlogPost = b,
+                LikeCount = b.Likes.Count(l => l.IsLike),
+                DislikeCount = b.Likes.Count(l => !l.IsLike)
+            })
+            //.OrderBy(x => x.LikeCount) // hoặc OrderByDescending tùy vào sortBy
             .Skip((page - 1) * PageSize)
             .Take(PageSize)
+            .Select(x => x.BlogPost)
             .ToListAsync();
+
+        // Set CurrentUserVote for each post if user is authenticated
+        if (User.Identity.IsAuthenticated)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userLikes = await _context.BlogLikes
+                .Where(l => l.UserId == userId && blogPosts.Select(b => b.Id).Contains(l.BlogPostId))
+                .ToListAsync();
+
+            foreach (var post in blogPosts)
+            {
+                var userLike = userLikes.FirstOrDefault(l => l.BlogPostId == post.Id);
+                post.CurrentUserVote = userLike?.IsLike;
+            }
+        }
 
         // ViewBag assignments
         ViewBag.SearchTerm = searchTerm;
@@ -128,15 +164,28 @@ public class BlogController : Controller
     // GET: Blog/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        await SetAvatarUrl();
-
         if (id == null) return NotFound();
 
         var blogPost = await _context.BlogPosts
             .Include(b => b.Film)
+            .Include(b => b.Comments)
+                .ThenInclude(c => c.Author)
+            .Include(b => b.Comments)
+                .ThenInclude(c => c.Replies)
+                    .ThenInclude(r => r.Author)
+            .Include(b => b.Likes)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        return blogPost == null ? NotFound() : View(blogPost);
+        if (blogPost == null) return NotFound();
+
+        if (User.Identity.IsAuthenticated)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userLike = blogPost.Likes.FirstOrDefault(l => l.UserId == userId);
+            blogPost.CurrentUserVote = userLike?.IsLike;
+        }
+
+        return View(blogPost);
     }
 
     // GET: Blog/Create
@@ -454,5 +503,501 @@ public class BlogController : Controller
 
         TempData["SuccessMessage"] = "Bài viết đã được chuyển về trạng thái nháp!";
         return RedirectToAction(nameof(Index));
+    }
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddComment(int blogPostId, string content, int? parentCommentId = null)
+    {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Json(new { success = false, message = "You must be logged in to comment." });
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return Json(new { success = false, message = "Comment content cannot be empty." });
+        }
+
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var blogPost = await _context.BlogPosts.FindAsync(blogPostId);
+
+            if (blogPost == null)
+            {
+                return Json(new { success = false, message = "Blog post not found." });
+            }
+
+            var comment = new BlogComment
+            {
+                Content = content,
+                AuthorId = userId,
+                BlogPostId = blogPostId,
+                ParentCommentId = parentCommentId,
+                CreatedDate = DateTime.Now
+            };
+
+            _context.BlogComments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            // Nếu là AJAX request, trả về JSON
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, message = "Comment added successfully." });
+            }
+
+            // Nếu không phải AJAX, redirect như cũ
+            return RedirectToAction("Details", new { id = blogPostId });
+        }
+        catch (Exception ex)
+        {
+            // Log error
+            return Json(new { success = false, message = "An error occurred while adding the comment." });
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ToggleLike(int blogPostId, bool isLike)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var existingLike = await _context.BlogLikes
+            .FirstOrDefaultAsync(l => l.BlogPostId == blogPostId && l.UserId == userId);
+
+        if (existingLike != null)
+        {
+            if (existingLike.IsLike == isLike)
+            {
+                _context.BlogLikes.Remove(existingLike);
+            }
+            else
+            {
+                existingLike.IsLike = isLike;
+            }
+        }
+        else
+        {
+            _context.BlogLikes.Add(new BlogLike
+            {
+                BlogPostId = blogPostId,
+                UserId = userId,
+                IsLike = isLike
+            });
+        }
+
+        await _context.SaveChangesAsync();
+
+        var likeCount = await _context.BlogLikes.CountAsync(l => l.BlogPostId == blogPostId && l.IsLike);
+        var dislikeCount = await _context.BlogLikes.CountAsync(l => l.BlogPostId == blogPostId && !l.IsLike);
+
+        return Json(new { success = true, likeCount, dislikeCount });
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EnableEditComment(int commentId)
+    {
+        try
+        {
+            // Lấy userId trước khi query
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+
+            var comment = await _context.BlogComments
+                .Include(c => c.Author)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return Json(new { success = false, message = "Comment not found." });
+            }
+
+            // Check permission
+            if (!User.IsInRole("Admin") && !User.IsInRole("Manager") &&
+                comment.AuthorId != currentUserId)
+            {
+                return Json(new { success = false, message = "You don't have permission to edit this comment." });
+            }
+
+            // Reset all comments' IsEditing status for this user - SỬA LỖI TẠI ĐÂY
+            var userComments = await _context.BlogComments
+                .Where(c => c.AuthorId == currentUserId) // Sử dụng biến đã kiểm tra null
+                .ToListAsync();
+
+            foreach (var c in userComments)
+            {
+                c.IsEditing = false;
+            }
+
+            // Set the current comment to editing mode
+            comment.IsEditing = true;
+            await _context.SaveChangesAsync();
+
+            // Return updated comments HTML
+            var blogPost = await _context.BlogPosts
+                .Include(bp => bp.Comments)
+                    .ThenInclude(c => c.Author)
+                .Include(bp => bp.Comments)
+                    .ThenInclude(c => c.Replies)
+                        .ThenInclude(r => r.Author)
+                .FirstOrDefaultAsync(bp => bp.Id == comment.BlogPostId);
+
+            var topLevelComments = blogPost.Comments
+                .Where(c => c.ParentCommentId == null)
+                .OrderByDescending(c => c.CreatedDate)
+                .ToList();
+
+            return PartialView("_CommentsPartial", topLevelComments);
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "An error occurred while enabling edit mode." });
+        }
+    }
+
+    // Helper method để đánh dấu comment cần edit
+    private void MarkCommentForEdit(BlogComment comment, int editCommentId)
+    {
+        if (comment.Id == editCommentId)
+        {
+            comment.IsEditing = true;
+        }
+
+        foreach (var reply in comment.Replies)
+        {
+            MarkCommentForEdit(reply, editCommentId);
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateComment(int commentId, string content)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return Json(new { success = false, message = "Comment content cannot be empty." });
+            }
+
+            var comment = await _context.BlogComments
+                .Include(c => c.Author)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return Json(new { success = false, message = "Comment not found." });
+            }
+
+            // Check permission
+            if (!User.IsInRole("Admin") && !User.IsInRole("Manager") &&
+                comment.AuthorId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+            {
+                return Json(new { success = false, message = "You don't have permission to edit this comment." });
+            }
+
+            comment.Content = content;
+            comment.IsEditing = false;
+            comment.LastUpdated = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            // Return updated comments HTML
+            var blogPost = await _context.BlogPosts
+                .Include(bp => bp.Comments)
+                    .ThenInclude(c => c.Author)
+                .Include(bp => bp.Comments)
+                    .ThenInclude(c => c.Replies)
+                        .ThenInclude(r => r.Author)
+                .FirstOrDefaultAsync(bp => bp.Id == comment.BlogPostId);
+
+            var topLevelComments = blogPost.Comments
+                .Where(c => c.ParentCommentId == null)
+                .OrderByDescending(c => c.CreatedDate)
+                .ToList();
+
+            return PartialView("_CommentsPartial", topLevelComments);
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "An error occurred while updating the comment." });
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteComment(int commentId)
+    {
+        try
+        {
+            var comment = await _context.BlogComments
+                .Include(c => c.Replies)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return Json(new { success = false, message = "Comment not found." });
+            }
+
+            // Check permission
+            if (!User.IsInRole("Admin") && !User.IsInRole("Manager") &&
+                comment.AuthorId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+            {
+                return Json(new { success = false, message = "You don't have permission to delete this comment." });
+            }
+
+            // Hard delete: xóa comment và toàn bộ nhánh con
+            await DeleteCommentAndChildrenAsync(comment);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Comment and all its replies deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "An error occurred while deleting the comment." });
+        }
+    }
+
+
+    // Helper method để lấy comments của blog post
+    private async Task<List<BlogComment>> GetCommentsForBlogPost(int blogPostId)
+    {
+        return await _context.BlogComments
+            .Include(c => c.Author)
+            .Include(c => c.Replies)
+                .ThenInclude(r => r.Author)
+            .Where(c => c.BlogPostId == blogPostId && c.ParentCommentId == null)
+            .OrderByDescending(c => c.CreatedDate)
+            .ToListAsync();
+    }
+
+    // Helper method để render partial view thành string
+    private async Task<string> RenderPartialViewToString(string viewName, object model)
+    {
+        ViewData.Model = model;
+        using (var writer = new StringWriter())
+        {
+            var viewEngine = HttpContext.RequestServices.GetService<ICompositeViewEngine>();
+            var viewContext = new ViewContext(ControllerContext, viewEngine.FindView(ControllerContext, viewName, false).View, ViewData, TempData, writer, new HtmlHelperOptions());
+
+            await viewContext.View.RenderAsync(viewContext);
+            return writer.GetStringBuilder().ToString();
+        }
+    }
+
+    // Thêm method để xóa comment với soft delete (tùy chọn)
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SoftDeleteComment(int commentId)
+    {
+        try
+        {
+            var comment = await _context.BlogComments.FindAsync(commentId);
+
+            if (comment == null)
+            {
+                return Json(new { success = false, message = "Comment not found" });
+            }
+
+            // Kiểm tra quyền
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool canDelete = User.IsInRole("Admin") ||
+                            User.IsInRole("Manager") ||
+                            comment.AuthorId == currentUserId;
+
+            if (!canDelete)
+            {
+                return Json(new { success = false, message = "You don't have permission to delete this comment" });
+            }
+
+            // Soft delete - chỉ thay đổi nội dung thay vì xóa hẳn
+            comment.Content = "[This comment has been deleted]";
+            comment.AuthorId = null; // Hoặc giữ nguyên tùy business logic
+
+            await _context.SaveChangesAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var updatedComments = await GetCommentsForBlogPost(comment.BlogPostId);
+                var commentsHtml = await RenderPartialViewToString("_CommentsPartial", updatedComments);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Comment deleted successfully",
+                    commentsHtml = commentsHtml
+                });
+            }
+
+            TempData["SuccessMessage"] = "Comment deleted successfully";
+            return RedirectToAction("Details", new { id = comment.BlogPostId });
+        }
+        catch (Exception ex)
+        {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = false, message = "An error occurred while deleting the comment" });
+            }
+
+            TempData["ErrorMessage"] = "An error occurred while deleting the comment";
+            return RedirectToAction("Index");
+        }
+    }
+
+    // Thêm method này vào BlogController để hỗ trợ xóa nhiều comment cùng lúc
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> BulkDeleteComments(int[] commentIds)
+    {
+        try
+        {
+            if (commentIds == null || commentIds.Length == 0)
+            {
+                return Json(new { success = false, message = "No comments selected." });
+            }
+
+            var comments = await _context.BlogComments
+                .Include(c => c.Replies)
+                .Where(c => commentIds.Contains(c.Id))
+                .ToListAsync();
+
+            foreach (var comment in comments)
+            {
+                if (!User.IsInRole("Admin") && !User.IsInRole("Manager") &&
+                    comment.AuthorId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                {
+                    continue;
+                }
+
+                await DeleteCommentAndChildrenAsync(comment);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Comments deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "An error occurred while deleting comments." });
+        }
+    }
+
+    // Helper method để thu thập tất cả replies recursively
+    private void CollectRepliesRecursively(BlogComment comment, List<BlogComment> allComments)
+    {
+        if (comment.Replies?.Any() == true)
+        {
+            foreach (var reply in comment.Replies)
+            {
+                allComments.Add(reply);
+                CollectRepliesRecursively(reply, allComments);
+            }
+        }
+    }
+
+    // Method để lấy thống kê comments (hữu ích cho admin dashboard)
+    [Authorize(Roles = "Admin,Manager")]
+    [HttpGet]
+    public async Task<IActionResult> GetCommentStats()
+    {
+        try
+        {
+            var stats = new
+            {
+                TotalComments = await _context.BlogComments.CountAsync(),
+                TotalReplies = await _context.BlogComments.CountAsync(c => c.ParentCommentId != null),
+                CommentsToday = await _context.BlogComments.CountAsync(c => c.CreatedDate.Date == DateTime.Today),
+                TopCommenters = await _context.BlogComments
+                    .Include(c => c.Author)
+                    .GroupBy(c => c.AuthorId)
+                    .Select(g => new
+                    {
+                        AuthorName = g.First().Author.UserName,
+                        CommentCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.CommentCount)
+                    .Take(5)
+                    .ToListAsync(),
+                CommentsByMonth = await _context.BlogComments
+                    .Where(c => c.CreatedDate >= DateTime.Now.AddMonths(-6))
+                    .GroupBy(c => new { c.CreatedDate.Year, c.CreatedDate.Month })
+                    .Select(g => new
+                    {
+                        Month = $"{g.Key.Year}-{g.Key.Month:00}",
+                        Count = g.Count()
+                    })
+                    .OrderBy(x => x.Month)
+                    .ToListAsync()
+            };
+
+            return Json(stats);
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "Error retrieving comment statistics" });
+        }
+    }
+
+    // Method để restore soft-deleted comments (nếu sử dụng soft delete)
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RestoreComment(int commentId)
+    {
+        try
+        {
+            var comment = await _context.BlogComments.FindAsync(commentId);
+
+            if (comment == null)
+            {
+                return Json(new { success = false, message = "Comment not found" });
+            }
+
+            // Restore logic (tùy thuộc vào cách implement soft delete)
+            if (comment.Content == "[This comment has been deleted]")
+            {
+                return Json(new { success = false, message = "Cannot restore this comment - original content not available" });
+            }
+
+            // Nếu có backup content field
+            // comment.Content = comment.BackupContent;
+            // comment.IsDeleted = false;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Comment restored successfully" });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "Error restoring comment" });
+        }
+    }
+    private async Task DeleteCommentAndChildrenAsync(BlogComment comment)
+    {
+        // Nạp replies nếu chưa có (phòng trường hợp chưa Include)
+        if (comment.Replies == null || !comment.Replies.Any())
+        {
+            comment.Replies = await _context.BlogComments
+                .Where(c => c.ParentCommentId == comment.Id)
+                .ToListAsync();
+        }
+
+        foreach (var reply in comment.Replies.ToList())
+        {
+            await DeleteCommentAndChildrenAsync(reply);
+        }
+
+        _context.BlogComments.Remove(comment);
     }
 }

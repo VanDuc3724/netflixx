@@ -3,9 +3,8 @@
 <link rel="stylesheet" href="/css/site.css">
 <link rel="stylesheet" href="/css/blog.css">
 
-
 @{
-    ViewData["Title"] = "Create Blog Post";
+    ViewData["Title"] = "Tạo bài viết blog";
 }
 
 <div class="container netflix-bg blog-form-container">
@@ -22,21 +21,21 @@
                     <form asp-action="Create" method="post" id="blogForm" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-                        <!-- Title Field -->
+                        <!-- Tiêu đề -->
                         <div class="form-group mb-4">
                             <label asp-for="Title" class="form-label text-white">
                                 <i class="bi bi-text-left me-1"></i>
-                                Title <span class="text-danger">*</span>
+                                Tiêu đề <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="Title" class="form-control" placeholder="Enter blog post title..." />
+                            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." />
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
 
-                        <!-- Content Field with Toast UI Editor -->
+                        <!-- Nội dung với trình soạn thảo Toast UI -->
                         <div class="form-group mb-4">
                             <label asp-for="Content" class="form-label text-white">
                                 <i class="bi bi-file-text me-1"></i>
-                                Content <span class="text-danger">*</span>
+                                Nội dung <span class="text-danger">*</span>
                             </label>
                             <div id="editor-wrapper">
                                 <div id="editor" class="netflix-editor"></div>
@@ -45,14 +44,14 @@
                             <span asp-validation-for="Content" class="text-danger"></span>
                         </div>
 
-                        <!-- Film Selection with Search -->
+                        <!-- Chọn phim với tìm kiếm -->
                         <div class="form-group mb-4">
                             <label asp-for="FilmId" class="form-label text-white">
                                 <i class="bi bi-camera-reels me-1"></i>
-                                Related Film <span class="text-danger">*</span>
+                                Phim liên quan <span class="text-danger">*</span>
                             </label>
                             <select asp-for="FilmId" class="form-control select2-film-search" required>
-                                <option value="">-- Search for a film --</option>
+                                <option value="">-- Tìm kiếm phim --</option>
                                 @if (ViewBag.Films != null)
                                 {
                                     @foreach (var film in ViewBag.Films)
@@ -64,24 +63,16 @@
                             <span asp-validation-for="FilmId" class="text-danger"></span>
                         </div>
 
-                        @* <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a asp-action="Index" class="btn btn-outline-light">
-                                <i class="bi bi-arrow-left me-1"></i> Back to Blog
-                            </a>
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-save me-1"></i> Create Post
-                            </button>
-                        </div> *@
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a asp-action="Index" class="btn btn-outline-light">
-                                <i class="bi bi-arrow-left me-1"></i> Back to Blog
+                                <i class="bi bi-arrow-left me-1"></i> Quay lại Blog
                             </a>
                             <div>
                                 <button type="submit" name="action" value="draft" class="btn btn-secondary me-2">
-                                    <i class="bi bi-save me-1"></i> Save as Draft
+                                    <i class="bi bi-save me-1"></i> Lưu bản nháp
                                 </button>
                                 <button type="submit" name="action" value="publish" class="btn btn-danger">
-                                    <i class="bi bi-send me-1"></i> Publish Post
+                                    <i class="bi bi-send me-1"></i> Đăng bài
                                 </button>
                             </div>
                         </div>
@@ -108,15 +99,15 @@
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
     <script>
-                $(document).ready(function() {
-            // Initialize Select2 for Film Selection
+        $(document).ready(function() {
+            // Khởi tạo Select2 cho chọn phim
             $('.select2-film-search').select2({
-                placeholder: "Search for a film...",
+                placeholder: "Tìm kiếm phim...",
                 allowClear: true,
                 width: '100%'
             });
 
-            // Initialize Toast UI Editor
+            // Khởi tạo trình soạn thảo Toast UI
             const editor = new toastui.Editor({
                 el: document.querySelector('#editor'),
                 initialEditType: 'wysiwyg',
@@ -129,7 +120,7 @@
                         const formData = new FormData();
                         formData.append('image', blob);
 
-                        // Add CSRF token for security
+                        // Thêm token CSRF để bảo mật
                         const token = $('input[name="__RequestVerificationToken"]').val();
 
                         fetch('/Blog/UploadImage', {
@@ -141,7 +132,7 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Upload failed');
+                                throw new Error('Tải lên thất bại');
                             }
                             return response.json();
                         })
@@ -149,13 +140,13 @@
                             if (data.success === 1) {
                                 callback(data.file.url, 'image');
                             } else {
-                                console.error('Upload failed:', data);
-                                alert('Image upload failed');
+                                console.error('Tải lên thất bại:', data);
+                                alert('Tải lên hình ảnh thất bại');
                             }
                         })
                         .catch(error => {
-                            console.error('Image upload error:', error);
-                            alert('Error uploading image: ' + error.message);
+                            console.error('Lỗi tải lên hình ảnh:', error);
+                            alert('Lỗi khi tải lên hình ảnh: ' + error.message);
                         });
                     }
                 },
@@ -170,7 +161,7 @@
                 ]
             });
 
-            // Update hidden textarea before form submission
+            // Cập nhật textarea ẩn trước khi gửi form
             $('#blogForm').on('submit', function() {
                 $('#blogContent').val(editor.getHTML());
             });

@@ -1,0 +1,69 @@
+﻿@model Netflixx.Models.Feedback
+<link rel="stylesheet" href="/css/feedback.css">
+@{
+    ViewData["Title"] = "Phản hồi";
+}
+
+<div class="container mt-4">
+    <div class="contact-banner">
+        <div class="container">
+            <h1 class="banner-title">@ViewData["Title"]</h1>
+            <p class="banner-subtitle">Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào, hãy gửi phản hồi cho chúng tôi!</p>
+        </div>
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    <form method="post" class="netflix-feedback-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="FullName" />
+        <input type="hidden" asp-for="Email" />
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Content" class="form-label"></label>
+            <textarea asp-for="Content" class="form-control" rows="5" placeholder="Nhập nội dung phản hồi của bạn"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Gửi phản hồi
+                </button>
+                <a asp-action="History" class="btn btn-secondary">
+                    <i class="fas fa-history me-2"></i>Lịch sử phản hồi
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="mb-4">
+                <a asp-controller="login" asp-action="login" class="btn btn-outline-warning">Vui lòng đăng nhập để gửi phản hồi</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Tự động ẩn thông báo sau 5 giây
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
+}

@@ -1,21 +1,24 @@
 ﻿@model Netflixx.Models.ContactInfo
-
 @{
-    ViewData["Title"] = "Edit Contact Information";
+    ViewData["Title"] = "Chỉnh sửa thông tin liên hệ";
 }
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/contact.css" />
 
 <div class="contact-container">
     <div class="contact-banner">
         <div class="banner-overlay">
             <div class="container">
-                <h1 class="banner-title">Edit Contact Information</h1>
-                <p class="banner-subtitle">Update Netflixx contact details</p>
+                <h1 class="banner-title">Chỉnh sửa thông tin liên hệ</h1>
+                <p class="banner-subtitle">Cập nhật thông tin liên hệ của Netflixx</p>
             </div>
         </div>
     </div>
 
     <div class="container contact-content">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" autocomplete="off">
+            @Html.AntiForgeryToken()
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
@@ -42,12 +45,12 @@
                         <label asp-for="MapEmbedUrl" class="form-label"></label>
                         <textarea asp-for="MapEmbedUrl" class="form-control" rows="4"></textarea>
                         <span asp-validation-for="MapEmbedUrl" class="text-danger"></span>
-                        <small class="form-text text-muted">Paste Google Maps embed URL here</small>
+                        <small class="form-text text-muted">Dán đường dẫn nhúng Google Maps tại đây</small>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="map-preview mb-4">
-                        <h4>Map Preview</h4>
+                        <h4>Xem trước bản đồ</h4>
                         <div class="map-container">
                             <iframe src="@Model.MapEmbedUrl"
                                     width="100%"
@@ -60,15 +63,13 @@
                 </div>
             </div>
             <div class="form-group text-center">
-                <button type="submit" class="btn btn-danger btn-lg">Save Changes</button>
-                <a asp-action="Index" class="btn btn-outline-light btn-lg ms-2">Cancel</a>
+                <button type="submit" class="btn btn-danger btn-lg">Lưu thay đổi</button>
+                <a asp-action="Index" class="btn btn-outline-light btn-lg ms-2">Hủy</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

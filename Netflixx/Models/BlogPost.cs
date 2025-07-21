@@ -34,5 +34,16 @@ namespace Netflixx.Models
 
         [Required]
         public BlogPostStatus Status { get; set; } = BlogPostStatus.Draft; // Mặc định là Draft
+        public virtual ICollection<BlogComment> Comments { get; set; } = new List<BlogComment>();
+        public virtual ICollection<BlogLike> Likes { get; set; } = new List<BlogLike>();
+
+        [NotMapped]
+        public int LikeCount => Likes.Count(l => l.IsLike);
+
+        [NotMapped]
+        public int DislikeCount => Likes.Count(l => !l.IsLike);
+
+        [NotMapped]
+        public bool? CurrentUserVote { get; set; }
     }
 }

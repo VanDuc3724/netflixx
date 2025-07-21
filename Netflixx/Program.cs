@@ -1,12 +1,10 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Netflixx.Models;
 using Netflixx.Repositories;
-
 using Netflixx.Services;
 using Netflixx.Services.Vnpay;
-
+using Netflixx.Hubs;
 
 namespace Netflixx
 {
@@ -20,7 +18,6 @@ namespace Netflixx
             builder.Services.AddScoped<IVnPayService, VnPayService>();
             // Đăng ký OtpService
             builder.Services.AddSingleton<IOtpService, OtpService>();
-
             builder.Services.AddMemoryCache();
             builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 
@@ -29,19 +26,21 @@ namespace Netflixx
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSignalR(); // <-- Thêm SignalR service ở đây
 
 
             //Add email sender
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddScoped<DbContext>();
+            builder.Services.AddScoped<INotificationService, NotificationService>(); // <-- Thêm NotificationService
 
             builder.Services.AddDistributedMemoryCache();
 
             builder.Services.AddControllersWithViews()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-    });
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                });
 
             //Add session
             builder.Services.AddSession(options =>
@@ -55,9 +54,8 @@ namespace Netflixx
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
-                // Cookie tạm thời (cho phiên làm việc) nếu RememberMe = false
-                options.ExpireTimeSpan = TimeSpan.FromDays(30); // Thời gian tồn tại khi RememberMe = true
-                options.SlidingExpiration = true; // Reset thời gian tồn tại khi user hoạt động
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = true;
             });
 
 
@@ -71,12 +69,11 @@ namespace Netflixx
                 .AddEntityFrameworkStores<DBContext>()
                 .AddDefaultTokenProviders();
 
-
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                options.Lockout.AllowedForNewUsers = false; // Tắt lockout cho user mới
-                options.Lockout.MaxFailedAccessAttempts = 100; // Số lần thử tối đa (đặt lớn để vô hiệu hóa)
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero; // Thời gian lock ngắn
+                options.Lockout.AllowedForNewUsers = false;
+                options.Lockout.MaxFailedAccessAttempts = 100;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
 
                 // Password settings.
                 options.Password.RequireDigit = true;
@@ -112,10 +109,19 @@ namespace Netflixx
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
 
+            app.MapControllerRoute(
+                name: "contact",
+                pattern: "contact",
+                defaults: new { controller = "Contact", action = "Index" });
+
+            app.MapControllerRoute(
+                name: "feedback",
+                pattern: "feedback",
+                defaults: new { controller = "Feedback", action = "Index" });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -127,18 +133,14 @@ namespace Netflixx
             app.UseSession();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
+            app.MapHub<NotificationHub>("/notificationHub"); // <-- Thêm SignalR Hub route ở đây
             app.MapControllers();
-
-            
 
             app.MapControllerRoute(
                 name: "areas",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-
 
             app.MapControllerRoute(
                 name: "default",
