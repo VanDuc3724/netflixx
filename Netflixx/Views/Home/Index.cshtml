@@ -8,19 +8,6 @@
 <!-- Only load the specific CSS needed for this page -->
 <link href="~/css/homepage.css" rel="stylesheet" />
 
-@if (TempData["Message"] != null)
-{
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1300; margin-top: 60px">
-        <div id="homeToast" class="toast align-items-center text-white bg-info border-0 fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    @TempData["Message"]
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-}	
 
 
 <!-- ***** Banner Start ***** -->
@@ -142,14 +129,4 @@
     <script src="~/js/popup.js"></script>
     <script src="~/js/custom.js"></script>
 
-    <!-- Toast functionality -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var toastEl = document.getElementById("homeToast");
-            if (toastEl) {
-                var bsToast = new bootstrap.Toast(toastEl);
-                bsToast.show();
-            }
-        });
-    </script>
 }
