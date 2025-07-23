@@ -6,6 +6,20 @@
 @section Styles {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
     <style>
+        /* Top menu styling to match Home page */
+        .navbar {
+            background-color: #212529 !important;
+        }
+
+        .navbar .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: color 0.2s ease;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            color: #fff !important;
+        }
         *, *::before, *::after {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
