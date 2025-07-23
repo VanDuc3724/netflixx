@@ -10,10 +10,8 @@
 
 @section Styles {
     <style>
-        /* Reset và base styles */
-        * {
-            margin: 0;
-            padding: 0;
+        /* Base styles */
+        *, *::before, *::after {
             box-sizing: border-box;
         }
 
@@ -22,10 +20,11 @@
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             color: #fff;
             min-height: 100vh;
+            margin: 0;
         }
 
         main {
-            padding: 2rem 1rem;
+            padding: 80px 1rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
