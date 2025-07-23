@@ -110,18 +110,6 @@ namespace Netflixx.Controllers
             return View(vm);
         }
 
-        public IActionResult Buy(string packageId, string packageName, int packagePrice)
-        {
-            var model = new FilmPackageViewModel
-            {
-                PackageId = packageId,
-                PackageName = packageName,
-                PackagePrice = packagePrice
-            };
-
-            return View(model);
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BuyWithCoins(int packageId)
@@ -136,7 +124,7 @@ namespace Netflixx.Controllers
             if (account == null || account.PointsBalance < package.Price)
             {
                 TempData["error"] = "Không đủ coins để mua gói.";
-                return RedirectToAction(nameof(Buy), new { packageId, packageName = package.Name, packagePrice = package.Price });
+                return RedirectToAction(nameof(Index));
             }
 
             var existing = await _context.PackageSubscriptions
