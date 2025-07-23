@@ -143,12 +143,16 @@
                             <i class="fa fa-bell"></i>
                         </span>
 
-                        <!-- Coins display (if needed) -->
+                        <!-- Coins display -->
                         @if (User.Identity.IsAuthenticated)
                         {
                             <span class="navbar-text me-3 text-warning">
                                 <i class="fa fa-coins"></i> @coins
                             </span>
+                            <a class="btn btn-danger btn-sm me-3 recharge-btn"
+                               asp-controller="Payment" asp-action="Recharge">
+                                Nạp Coins
+                            </a>
                         }
 
                         <!-- Avatar Dropdown -->

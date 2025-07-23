@@ -478,3 +478,17 @@ main[role="main"] {
         margin: 0 0.25rem;
     }
 }*/
+
+/* Recharge button styling */
+.recharge-btn {
+    background-color: #e50914;
+    border-color: #e50914;
+    color: #fff;
+    font-weight: 500;
+}
+
+.recharge-btn:hover {
+    background-color: #bf0810;
+    border-color: #bf0810;
+    color: #fff;
+}
