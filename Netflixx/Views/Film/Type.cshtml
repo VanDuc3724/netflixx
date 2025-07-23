@@ -315,7 +315,7 @@
                                 if (json.success) {
                                     const link = document.createElement('a');
                                     link.href = json.redirectUrl;
-                                    link.className = 'btn btn-primary';
+                                    link.className = 'btn btn-primary d-inline';
                                     link.textContent = 'Xem ngay';
                                     form.replaceWith(link);
                                     Swal.fire({
