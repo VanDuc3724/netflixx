@@ -67,6 +67,7 @@ using Netflixx.Repositories;
             }
 
             TempData["success"] = "Tạo gói phim thành công!";
+            TempData["Message"] = "Tạo gói phim thành công!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -129,6 +130,7 @@ using Netflixx.Repositories;
             await _context.SaveChangesAsync();
 
             TempData["success"] = "Cập nhật gói phim thành công!";
+            TempData["Message"] = "Cập nhật gói phim thành công!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -155,6 +157,7 @@ using Netflixx.Repositories;
                 _context.Packages.Remove(package);
                 await _context.SaveChangesAsync();
                 TempData["success"] = $"Đã xóa gói '{package.Name}'";
+                TempData["Message"] = $"Đã xóa gói '{package.Name}'";
             }
             return RedirectToAction(nameof(Index));
         }
